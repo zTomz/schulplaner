@@ -4,6 +4,18 @@ abstract class AppTheme {
   static final ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
     colorScheme: darkScheme(),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 30,
+          vertical: 16,
+        ),
+      ),
+    ),
+    floatingActionButtonTheme: const FloatingActionButtonThemeData(
+      backgroundColor: Color(0xff1f1f1f), // Surface container
+      foregroundColor: Color(0xff55e071), // Primary
+    )
   );
 
   static ColorScheme darkScheme() {

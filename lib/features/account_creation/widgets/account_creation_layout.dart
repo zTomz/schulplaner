@@ -70,12 +70,6 @@ class AccountCreationLayout extends StatelessWidget {
             ),
             child: ElevatedButton.icon(
               onPressed: onPressed,
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 30,
-                  vertical: 16,
-                ),
-              ),
               label: Text(buttonText),
               icon: Padding(
                 padding: const EdgeInsets.only(right: Spacing.small),

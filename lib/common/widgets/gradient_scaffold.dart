@@ -5,6 +5,12 @@ class GradientScaffold extends StatelessWidget {
   /// The body of the scaffold.
   final Widget body;
 
+  /// Optional. The app bar of the scaffold.
+  final PreferredSizeWidget? appBar;
+
+  /// Optional. The floating action button of the scaffold.
+  final Widget? floatingActionButton;
+
   /// Optional. The color of the gradient. Default is [AppColors.primaryColor].
   final Color? color;
 
@@ -14,6 +20,8 @@ class GradientScaffold extends StatelessWidget {
   const GradientScaffold({
     super.key,
     required this.body,
+    this.appBar,
+    this.floatingActionButton,
     this.color = AppColors.primaryColor,
     this.padding = EdgeInsets.zero,
   });
@@ -21,6 +29,9 @@ class GradientScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: appBar,
+      floatingActionButton: floatingActionButton,
       body: Stack(
         children: [
           Container(
