@@ -14,23 +14,17 @@ class GradientScaffold extends StatelessWidget {
   /// Optional. The color of the gradient. Default is [AppColors.primaryColor].
   final Color? color;
 
-  /// Optional. The padding of the scaffold. Default is [EdgeInsets.zero].
-  final EdgeInsets? padding;
-
   const GradientScaffold({
     super.key,
     required this.body,
     this.appBar,
     this.floatingActionButton,
     this.color = AppColors.primaryColor,
-    this.padding = EdgeInsets.zero,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: appBar,
       floatingActionButton: floatingActionButton,
       body: Stack(
         children: [
@@ -47,9 +41,11 @@ class GradientScaffold extends StatelessWidget {
             ),
           ),
           Positioned.fill(
-            child: Padding(
-              padding: padding!,
-              child: body,
+            child: Column(
+              children: [
+                if (appBar != null) appBar!,
+                Expanded(child: body),
+              ],
             ),
           ),
         ],

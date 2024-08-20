@@ -15,5 +15,10 @@ class AppRouter extends RootStackRouter {
           transitionsBuilder: TransitionsBuilders.fadeIn,
           durationInMilliseconds: 400,
         ),
+        CustomRoute(
+          page: ConfigureHobbyRoute.page,
+          transitionsBuilder: TransitionsBuilders.fadeIn,
+          durationInMilliseconds: 400,
+        ),
       ];
 }

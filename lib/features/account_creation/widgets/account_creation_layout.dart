@@ -23,6 +23,9 @@ class AccountCreationLayout extends StatelessWidget {
   /// Whether the button has a shadow. If this is true, the page will not have a gradient
   final bool buttonHasShadow;
 
+  /// Optional button that is placed under the primary button.
+  final Widget? secondButton;
+
   const AccountCreationLayout({
     super.key,
     required this.title,
@@ -30,6 +33,7 @@ class AccountCreationLayout extends StatelessWidget {
     required this.buttonText,
     required this.buttonIcon,
     required this.onPressed,
+    this.secondButton,
     this.buttonHasShadow = false,
   });
 
@@ -37,47 +41,53 @@ class AccountCreationLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return GradientScaffold(
       color: buttonHasShadow ? Colors.transparent : AppColors.primaryColor,
-      padding: EdgeInsets.symmetric(
-        vertical: MediaQuery.sizeOf(context).height * 0.2,
-      ),
-      body: Column(
-        children: [
-          Text(
-            title,
-            style: TextStyles.titleLarge,
-          ),
-          const SizedBox(height: Spacing.medium),
-          SizedBox(
-            width: MediaQuery.sizeOf(context).width * 0.6,
-            child: Text(
-              description,
-              style: TextStyles.body,
-              textAlign: TextAlign.center,
+      body: Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: MediaQuery.sizeOf(context).height * 0.2,
+        ),
+        child: Column(
+          children: [
+            Text(
+              title,
+              style: TextStyles.titleLarge,
             ),
-          ),
-          const Spacer(),
-          Container(
-            decoration: BoxDecoration(
-              boxShadow: [
-                if (buttonHasShadow)
-                  const BoxShadow(
-                    color: AppColors.primaryColor,
-                    spreadRadius: 5,
-                    blurRadius: 20,
-                  ),
-              ],
-              borderRadius: BorderRadius.circular(180),
-            ),
-            child: ElevatedButton.icon(
-              onPressed: onPressed,
-              label: Text(buttonText),
-              icon: Padding(
-                padding: const EdgeInsets.only(right: Spacing.small),
-                child: buttonIcon,
+            const SizedBox(height: Spacing.medium),
+            SizedBox(
+              width: MediaQuery.sizeOf(context).width * 0.6,
+              child: Text(
+                description,
+                style: TextStyles.body,
+                textAlign: TextAlign.center,
               ),
             ),
-          ),
-        ],
+            const Spacer(),
+            Container(
+              decoration: BoxDecoration(
+                boxShadow: [
+                  if (buttonHasShadow)
+                    const BoxShadow(
+                      color: AppColors.primaryColor,
+                      spreadRadius: 5,
+                      blurRadius: 20,
+                    ),
+                ],
+                borderRadius: BorderRadius.circular(180),
+              ),
+              child: ElevatedButton.icon(
+                onPressed: onPressed,
+                label: Text(buttonText),
+                icon: Padding(
+                  padding: const EdgeInsets.only(right: Spacing.small),
+                  child: buttonIcon,
+                ),
+              ),
+            ),
+            if (secondButton != null) ...[
+              const SizedBox(height: Spacing.medium),
+              secondButton!,
+            ],
+          ],
+        ),
       ),
     );
   }
