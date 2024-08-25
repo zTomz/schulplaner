@@ -106,11 +106,7 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
         .toList();
 
     List<Widget> widgetsToBuild = [
-      TableCell(
-        child: Text(
-          timeSpan.toFormattedString(),
-        ),
-      ),
+      TimeCell(timeSpan: timeSpan),
     ];
 
     for (Weekdays weekday in Weekdays.values) {
@@ -151,6 +147,28 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
     }
 
     return widgetsToBuild;
+  }
+}
+
+class TimeCell extends StatelessWidget {
+  final TimeSpan timeSpan;
+
+  const TimeCell({
+    super.key,
+    required this.timeSpan,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TableCell(
+      child: Padding(
+        padding: const EdgeInsets.all(Spacing.small),
+        child: Text(
+          timeSpan.toFormattedString(),
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+      ),
+    );
   }
 }
 
