@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:schulplaner/common/widgets/gradient_scaffold.dart';
 import 'package:schulplaner/config/routes/router.dart';
 import 'package:schulplaner/config/theme/app_theme.dart';
-import 'package:schulplaner/features/account_creation/widgets/weekly_schedule.dart';
+import 'package:schulplaner/common/widgets/weekly_schedule/weekly_schedule.dart';
 
 void main() {
   runApp(MainApp());
@@ -37,6 +37,9 @@ class WeeklyScheduleTestPage extends HookWidget {
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: WeeklySchedule(
+          onLessonEdit: (lesson) {},
+          onSchoolTimeCellSelected: (schoolTimeCell) {},
+          selectedSchoolTimeCell: null,
           timeSpans: {
             const TimeSpan(
               from: TimeOfDay(hour: 7, minute: 30),
