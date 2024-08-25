@@ -88,6 +88,32 @@ class CreateWeeklySchedulePage extends HookWidget {
           onWeekTapped: () {
             week.value = week.value.next();
           },
+          onDeleteTimeSpan: (timeSpanToDelete) {
+            showDialog(
+              context: context,
+              builder: (context) => CustomDialog.confirmation(
+                title: "Schulzeit löschen",
+                description:
+                    "Soll die Schulzeit ${timeSpanToDelete.from.format(context)} - ${timeSpanToDelete.to.format(context)} wirklich gelöscht werden?",
+                onConfirm: () {
+                  // Delete the time span from the time spans
+                  timeSpans.value = timeSpans.value
+                      .where((timeSpan) => timeSpan != timeSpanToDelete)
+                      .toSet();
+
+                  // Delete all lessons for the time span
+                  lessons.value.removeWhere(
+                    (lesson) => lesson.timeSpan == timeSpanToDelete,
+                  );
+
+                  Navigator.of(context).pop();
+                },
+                onCancel: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            );
+          },
           onSchoolTimeCellSelected: (schoolTimeCell) {
             // Select the cell. If the cell is already selected, unselect it
             selectedSchoolTimeCell.value =
@@ -119,7 +145,7 @@ class NewTimeSpanDialog extends HookWidget {
       content: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Text("From: "),
+          const Text("Von:"),
           const SizedBox(width: Spacing.small),
           _buildTimePicker(
             context,
@@ -127,7 +153,7 @@ class NewTimeSpanDialog extends HookWidget {
             value: from.value,
           ),
           const Spacer(),
-          const Text("To: "),
+          const Text("Bis:"),
           const SizedBox(width: Spacing.small),
           _buildTimePicker(
             context,

@@ -5,21 +5,30 @@ import 'package:schulplaner/config/theme/numbers.dart';
 import 'models.dart';
 
 class WeeklyScheduleTimeCell extends StatelessWidget {
+  final void Function(TimeSpan timeSpan) onDeleteTimeSpan;
   final TimeSpan timeSpan;
 
   const WeeklyScheduleTimeCell({
     super.key,
+    required this.onDeleteTimeSpan,
     required this.timeSpan,
   });
 
   @override
   Widget build(BuildContext context) {
     return TableCell(
-      child: Padding(
-        padding: const EdgeInsets.all(Spacing.small),
-        child: Text(
-          timeSpan.toFormattedString(),
-          style: Theme.of(context).textTheme.bodyLarge,
+      child: Material(
+        type: MaterialType.transparency,
+        child: InkWell(
+          onTap: () => onDeleteTimeSpan(timeSpan),
+          borderRadius: BorderRadius.circular(2),
+          child: Padding(
+            padding: const EdgeInsets.all(Spacing.small),
+            child: Text(
+              timeSpan.toFormattedString(),
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+          ),
         ),
       ),
     );

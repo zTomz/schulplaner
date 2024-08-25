@@ -18,6 +18,9 @@ class WeeklySchedule extends StatelessWidget {
   /// Called when the week (A, B or All) is tapped.
   final void Function() onWeekTapped;
 
+  /// A function that is called, when the user try's to delete a time span
+  final void Function(TimeSpan timeSpan) onDeleteTimeSpan;
+
   /// A function that is called, when the user selects a time cell in the table
   final void Function(SchoolTimeCell schoolTimeCell) onSchoolTimeCellSelected;
 
@@ -40,6 +43,7 @@ class WeeklySchedule extends StatelessWidget {
     super.key,
     required this.onLessonEdit,
     required this.onWeekTapped,
+    required this.onDeleteTimeSpan,
     required this.onSchoolTimeCellSelected,
     required this.selectedSchoolTimeCell,
     required this.timeSpans,
@@ -109,7 +113,10 @@ class WeeklySchedule extends StatelessWidget {
         .toList();
 
     List<Widget> widgetsToBuild = [
-      WeeklyScheduleTimeCell(timeSpan: timeSpan),
+      WeeklyScheduleTimeCell(
+        timeSpan: timeSpan,
+        onDeleteTimeSpan: onDeleteTimeSpan,
+      ),
     ];
 
     for (Weekdays weekday in Weekdays.values) {
