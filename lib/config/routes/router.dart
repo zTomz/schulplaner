@@ -11,7 +11,7 @@ class AppRouter extends RootStackRouter {
           initial: true,
         ),
         CustomRoute(
-          page: ConfigureTimetableRoute.page,
+          page: ConfigureWeeklyScheduleRoute.page,
           transitionsBuilder: TransitionsBuilders.fadeIn,
           durationInMilliseconds: 400,
         ),

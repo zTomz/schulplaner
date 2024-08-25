@@ -17,7 +17,7 @@ class IntroPage extends StatelessWidget {
       buttonText: "Lass uns loslegen",
       buttonIcon: const Icon(LucideIcons.arrow_right),
       onPressed: () {
-        context.replaceRoute(const ConfigureTimetableRoute());
+        context.replaceRoute(const ConfigureWeeklyScheduleRoute());
       },
     );
   }

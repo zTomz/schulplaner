@@ -44,11 +44,13 @@ class Subject {
   final String subject;
   final Teacher teacher;
   final Color color;
+  final String uuid;
 
   const Subject({
     required this.subject,
     required this.teacher,
     required this.color,
+    required this.uuid,
   });
 }
 
@@ -60,6 +62,7 @@ class Teacher {
   final String email;
   final Subject? subject;
   final bool favorite;
+  final String uuid;
 
   Teacher({
     required this.firstName,
@@ -68,6 +71,7 @@ class Teacher {
     required this.email,
     this.subject,
     required this.favorite,
+    required this.uuid,
   });
 }
 
@@ -142,4 +146,16 @@ enum Week {
   const Week({
     required this.name,
   });
+
+  /// Returns the next week
+  Week next() {
+    switch (this) {
+      case Week.a:
+        return Week.b;
+      case Week.b:
+        return Week.all;
+      case Week.all:
+        return Week.a;
+    }
+  }
 }

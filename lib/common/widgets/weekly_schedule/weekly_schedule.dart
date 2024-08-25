@@ -1,3 +1,5 @@
+// TODO: Delete a time span
+
 import 'package:flutter/material.dart';
 import 'package:schulplaner/config/theme/numbers.dart';
 
@@ -10,21 +12,40 @@ export 'days_header.dart';
 export 'models.dart';
 
 class WeeklySchedule extends StatelessWidget {
+  /// A function that is called when the user clicks on a lesson
   final void Function(Lesson lesson) onLessonEdit;
+
+  /// Called when the week (A, B or All) is tapped.
+  final void Function() onWeekTapped;
+
+  /// A function that is called, when the user selects a time cell in the table
   final void Function(SchoolTimeCell schoolTimeCell) onSchoolTimeCellSelected;
+
+  /// The time cell if any is selected
   final SchoolTimeCell? selectedSchoolTimeCell;
+
+  /// The time spans of the table
   final Set<TimeSpan> timeSpans;
+
+  /// The lessons in the table
   final List<Lesson> lessons;
+
+  /// The current week
   final Week week;
+
+  /// Optional a scroll controller, to controll the table scroll
+  final ScrollController? scrollController;
 
   const WeeklySchedule({
     super.key,
     required this.onLessonEdit,
+    required this.onWeekTapped,
     required this.onSchoolTimeCellSelected,
     required this.selectedSchoolTimeCell,
     required this.timeSpans,
     required this.lessons,
     required this.week,
+    this.scrollController,
   });
 
   static const double _timeColumnWidth = 100;
@@ -34,50 +55,27 @@ class WeeklySchedule extends StatelessWidget {
     return Column(
       children: [
         WeeklyScheduleDaysHeader(
+          onWeekTapped: () => onWeekTapped(),
           timeColumnWidth: WeeklySchedule._timeColumnWidth,
           week: week,
         ),
         Expanded(
-          child: Table(
-            columnWidths: const {
-              0: FixedColumnWidth(WeeklySchedule._timeColumnWidth),
-            },
-            border: TableBorder.all(
-              color: Theme.of(context).colorScheme.surfaceContainer,
-              borderRadius: BorderRadius.circular(2),
-              width: 2,
+          child: SingleChildScrollView(
+            controller: scrollController,
+            scrollDirection: Axis.vertical,
+            child: Table(
+              columnWidths: const {
+                0: FixedColumnWidth(WeeklySchedule._timeColumnWidth),
+              },
+              border: TableBorder.all(
+                color: Theme.of(context).colorScheme.surfaceContainer,
+                borderRadius: BorderRadius.circular(2),
+                width: 2,
+              ),
+              children: _buildTableRows(),
             ),
-            children: _buildTableRows(),
           ),
         ),
-        // Row(
-        //   mainAxisAlignment: MainAxisAlignment.center,
-        //   children: [
-        //     ElevatedButton.icon(
-        //       onPressed: () {
-        //         // TODO: Add a time span
-        //       },
-        //       icon: const Icon(
-        //         LucideIcons.timer,
-        //         size: 20,
-        //       ),
-        //       label: const Text("Schulzeit hinzufügen"),
-        //     ),
-        //     const SizedBox(width: Spacing.medium),
-        //     ElevatedButton.icon(
-        //       onPressed: selectedSchoolTimeCell == null
-        //           ? null
-        //           : () {
-        //               // TODO: Add a lesson
-        //             },
-        //       icon: const Icon(
-        //         LucideIcons.circle_plus,
-        //         size: 20,
-        //       ),
-        //       label: const Text("Schulstunde hinzufügen"),
-        //     ),
-        //   ],
-        // ),
         const SizedBox(height: Spacing.medium),
       ],
     );
@@ -140,7 +138,9 @@ class WeeklySchedule extends StatelessWidget {
           },
           onLessonEdit: onLessonEdit,
           lessons: lessonsForWeekday,
-          isSelected: selectedSchoolTimeCell != null,
+          isSelected: selectedSchoolTimeCell != null &&
+              selectedSchoolTimeCell!.weekday == weekday &&
+              selectedSchoolTimeCell!.timeSpan == timeSpan,
         ),
       );
     }

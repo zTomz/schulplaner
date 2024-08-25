@@ -6,78 +6,92 @@ import 'models.dart';
 /// The header of the weekly schedule. Shows the day and it's date. As well as the current
 /// week
 class WeeklyScheduleDaysHeader extends StatelessWidget {
+  final void Function() onWeekTapped;
   final double timeColumnWidth;
   final Week week;
 
   const WeeklyScheduleDaysHeader({
     super.key,
+    required this.onWeekTapped,
     required this.timeColumnWidth,
     required this.week,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(
-          width: timeColumnWidth,
-          child: Text(
-            week.name,
-            style: Theme.of(context).textTheme.displaySmall,
-            textAlign: TextAlign.center,
-          ),
-        ),
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: Spacing.small),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainer,
-              borderRadius: const BorderRadius.vertical(top: Radii.small),
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(
+            width: timeColumnWidth,
+            child: Material(
+              type: MaterialType.transparency,
+              child: InkWell(
+                onTap: () => onWeekTapped(),
+                borderRadius: const BorderRadius.vertical(top: Radii.small),
+                child: Center(
+                  child: Text(
+                    week.name,
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                ),
+              ),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: _getWeekdays()
-                  .map(
-                    (day) => Expanded(
-                      child: Column(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(Spacing.small),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: DateTime.now().weekday == day.weekday
-                                  ? Theme.of(context).colorScheme.primary
-                                  : null,
+          ),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: Spacing.small),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainer,
+                borderRadius: const BorderRadius.vertical(top: Radii.small),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: _getWeekdays()
+                    .map(
+                      (day) => Expanded(
+                        child: Column(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(Spacing.small),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: DateTime.now().weekday == day.weekday
+                                    ? Theme.of(context).colorScheme.primary
+                                    : null,
+                              ),
+                              child: Text(
+                                _getWeekdayName(day).substring(0, 1),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .copyWith(
+                                      color:
+                                          DateTime.now().weekday == day.weekday
+                                              ? Theme.of(context)
+                                                  .colorScheme
+                                                  .onPrimary
+                                              : Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface,
+                                    ),
+                              ),
                             ),
-                            child: Text(
-                              _getWeekdayName(day).substring(0, 1),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge!
-                                  .copyWith(
-                                    color: DateTime.now().weekday == day.weekday
-                                        ? Theme.of(context)
-                                            .colorScheme
-                                            .onPrimary
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .onSurface,
-                                  ),
+                            Text(
+                              day.day.toString(),
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
-                          ),
-                          Text(
-                            day.day.toString(),
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  )
-                  .toList(),
+                    )
+                    .toList(),
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
