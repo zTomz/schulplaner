@@ -35,7 +35,7 @@ class WeeklyScheduleTestPage extends HookWidget {
   Widget build(BuildContext context) {
     return GradientScaffold(
       body: Padding(
-        padding: EdgeInsets.all(24),
+        padding: const EdgeInsets.all(24),
         child: WeeklySchedule(
           timeSpans: {
             const TimeSpan(

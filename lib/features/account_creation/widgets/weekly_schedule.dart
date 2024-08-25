@@ -1,10 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
-import 'package:schulplaner/config/theme/app_colors.dart';
 import 'package:schulplaner/config/theme/numbers.dart';
 
-class WeeklySchedule extends StatelessWidget {
+class WeeklySchedule extends StatefulWidget {
   final Set<TimeSpan> timeSpans;
   final List<Lesson> lessons;
 
@@ -17,14 +16,22 @@ class WeeklySchedule extends StatelessWidget {
   static const double _timeColumnWidth = 100;
 
   @override
+  State<WeeklySchedule> createState() => _WeeklyScheduleState();
+}
+
+class _WeeklyScheduleState extends State<WeeklySchedule> {
+  SchoolTimeCell? selectedSchoolTimeCell;
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const WeeklyScheduleDaysHeader(timeColumnWidth: _timeColumnWidth),
+        const WeeklyScheduleDaysHeader(
+            timeColumnWidth: WeeklySchedule._timeColumnWidth),
         Expanded(
           child: Table(
             columnWidths: const {
-              0: FixedColumnWidth(_timeColumnWidth),
+              0: FixedColumnWidth(WeeklySchedule._timeColumnWidth),
             },
             border: TableBorder.all(
               color: Theme.of(context).colorScheme.surfaceContainer,
@@ -34,15 +41,33 @@ class WeeklySchedule extends StatelessWidget {
             children: _buildTableRows(),
           ),
         ),
-        ElevatedButton.icon(
-          onPressed: () {
-            // TODO: Schulstunde zur Tabelle hinzufügen
-          },
-          icon: const Icon(
-            LucideIcons.circle_plus,
-            size: 20,
-          ),
-          label: const Text("Schulstunde hinzufügen"),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton.icon(
+              onPressed: () {
+                // TODO: Add a time span
+              },
+              icon: const Icon(
+                LucideIcons.timer,
+                size: 20,
+              ),
+              label: const Text("Schulzeit hinzufügen"),
+            ),
+            const SizedBox(width: Spacing.medium),
+            ElevatedButton.icon(
+              onPressed: selectedSchoolTimeCell == null
+                  ? null
+                  : () {
+                      // TODO: Add a lesson
+                    },
+              icon: const Icon(
+                LucideIcons.circle_plus,
+                size: 20,
+              ),
+              label: const Text("Schulstunde hinzufügen"),
+            ),
+          ],
         ),
         const SizedBox(height: Spacing.medium),
       ],
@@ -53,7 +78,7 @@ class WeeklySchedule extends StatelessWidget {
   List<TableRow> _buildTableRows() {
     List<TableRow> tableRows = [];
 
-    for (final TimeSpan timeSpan in timeSpans) {
+    for (final TimeSpan timeSpan in widget.timeSpans) {
       tableRows.add(
         TableRow(children: _buildLessonsForTimeSpan(timeSpan)),
       );
@@ -64,7 +89,7 @@ class WeeklySchedule extends StatelessWidget {
 
   /// Build all lessons for a given time span
   List<Widget> _buildLessonsForTimeSpan(TimeSpan timeSpan) {
-    List<Lesson> lessonsToBuild = lessons
+    List<Lesson> lessonsToBuild = widget.lessons
         .where(
           (lesson) => lesson.timeSpan == timeSpan,
         )
@@ -93,7 +118,25 @@ class WeeklySchedule extends StatelessWidget {
       );
 
       widgetsToBuild.add(
-        WeeklyScheduleTableCell(lessons: lessonsForWeekday),
+        WeeklyScheduleTableCell(
+          onTap: (List<Lesson> _) {
+            final newCell = SchoolTimeCell(
+              weekday: weekday,
+              timeSpan: timeSpan,
+            );
+            setState(() {
+              selectedSchoolTimeCell = newCell == selectedSchoolTimeCell
+                  ? null
+                  : SchoolTimeCell(
+                      weekday: weekday,
+                      timeSpan: timeSpan,
+                    );
+            });
+          },
+          lessons: lessonsForWeekday,
+          isSelected: selectedSchoolTimeCell?.weekday == weekday &&
+              selectedSchoolTimeCell?.timeSpan == timeSpan,
+        ),
       );
     }
 
@@ -101,19 +144,44 @@ class WeeklySchedule extends StatelessWidget {
   }
 }
 
+class SchoolTimeCell extends Equatable {
+  final Weekdays weekday;
+  final TimeSpan timeSpan;
+
+  const SchoolTimeCell({
+    required this.weekday,
+    required this.timeSpan,
+  });
+
+  @override
+  List<Object?> get props => [weekday, timeSpan];
+}
+
 class WeeklyScheduleTableCell extends StatelessWidget {
+  final void Function(List<Lesson> lessons) onTap;
   final List<Lesson> lessons;
+  final bool isSelected;
 
   const WeeklyScheduleTableCell({
     super.key,
+    required this.onTap,
     required this.lessons,
+    required this.isSelected,
   });
 
   @override
   Widget build(BuildContext context) {
     return TableCell(
-      child: Text(
-        lessons.toString(),
+      child: InkWell(
+        onTap: () {
+          onTap(lessons);
+        },
+        child: Container(
+          color: isSelected ? Colors.green : null,
+          child: Text(
+            lessons.toString(),
+          ),
+        ),
       ),
     );
   }
