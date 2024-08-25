@@ -5,10 +5,12 @@ import 'package:schulplaner/config/theme/app_colors.dart';
 import 'package:schulplaner/config/theme/numbers.dart';
 
 class WeeklySchedule extends StatelessWidget {
+  final Set<TimeSpan> timeSpans;
   final List<Lesson> lessons;
 
   const WeeklySchedule({
     super.key,
+    required this.timeSpans,
     required this.lessons,
   });
 
@@ -29,19 +31,7 @@ class WeeklySchedule extends StatelessWidget {
               borderRadius: BorderRadius.circular(2),
               width: 2,
             ),
-            children: <TableRow>[
-              TableRow(
-                children: _buildLessonsForTimeSpan(
-                  const TimeSpan(
-                    from: TimeOfDay(hour: 7, minute: 30),
-                    to: TimeOfDay(
-                      hour: 9,
-                      minute: 0,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+            children: _buildTableRows(),
           ),
         ),
         ElevatedButton.icon(
@@ -57,6 +47,19 @@ class WeeklySchedule extends StatelessWidget {
         const SizedBox(height: Spacing.medium),
       ],
     );
+  }
+
+  /// Build all table rows, containing the lessons
+  List<TableRow> _buildTableRows() {
+    List<TableRow> tableRows = [];
+
+    for (final TimeSpan timeSpan in timeSpans) {
+      tableRows.add(
+        TableRow(children: _buildLessonsForTimeSpan(timeSpan)),
+      );
+    }
+
+    return tableRows;
   }
 
   /// Build all lessons for a given time span

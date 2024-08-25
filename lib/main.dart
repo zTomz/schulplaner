@@ -37,6 +37,24 @@ class WeeklyScheduleTestPage extends HookWidget {
       body: Padding(
         padding: EdgeInsets.all(24),
         child: WeeklySchedule(
+          timeSpans: {
+            const TimeSpan(
+              from: TimeOfDay(hour: 7, minute: 30),
+              to: TimeOfDay(hour: 9, minute: 0),
+            ),
+            const TimeSpan(
+              from: TimeOfDay(hour: 9, minute: 20),
+              to: TimeOfDay(hour: 10, minute: 50),
+            ),
+            const TimeSpan(
+              from: TimeOfDay(hour: 11, minute: 5),
+              to: TimeOfDay(hour: 11, minute: 50),
+            ),
+            const TimeSpan(
+              from: TimeOfDay(hour: 12, minute: 0),
+              to: TimeOfDay(hour: 12, minute: 45),
+            ),
+          },
           lessons: [
             Lesson(
               timeSpan: const TimeSpan(
@@ -58,10 +76,30 @@ class WeeklyScheduleTestPage extends HookWidget {
               room: "21",
               uuid: "123",
             ),
-             Lesson(
+            Lesson(
               timeSpan: const TimeSpan(
                 from: TimeOfDay(hour: 7, minute: 30),
                 to: TimeOfDay(hour: 9, minute: 0),
+              ),
+              weekday: Weekdays.monday,
+              subject: Subject(
+                subject: "Kunst",
+                teacher: Teacher(
+                  firstName: "Mario",
+                  lastName: "Schulze",
+                  gender: Gender.male,
+                  email: "",
+                  favorite: false,
+                ),
+                color: Colors.blue,
+              ),
+              room: "21",
+              uuid: "123",
+            ),
+            Lesson(
+              timeSpan: const TimeSpan(
+                from: TimeOfDay(hour: 12, minute: 00),
+                to: TimeOfDay(hour: 12, minute: 45),
               ),
               weekday: Weekdays.monday,
               subject: Subject(
