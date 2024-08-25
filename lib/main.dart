@@ -62,6 +62,7 @@ class WeeklyScheduleTestPage extends HookWidget {
                 to: TimeOfDay(hour: 9, minute: 0),
               ),
               weekday: Weekdays.monday,
+              week: Week.a,
               subject: Subject(
                 subject: "Deutsch",
                 teacher: Teacher(
@@ -81,6 +82,7 @@ class WeeklyScheduleTestPage extends HookWidget {
                 from: TimeOfDay(hour: 7, minute: 30),
                 to: TimeOfDay(hour: 9, minute: 0),
               ),
+              week: Week.b,
               weekday: Weekdays.monday,
               subject: Subject(
                 subject: "Kunst",
@@ -91,7 +93,7 @@ class WeeklyScheduleTestPage extends HookWidget {
                   email: "",
                   favorite: false,
                 ),
-                color: Colors.blue,
+                color: Colors.pink[50]!,
               ),
               room: "21",
               uuid: "123",
@@ -102,6 +104,7 @@ class WeeklyScheduleTestPage extends HookWidget {
                 to: TimeOfDay(hour: 12, minute: 45),
               ),
               weekday: Weekdays.monday,
+              week: Week.all,
               subject: Subject(
                 subject: "Kunst",
                 teacher: Teacher(
@@ -122,6 +125,7 @@ class WeeklyScheduleTestPage extends HookWidget {
                 to: TimeOfDay(hour: 9, minute: 0),
               ),
               weekday: Weekdays.friday,
+              week: Week.all,
               subject: Subject(
                 subject: "Englisch",
                 teacher: Teacher(
@@ -142,6 +146,7 @@ class WeeklyScheduleTestPage extends HookWidget {
                 to: TimeOfDay(hour: 9, minute: 0),
               ),
               weekday: Weekdays.tuesday,
+              week: Week.all,
               subject: Subject(
                 subject: "Deutsch",
                 teacher: Teacher(
@@ -157,6 +162,7 @@ class WeeklyScheduleTestPage extends HookWidget {
               uuid: "123",
             ),
           ],
+          week: Week.b,
         ),
       ),
     );

@@ -2,21 +2,28 @@ import 'package:flutter/material.dart';
 
 abstract class AppTheme {
   static final ThemeData darkTheme = ThemeData(
-    brightness: Brightness.dark,
-    colorScheme: darkScheme(),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 30,
-          vertical: 16,
+      brightness: Brightness.dark,
+      colorScheme: darkScheme(),
+      textTheme: const TextTheme(
+        displayLarge: TextStyle(
+          fontSize: 70,
+        ),
+        displayMedium: TextStyle(
+          fontSize: 50,
         ),
       ),
-    ),
-    floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: Color(0xff1f1f1f), // Surface container
-      foregroundColor: Color(0xff55e071), // Primary
-    )
-  );
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 30,
+            vertical: 16,
+          ),
+        ),
+      ),
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        backgroundColor: Color(0xff1f1f1f), // Surface container
+        foregroundColor: Color(0xff55e071), // Primary
+      ));
 
   static ColorScheme darkScheme() {
     return const ColorScheme(

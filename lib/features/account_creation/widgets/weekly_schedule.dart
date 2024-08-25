@@ -6,11 +6,13 @@ import 'package:schulplaner/config/theme/numbers.dart';
 class WeeklySchedule extends StatefulWidget {
   final Set<TimeSpan> timeSpans;
   final List<Lesson> lessons;
+  final Week week;
 
   const WeeklySchedule({
     super.key,
     required this.timeSpans,
     required this.lessons,
+    required this.week,
   });
 
   static const double _timeColumnWidth = 100;
@@ -26,8 +28,10 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const WeeklyScheduleDaysHeader(
-            timeColumnWidth: WeeklySchedule._timeColumnWidth),
+        WeeklyScheduleDaysHeader(
+          timeColumnWidth: WeeklySchedule._timeColumnWidth,
+          week: widget.week,
+        ),
         Expanded(
           child: Table(
             columnWidths: const {
@@ -80,18 +84,24 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
 
     for (final TimeSpan timeSpan in widget.timeSpans) {
       tableRows.add(
-        TableRow(children: _buildLessonsForTimeSpan(timeSpan)),
+        TableRow(
+          children: _buildLessonsForTimeSpan(timeSpan),
+        ),
       );
     }
 
     return tableRows;
   }
 
-  /// Build all lessons for a given time span
+  /// Build all lessons for a given time span. It takes in to account the week ( A or B )
+  /// given by the widget constructor and the time span
   List<Widget> _buildLessonsForTimeSpan(TimeSpan timeSpan) {
     List<Lesson> lessonsToBuild = widget.lessons
         .where(
-          (lesson) => lesson.timeSpan == timeSpan,
+          // Check if the time span is the same and if the week is the same ( A or B week )
+          (lesson) =>
+              lesson.timeSpan == timeSpan &&
+              (lesson.week == widget.week || lesson.week == Week.all),
         )
         .toList();
 
@@ -176,10 +186,104 @@ class WeeklyScheduleTableCell extends StatelessWidget {
         onTap: () {
           onTap(lessons);
         },
-        child: Container(
-          color: isSelected ? Colors.green : null,
-          child: Text(
-            lessons.toString(),
+        child: Row(
+          children: lessons
+              .map(
+                (lesson) => SchoolCard(
+                  lesson: lesson,
+                  onEdit: (lesson) {
+                    // TODO: Handle edit school card
+                  },
+                ),
+              )
+              .toList(),
+        ),
+      ),
+    );
+  }
+}
+
+class SchoolCard extends StatelessWidget {
+  final Lesson lesson;
+  final void Function(Lesson lesson) onEdit;
+
+  const SchoolCard({
+    super.key,
+    required this.lesson,
+    required this.onEdit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final textColor = lesson.subject.color.computeLuminance() > 0.5
+        ? Theme.of(context).colorScheme.surface
+        : Theme.of(context).colorScheme.onSurface;
+
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(Spacing.small),
+        child: MaterialButton(
+          onPressed: () {
+            onEdit(lesson);
+          },
+          padding: const EdgeInsets.all(Spacing.small),
+          color: lesson.subject.color,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radii.small),
+          ),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: IconTheme(
+              data: IconThemeData(
+                size: 20,
+                color: lesson.subject.color.computeLuminance() > 0.5
+                    ? Theme.of(context).colorScheme.surface
+                    : Theme.of(context).colorScheme.onSurface,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    lesson.subject.subject,
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                          color: textColor,
+                        ),
+                  ),
+                  const SizedBox(height: Spacing.small),
+                  Wrap(
+                    children: [
+                      const Icon(LucideIcons.map_pin_house),
+                      const SizedBox(width: Spacing.small),
+                      Text(
+                        lesson.room,
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              color: textColor,
+                            ),
+                      ),
+                    ],
+                  ),
+                  Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      const Icon(LucideIcons.graduation_cap),
+                      const SizedBox(width: Spacing.small),
+                      Text(
+                        "${lesson.subject.teacher.gender.genderAsString} ",
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              color: textColor,
+                            ),
+                      ),
+                      Text(
+                        lesson.subject.teacher.lastName,
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              color: textColor,
+                            ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -187,58 +291,81 @@ class WeeklyScheduleTableCell extends StatelessWidget {
   }
 }
 
+/// The header of the weekly schedule. Shows the day and it's date. As well as the current
+/// week
 class WeeklyScheduleDaysHeader extends StatelessWidget {
   final double timeColumnWidth;
+  final Week week;
 
   const WeeklyScheduleDaysHeader({
     super.key,
     required this.timeColumnWidth,
+    required this.week,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(left: timeColumnWidth),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: Spacing.small),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceContainer,
-          borderRadius: const BorderRadius.vertical(top: Radii.small),
+    return Row(
+      children: [
+        SizedBox(
+          width: timeColumnWidth,
+          child: Text(
+            week.name,
+            style: Theme.of(context).textTheme.displaySmall,
+            textAlign: TextAlign.center,
+          ),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: _getWeekdays()
-              .map(
-                (day) => Expanded(
-                  child: Column(
-                    children: [
-                      Text(
-                        day.weekday.toString(),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(Spacing.small),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: DateTime.now().weekday == day.weekday
-                              ? Theme.of(context).colorScheme.primary
-                              : null,
-                        ),
-                        child: Text(
-                          _getWeekdayName(day).substring(0, 1),
-                          style: TextStyle(
-                            color: DateTime.now().weekday == day.weekday
-                                ? Theme.of(context).colorScheme.onPrimary
-                                : Theme.of(context).colorScheme.onSurface,
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: Spacing.small),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surfaceContainer,
+              borderRadius: const BorderRadius.vertical(top: Radii.small),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: _getWeekdays()
+                  .map(
+                    (day) => Expanded(
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(Spacing.small),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: DateTime.now().weekday == day.weekday
+                                  ? Theme.of(context).colorScheme.primary
+                                  : null,
+                            ),
+                            child: Text(
+                              _getWeekdayName(day).substring(0, 1),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge!
+                                  .copyWith(
+                                    color: DateTime.now().weekday == day.weekday
+                                        ? Theme.of(context)
+                                            .colorScheme
+                                            .onPrimary
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .onSurface,
+                                  ),
+                            ),
                           ),
-                        ),
+                          Text(
+                            day.day.toString(),
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
-              )
-              .toList(),
+                    ),
+                  )
+                  .toList(),
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 
@@ -284,6 +411,7 @@ class WeeklyScheduleDaysHeader extends StatelessWidget {
 class Lesson extends Equatable {
   final TimeSpan timeSpan;
   final Weekdays weekday;
+  final Week week;
   final Subject subject;
   final String room;
   final String uuid;
@@ -291,13 +419,14 @@ class Lesson extends Equatable {
   const Lesson({
     required this.timeSpan,
     required this.weekday,
+    required this.week,
     required this.subject,
     required this.room,
     required this.uuid,
   });
 
   @override
-  List<Object?> get props => [timeSpan, weekday, subject, room, uuid];
+  List<Object?> get props => [timeSpan, weekday, week, subject, room, uuid];
 
   @override
   bool get stringify => true;
@@ -382,4 +511,28 @@ enum Gender {
   male,
   female,
   unspecified;
+
+  String get genderAsString {
+    switch (this) {
+      case Gender.male:
+        return "Herr";
+      case Gender.female:
+        return "Frau";
+      case Gender.unspecified:
+        return "";
+    }
+  }
+}
+
+/// An enum to represent the week. Either A or B or All
+enum Week {
+  a(name: "A"),
+  b(name: "B"),
+  all(name: "All");
+
+  final String name;
+
+  const Week({
+    required this.name,
+  });
 }
