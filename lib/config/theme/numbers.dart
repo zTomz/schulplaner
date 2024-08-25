@@ -9,6 +9,7 @@ abstract class Spacing {
 }
 
 abstract class Radii {
+  static const Radius small = Radius.circular(12);
   static const Radius medium = Radius.circular(26);
   static const Radius large = Radius.circular(50);
 }

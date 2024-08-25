@@ -128,13 +128,17 @@ class WeeklyScheduleDaysHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(left: timeColumnWidth),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: _getWeekdays()
-            .map(
-              (day) => Expanded(
-                child: Container(
-                  color: Theme.of(context).colorScheme.surfaceContainer,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: Spacing.small),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surfaceContainer,
+          borderRadius: const BorderRadius.vertical(top: Radii.small),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: _getWeekdays()
+              .map(
+                (day) => Expanded(
                   child: Column(
                     children: [
                       Text(
@@ -160,9 +164,9 @@ class WeeklyScheduleDaysHeader extends StatelessWidget {
                     ],
                   ),
                 ),
-              ),
-            )
-            .toList(),
+              )
+              .toList(),
+        ),
       ),
     );
   }
