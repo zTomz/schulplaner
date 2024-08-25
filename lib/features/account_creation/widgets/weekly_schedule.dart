@@ -106,7 +106,7 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
         .toList();
 
     List<Widget> widgetsToBuild = [
-      TimeCell(timeSpan: timeSpan),
+      WeeklyScheduleTimeCell(timeSpan: timeSpan),
     ];
 
     for (Weekdays weekday in Weekdays.values) {
@@ -124,7 +124,7 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
       );
 
       widgetsToBuild.add(
-        WeeklyScheduleTableCell(
+        WeeklyScheduleLessonCell(
           onTap: (List<Lesson> _) {
             final newCell = SchoolTimeCell(
               weekday: weekday,
@@ -150,10 +150,10 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
   }
 }
 
-class TimeCell extends StatelessWidget {
+class WeeklyScheduleTimeCell extends StatelessWidget {
   final TimeSpan timeSpan;
 
-  const TimeCell({
+  const WeeklyScheduleTimeCell({
     super.key,
     required this.timeSpan,
   });
@@ -185,12 +185,12 @@ class SchoolTimeCell extends Equatable {
   List<Object?> get props => [weekday, timeSpan];
 }
 
-class WeeklyScheduleTableCell extends StatelessWidget {
+class WeeklyScheduleLessonCell extends StatelessWidget {
   final void Function(List<Lesson> lessons) onTap;
   final List<Lesson> lessons;
   final bool isSelected;
 
-  const WeeklyScheduleTableCell({
+  const WeeklyScheduleLessonCell({
     super.key,
     required this.onTap,
     required this.lessons,
@@ -200,21 +200,34 @@ class WeeklyScheduleTableCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TableCell(
+      verticalAlignment: TableCellVerticalAlignment.intrinsicHeight,
       child: InkWell(
         onTap: () {
           onTap(lessons);
         },
-        child: Row(
-          children: lessons
-              .map(
-                (lesson) => SchoolCard(
-                  lesson: lesson,
-                  onEdit: (lesson) {
-                    // TODO: Handle edit school card
-                  },
-                ),
-              )
-              .toList(),
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: isSelected
+                  ? Theme.of(context).colorScheme.primary
+                  : Colors.transparent,
+              width: 3,
+              strokeAlign: BorderSide.strokeAlignInside,
+            ),
+            borderRadius: BorderRadius.circular(Spacing.small),
+          ),
+          child: Row(
+            children: lessons
+                .map(
+                  (lesson) => SchoolCard(
+                    lesson: lesson,
+                    onEdit: (lesson) {
+                      // TODO: Handle edit school card
+                    },
+                  ),
+                )
+                .toList(),
+          ),
         ),
       ),
     );
