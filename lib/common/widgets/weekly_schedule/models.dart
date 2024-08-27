@@ -91,6 +91,16 @@ class TimeSpan extends Equatable {
   String toFormattedString() {
     return "${from.hour.toString().padLeft(2, "0")}:${from.minute.toString().padLeft(2, "0")} - ${to.hour.toString().padLeft(2, "0")}:${to.minute.toString().padLeft(2, "0")} Uhr";
   }
+
+  TimeSpan copyWith({
+    TimeOfDay? from,
+    TimeOfDay? to,
+  }) {
+    return TimeSpan(
+      from: from ?? this.from,
+      to: to ?? this.to,
+    );
+  }
 }
 
 /// The days of a week. From Monday to Friday

@@ -3,10 +3,21 @@ import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/config/theme/numbers.dart';
 
 class CustomDialog extends StatelessWidget {
+  /// The icon of the dialog. Displayed at the top
   final Widget icon;
+
+  /// The title of the dialog. Displayed under the icon
   final Widget title;
+
+  /// The content of the dialog. Displayed under the title. If an error is provided.
+  /// It is displayed under the error.
   final Widget content;
+
+  /// The actions of the dialog. Displayed at the bottom
   final List<Widget>? actions;
+
+  /// Optional. An error widget wich is displayed under the title and above the content
+  final Widget? error;
 
   const CustomDialog({
     super.key,
@@ -14,6 +25,7 @@ class CustomDialog extends StatelessWidget {
     required this.title,
     required this.content,
     this.actions,
+    this.error,
   });
 
   CustomDialog.confirmation({
@@ -22,6 +34,7 @@ class CustomDialog extends StatelessWidget {
     required String description,
     required void Function() onConfirm,
     required void Function() onCancel,
+    this.error,
   })  : icon = const Icon(LucideIcons.badge_alert),
         title = Text(title ?? "Bist du dir sicher?"),
         content = Text(description),
@@ -63,6 +76,16 @@ class CustomDialog extends StatelessWidget {
                   textAlign: TextAlign.center,
                   child: title,
                 ),
+                if (error != null) ...[
+                  const SizedBox(height: Spacing.medium),
+                  DefaultTextStyle(
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                    textAlign: TextAlign.center,
+                    child: error!,
+                  ),
+                ],
                 const SizedBox(height: Spacing.medium),
                 DefaultTextStyle(
                   style: Theme.of(context).textTheme.bodyLarge!,

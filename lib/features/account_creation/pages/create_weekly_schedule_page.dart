@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/common/dialogs/custom_dialog.dart';
+import 'package:schulplaner/common/extensions/time_of_day_extension.dart';
 import 'package:schulplaner/common/widgets/gradient_scaffold.dart';
+import 'package:schulplaner/common/widgets/time_span_picker.dart';
 import 'package:schulplaner/common/widgets/weekly_schedule/weekly_schedule.dart';
 import 'package:schulplaner/config/routes/router.gr.dart';
 import 'package:schulplaner/config/theme/numbers.dart';
@@ -131,6 +133,8 @@ class CreateWeeklySchedulePage extends HookWidget {
   }
 }
 
+/// A dialog, which askes the user to enter a new time span. When the user has entered the time span, it will be returned
+/// in the .pop() method
 class NewTimeSpanDialog extends HookWidget {
   const NewTimeSpanDialog({super.key});
 
@@ -139,28 +143,18 @@ class NewTimeSpanDialog extends HookWidget {
     final from = useState<TimeOfDay?>(null);
     final to = useState<TimeOfDay?>(null);
 
+    final error = useState<String?>(null);
+
     return CustomDialog(
       icon: const Icon(LucideIcons.timer),
       title: const Text("Neue Schulzeit"),
-      content: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Text("Von:"),
-          const SizedBox(width: Spacing.small),
-          _buildTimePicker(
-            context,
-            onChanged: (newValue) => from.value = newValue,
-            value: from.value,
-          ),
-          const Spacer(),
-          const Text("Bis:"),
-          const SizedBox(width: Spacing.small),
-          _buildTimePicker(
-            context,
-            onChanged: (newValue) => to.value = newValue,
-            value: to.value,
-          ),
-        ],
+      content: TimeSpanPicker(
+        onChanged: (fromValue, toValue) {
+          from.value = fromValue;
+          to.value = toValue;
+        },
+        from: from.value,
+        to: to.value,
       ),
       actions: [
         TextButton(
@@ -172,8 +166,13 @@ class NewTimeSpanDialog extends HookWidget {
         const SizedBox(width: Spacing.small),
         ElevatedButton(
           onPressed: () {
-            // TODO: Show error, that no time is selected
             if (from.value == null || to.value == null) {
+              error.value = "Keine Zeit ausgewählt.";
+              return;
+            }
+
+            if (from.value! > to.value!) {
+              error.value = "Startzeit muss vor der Endzeit liegen.";
               return;
             }
 
@@ -187,42 +186,18 @@ class NewTimeSpanDialog extends HookWidget {
           child: const Text("Hinzufügen"),
         ),
       ],
+      error: error.value != null ? Text(error.value!) : null,
     );
   }
+}
 
-  Widget _buildTimePicker(
-    BuildContext context, {
-    required void Function(TimeOfDay value) onChanged,
-    required TimeOfDay? value,
-  }) {
-    return Material(
-      borderRadius: const BorderRadius.all(Radii.small),
-      color: Theme.of(context).colorScheme.surfaceContainerHigh,
-      child: InkWell(
-        borderRadius: const BorderRadius.all(Radii.small),
-        onTap: () async {
-          final result = await showTimePicker(
-            context: context,
-            initialTime: value ?? TimeOfDay.now(),
-          );
+class NewLessonDialog extends HookWidget {
+  const NewLessonDialog({super.key});
 
-          if (result != null) {
-            onChanged(result);
-          }
-        },
-        child: SizedBox(
-          width: 60,
-          height: 35,
-          child: value != null
-              ? Center(
-                  child: Text(
-                    "${value.hour.toString().padLeft(2, "0")}:${value.minute.toString().padLeft(2, "0")}",
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                )
-              : null,
-        ),
-      ),
-    );
+  @override
+  Widget build(BuildContext context) {
+    final timeSpan = useState<TimeSpan?>(null);
+
+    return const SizedBox();
   }
 }
