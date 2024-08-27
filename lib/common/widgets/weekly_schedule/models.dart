@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 class SchoolTimeCell extends Equatable {
-  final Weekdays weekday;
+  final Weekday weekday;
   final TimeSpan timeSpan;
 
   const SchoolTimeCell({
@@ -17,7 +17,7 @@ class SchoolTimeCell extends Equatable {
 /// Represents a lesson in the weekly schedule
 class Lesson extends Equatable {
   final TimeSpan timeSpan;
-  final Weekdays weekday;
+  final Weekday weekday;
   final Week week;
   final Subject subject;
   final String room;
@@ -56,23 +56,26 @@ class Subject {
 
 /// Represents a teacher
 class Teacher {
-  final String firstName;
+  String? firstName;
   final String lastName;
   final Gender gender;
-  final String email;
+  final String? email;
   final Subject? subject;
   final bool favorite;
   final String uuid;
 
   Teacher({
-    required this.firstName,
+    this.firstName,
     required this.lastName,
     required this.gender,
-    required this.email,
+    this.email,
     this.subject,
-    required this.favorite,
+    this.favorite = false,
     required this.uuid,
   });
+
+  /// Get the salutation of the teacher. E. g. "Herr Schulze"
+  String get salutation => "${gender.salutation} $lastName";
 }
 
 /// A time span. Used to represent the time of a lesson
@@ -104,7 +107,7 @@ class TimeSpan extends Equatable {
 }
 
 /// The days of a week. From Monday to Friday
-enum Weekdays {
+enum Weekday {
   monday,
   tuesday,
   wednesday,
@@ -113,15 +116,15 @@ enum Weekdays {
 
   int get weekdayAsInt {
     switch (this) {
-      case Weekdays.monday:
+      case Weekday.monday:
         return 1;
-      case Weekdays.tuesday:
+      case Weekday.tuesday:
         return 2;
-      case Weekdays.wednesday:
+      case Weekday.wednesday:
         return 3;
-      case Weekdays.thursday:
+      case Weekday.thursday:
         return 4;
-      case Weekdays.friday:
+      case Weekday.friday:
         return 5;
     }
   }
@@ -131,16 +134,44 @@ enum Weekdays {
 enum Gender {
   male,
   female,
-  unspecified;
+  divers;
 
-  String get genderAsString {
+  String get salutation {
     switch (this) {
       case Gender.male:
         return "Herr";
       case Gender.female:
         return "Frau";
-      case Gender.unspecified:
+      case Gender.divers:
         return "";
+    }
+  }
+
+  String get gender {
+    switch (this) {
+      case Gender.male:
+        return "Männlich";
+      case Gender.female:
+        return "Weiblich";
+      case Gender.divers:
+        return "Divers";
+    }
+  }
+
+  static List<String> get gendersAsList => [
+        "Männlich",
+        "Weiblich",
+        "Divers",
+      ];
+
+  static Gender fromString(String value) {
+    switch (value) {
+      case "Männlich":
+        return Gender.male;
+      case "Weiblich":
+        return Gender.female;
+      default:
+        return Gender.divers;
     }
   }
 }
@@ -149,7 +180,7 @@ enum Gender {
 enum Week {
   a(name: "A"),
   b(name: "B"),
-  all(name: "All");
+  all(name: "A & B");
 
   final String name;
 

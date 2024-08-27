@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/common/dialogs/custom_dialog.dart';
-import 'package:schulplaner/common/extensions/time_of_day_extension.dart';
+import 'package:schulplaner/common/dialogs/edit_lesson_dialog.dart';
+import 'package:schulplaner/common/dialogs/new_time_span_dialog.dart';
 import 'package:schulplaner/common/widgets/gradient_scaffold.dart';
-import 'package:schulplaner/common/widgets/time_span_picker.dart';
 import 'package:schulplaner/common/widgets/weekly_schedule/weekly_schedule.dart';
 import 'package:schulplaner/config/routes/router.gr.dart';
 import 'package:schulplaner/config/theme/numbers.dart';
@@ -60,8 +60,18 @@ class CreateWeeklySchedulePage extends HookWidget {
               ElevatedButton.icon(
                 onPressed: selectedSchoolTimeCell.value == null
                     ? null
-                    : () {
-                        // TODO: Add a lesson
+                    : () async {
+                        final result = await showDialog<Lesson>(
+                          context: context,
+                          builder: (context) => EditLessonDialog(
+                            timeSpan: selectedSchoolTimeCell.value!.timeSpan,
+                            weekday: selectedSchoolTimeCell.value!.weekday,
+                          ),
+                        );
+
+                        if (result != null) {
+                          lessons.value = [...lessons.value, result];
+                        }
                       },
                 icon: const Icon(
                   LucideIcons.circle_plus,
@@ -84,8 +94,21 @@ class CreateWeeklySchedulePage extends HookWidget {
       body: Padding(
         padding: const EdgeInsets.all(Spacing.medium),
         child: WeeklySchedule(
-          onLessonEdit: (lesson) {
-            // TODO: Edit a lesson
+          onLessonEdit: (lesson) async {
+            final result = await showDialog<Lesson>(
+              context: context,
+              builder: (context) => EditLessonDialog(
+                timeSpan: selectedSchoolTimeCell.value!.timeSpan,
+                weekday: selectedSchoolTimeCell.value!.weekday,
+                lesson: lesson,
+              ),
+            );
+
+            if (result != null) {
+              List<Lesson> oldLessons = List.from(lessons.value);
+              oldLessons.removeWhere((lesson) => lesson.uuid == result.uuid);
+              lessons.value = [...oldLessons, result];
+            }
           },
           onWeekTapped: () {
             week.value = week.value.next();
@@ -130,74 +153,5 @@ class CreateWeeklySchedulePage extends HookWidget {
         ),
       ),
     );
-  }
-}
-
-/// A dialog, which askes the user to enter a new time span. When the user has entered the time span, it will be returned
-/// in the .pop() method
-class NewTimeSpanDialog extends HookWidget {
-  const NewTimeSpanDialog({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final from = useState<TimeOfDay?>(null);
-    final to = useState<TimeOfDay?>(null);
-
-    final error = useState<String?>(null);
-
-    return CustomDialog(
-      icon: const Icon(LucideIcons.timer),
-      title: const Text("Neue Schulzeit"),
-      content: TimeSpanPicker(
-        onChanged: (fromValue, toValue) {
-          from.value = fromValue;
-          to.value = toValue;
-        },
-        from: from.value,
-        to: to.value,
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: const Text("Abbrechen"),
-        ),
-        const SizedBox(width: Spacing.small),
-        ElevatedButton(
-          onPressed: () {
-            if (from.value == null || to.value == null) {
-              error.value = "Keine Zeit ausgewählt.";
-              return;
-            }
-
-            if (from.value! > to.value!) {
-              error.value = "Startzeit muss vor der Endzeit liegen.";
-              return;
-            }
-
-            Navigator.of(context).pop(
-              TimeSpan(
-                from: from.value!,
-                to: to.value!,
-              ),
-            );
-          },
-          child: const Text("Hinzufügen"),
-        ),
-      ],
-      error: error.value != null ? Text(error.value!) : null,
-    );
-  }
-}
-
-class NewLessonDialog extends HookWidget {
-  const NewLessonDialog({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final timeSpan = useState<TimeSpan?>(null);
-
-    return const SizedBox();
   }
 }

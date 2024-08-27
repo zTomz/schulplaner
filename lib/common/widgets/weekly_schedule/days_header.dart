@@ -75,7 +75,9 @@ class WeeklyScheduleDaysHeader extends StatelessWidget {
                                               : Theme.of(context)
                                                   .colorScheme
                                                   .onSurface,
+                                      height: 1,
                                     ),
+                                textAlign: TextAlign.center,
                               ),
                             ),
                             Text(

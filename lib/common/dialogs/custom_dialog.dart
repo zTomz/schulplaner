@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/config/theme/numbers.dart';
@@ -19,6 +21,9 @@ class CustomDialog extends StatelessWidget {
   /// Optional. An error widget wich is displayed under the title and above the content
   final Widget? error;
 
+  /// The type of the dialog
+  final _CustomDialogType _type;
+
   const CustomDialog({
     super.key,
     required this.icon,
@@ -26,7 +31,7 @@ class CustomDialog extends StatelessWidget {
     required this.content,
     this.actions,
     this.error,
-  });
+  }) : _type = _CustomDialogType.normal;
 
   CustomDialog.confirmation({
     super.key,
@@ -35,7 +40,8 @@ class CustomDialog extends StatelessWidget {
     required void Function() onConfirm,
     required void Function() onCancel,
     this.error,
-  })  : icon = const Icon(LucideIcons.badge_alert),
+  })  : _type = _CustomDialogType.normal,
+        icon = const Icon(LucideIcons.badge_alert),
         title = Text(title ?? "Bist du dir sicher?"),
         content = Text(description),
         actions = [
@@ -50,58 +56,99 @@ class CustomDialog extends StatelessWidget {
           ),
         ];
 
+  const CustomDialog.expanded({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.content,
+    this.actions,
+    this.error,
+  }) : _type = _CustomDialogType.expanded;
+
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.center,
-      child: Material(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: const BorderRadius.all(Radii.medium),
-        child: Padding(
-          padding: const EdgeInsets.all(Spacing.extraLarge),
-          child: SizedBox(
-            width: 275,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconTheme(
-                  data: Theme.of(context).iconTheme.copyWith(
-                        size: 60,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: Spacing.medium),
+      child: Align(
+        alignment: Alignment.center,
+        child: Material(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: const BorderRadius.all(Radii.medium),
+          child: Padding(
+            padding: const EdgeInsets.all(Spacing.extraLarge),
+            child: SizedBox(
+              width: _type == _CustomDialogType.normal
+                  ? 275
+                  : min(MediaQuery.sizeOf(context).width * 0.7, 500),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (_type == _CustomDialogType.normal) ...[
+                      IconTheme(
+                        data: Theme.of(context).iconTheme.copyWith(
+                              size: 60,
+                            ),
+                        child: icon,
                       ),
-                  child: icon,
+                      const SizedBox(height: Spacing.large),
+                      DefaultTextStyle(
+                        style: Theme.of(context).textTheme.displaySmall!,
+                        textAlign: TextAlign.center,
+                        child: title,
+                      ),
+                    ] else
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          IconTheme(
+                            data: Theme.of(context).iconTheme.copyWith(
+                                  size: 40,
+                                ),
+                            child: icon,
+                          ),
+                          const SizedBox(width: Spacing.large),
+                          Expanded(
+                            child: DefaultTextStyle(
+                              style: Theme.of(context).textTheme.displaySmall!,
+                              child: title,
+                            ),
+                          ),
+                        ],
+                      ),
+                    if (error != null) ...[
+                      const SizedBox(height: Spacing.medium),
+                      DefaultTextStyle(
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              color: Theme.of(context).colorScheme.error,
+                            ),
+                        textAlign: TextAlign.center,
+                        child: error!,
+                      ),
+                    ],
+                    const SizedBox(height: Spacing.medium),
+                    DefaultTextStyle(
+                      style: Theme.of(context).textTheme.bodyLarge!,
+                      textAlign: TextAlign.center,
+                      child: content,
+                    ),
+                    const SizedBox(height: Spacing.extraLarge),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: actions ?? [],
+                    ),
+                  ],
                 ),
-                const SizedBox(height: Spacing.large),
-                DefaultTextStyle(
-                  style: Theme.of(context).textTheme.displaySmall!,
-                  textAlign: TextAlign.center,
-                  child: title,
-                ),
-                if (error != null) ...[
-                  const SizedBox(height: Spacing.medium),
-                  DefaultTextStyle(
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: Theme.of(context).colorScheme.error,
-                        ),
-                    textAlign: TextAlign.center,
-                    child: error!,
-                  ),
-                ],
-                const SizedBox(height: Spacing.medium),
-                DefaultTextStyle(
-                  style: Theme.of(context).textTheme.bodyLarge!,
-                  textAlign: TextAlign.center,
-                  child: content,
-                ),
-                const SizedBox(height: Spacing.extraLarge),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: actions ?? [],
-                ),
-              ],
+              ),
             ),
           ),
         ),
       ),
     );
   }
+}
+
+enum _CustomDialogType {
+  normal,
+  expanded;
 }

@@ -115,12 +115,12 @@ class SchoolCard extends StatelessWidget {
           child: Align(
             alignment: Alignment.centerLeft,
             child: IconTheme(
-              data: IconThemeData(
-                size: 20,
-                color: lesson.subject.color.computeLuminance() > 0.5
-                    ? Theme.of(context).colorScheme.surface
-                    : Theme.of(context).colorScheme.onSurface,
-              ),
+              data: Theme.of(context).iconTheme.copyWith(
+                    size: 20,
+                    color: lesson.subject.color.computeLuminance() > 0.5
+                        ? Theme.of(context).colorScheme.surface
+                        : Theme.of(context).colorScheme.onSurface,
+                  ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -148,8 +148,10 @@ class SchoolCard extends StatelessWidget {
                     children: [
                       const Icon(LucideIcons.graduation_cap),
                       const SizedBox(width: Spacing.small),
+                      // Doesn't use the lesson.subject.teacher.salutation because, with 
+                      // the current solution, the line could be wrapped.
                       Text(
-                        "${lesson.subject.teacher.gender.genderAsString} ",
+                        "${lesson.subject.teacher.gender.salutation} ",
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                               color: textColor,
                             ),
