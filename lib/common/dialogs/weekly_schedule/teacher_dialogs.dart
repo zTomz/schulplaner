@@ -8,6 +8,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/common/dialogs/custom_dialog.dart';
 import 'package:schulplaner/common/functions/build_body_part.dart';
+import 'package:schulplaner/common/models/weekly_schedule.dart';
 import 'package:schulplaner/common/widgets/custom_text_field.dart';
 import 'package:schulplaner/common/widgets/weekly_schedule/models.dart';
 import 'package:schulplaner/config/theme/numbers.dart';

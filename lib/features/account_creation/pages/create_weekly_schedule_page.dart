@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/common/dialogs/custom_dialog.dart';
-import 'package:schulplaner/common/dialogs/edit_lesson_dialog.dart';
-import 'package:schulplaner/common/dialogs/new_time_span_dialog.dart';
+import 'package:schulplaner/common/dialogs/weekly_schedule/edit_lesson_dialog.dart';
+import 'package:schulplaner/common/dialogs/weekly_schedule/new_time_span_dialog.dart';
+import 'package:schulplaner/common/models/time.dart';
+import 'package:schulplaner/common/models/weekly_schedule.dart';
 import 'package:schulplaner/common/widgets/gradient_scaffold.dart';
 import 'package:schulplaner/common/widgets/weekly_schedule/weekly_schedule.dart';
 import 'package:schulplaner/config/routes/router.gr.dart';
 import 'package:schulplaner/config/theme/numbers.dart';
 import 'package:schulplaner/config/theme/text_styles.dart';
+import 'package:schulplaner/features/account_creation/models/create_weekly_schedule_data.dart';
 
 class CreateWeeklySchedulePage extends HookWidget {
   const CreateWeeklySchedulePage({super.key});
@@ -21,13 +24,14 @@ class CreateWeeklySchedulePage extends HookWidget {
     final timeSpans = useState<Set<TimeSpan>>({
       const TimeSpan(
         from: TimeOfDay(hour: 7, minute: 30),
-        to: TimeOfDay(hour: 8, minute: 0),
+        to: TimeOfDay(hour: 9, minute: 0),
       ),
     });
     final lessons = useState<List<Lesson>>([]);
 
     return GradientScaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           "Stundenplan erstellen",
           style: TextStyles.title,
@@ -86,7 +90,12 @@ class CreateWeeklySchedulePage extends HookWidget {
       ),
       floatingActionButton: FloatingActionButton.large(
         onPressed: () {
-          context.pushRoute(const ConfigureHobbyRoute());
+          context.pushRoute(ConfigureHobbyRoute(
+            createWeeklyScheduleData: CreateWeeklyScheduleData(
+              timeSpans: timeSpans.value,
+              lessons: lessons.value,
+            ),
+          ));
         },
         tooltip: "Weiter",
         child: const Icon(LucideIcons.arrow_right),
@@ -113,31 +122,36 @@ class CreateWeeklySchedulePage extends HookWidget {
           onWeekTapped: () {
             week.value = week.value.next();
           },
-          onDeleteTimeSpan: (timeSpanToDelete) {
-            showDialog(
+          onDeleteTimeSpan: (timeSpanToDelete) async {
+            final result = await showDialog<bool>(
               context: context,
               builder: (context) => CustomDialog.confirmation(
                 title: "Schulzeit löschen",
                 description:
                     "Soll die Schulzeit ${timeSpanToDelete.from.format(context)} - ${timeSpanToDelete.to.format(context)} wirklich gelöscht werden?",
                 onConfirm: () {
-                  // Delete the time span from the time spans
-                  timeSpans.value = timeSpans.value
-                      .where((timeSpan) => timeSpan != timeSpanToDelete)
-                      .toSet();
-
-                  // Delete all lessons for the time span
-                  lessons.value.removeWhere(
-                    (lesson) => lesson.timeSpan == timeSpanToDelete,
-                  );
-
                   Navigator.of(context).pop();
                 },
                 onCancel: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(
+                    true,
+                  );
                 },
               ),
             );
+
+            // If true, delete the time span
+            if (result == true) {
+              // Delete the time span from the time spans
+              timeSpans.value = timeSpans.value
+                  .where((timeSpan) => timeSpan != timeSpanToDelete)
+                  .toSet();
+
+              // Delete all lessons for the time span
+              lessons.value.removeWhere(
+                (lesson) => lesson.timeSpan == timeSpanToDelete,
+              );
+            }
           },
           onSchoolTimeCellSelected: (schoolTimeCell) {
             // Select the cell. If the cell is already selected, unselect it

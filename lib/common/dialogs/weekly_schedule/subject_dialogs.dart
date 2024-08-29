@@ -8,11 +8,11 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/common/dialogs/custom_dialog.dart';
-import 'package:schulplaner/common/dialogs/teacher_dialogs.dart';
+import 'package:schulplaner/common/dialogs/weekly_schedule/teacher_dialogs.dart';
+import 'package:schulplaner/common/models/weekly_schedule.dart';
 import 'package:schulplaner/common/widgets/custom_text_field.dart';
 import 'package:schulplaner/common/widgets/required_field.dart';
 import 'package:schulplaner/common/widgets/selection_button.dart';
-import 'package:schulplaner/common/widgets/weekly_schedule/models.dart';
 import 'package:schulplaner/config/theme/numbers.dart';
 import 'package:uuid/uuid.dart';
 

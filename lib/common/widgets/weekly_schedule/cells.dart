@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:schulplaner/common/models/time.dart';
+import 'package:schulplaner/common/models/weekly_schedule.dart';
 import 'package:schulplaner/config/theme/numbers.dart';
 
-import 'models.dart';
 
 class WeeklyScheduleTimeCell extends StatelessWidget {
   final void Function(TimeSpan timeSpan) onDeleteTimeSpan;

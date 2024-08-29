@@ -1,6 +1,8 @@
 // TODO: Delete a time span
 
 import 'package:flutter/material.dart';
+import 'package:schulplaner/common/models/time.dart';
+import 'package:schulplaner/common/models/weekly_schedule.dart';
 import 'package:schulplaner/config/theme/numbers.dart';
 
 import 'cells.dart';
@@ -108,7 +110,7 @@ class WeeklySchedule extends StatelessWidget {
           // Check if the time span is the same and if the week is the same ( A or B week )
           (lesson) =>
               lesson.timeSpan == timeSpan &&
-              (lesson.week == week || lesson.week == Week.all),
+              (lesson.week == week || week == Week.all),
         )
         .toList();
 

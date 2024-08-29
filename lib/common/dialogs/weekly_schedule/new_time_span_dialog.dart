@@ -3,8 +3,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/common/dialogs/custom_dialog.dart';
 import 'package:schulplaner/common/extensions/time_of_day_extension.dart';
+import 'package:schulplaner/common/models/time.dart';
 import 'package:schulplaner/common/widgets/time_span_picker.dart';
-import 'package:schulplaner/common/widgets/weekly_schedule/models.dart';
 import 'package:schulplaner/config/theme/numbers.dart';
 
 /// A dialog, which askes the user to enter a new time span. When the user has entered the time span, it will be returned

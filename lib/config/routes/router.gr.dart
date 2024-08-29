@@ -9,6 +9,9 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i4;
+import 'package:flutter/material.dart' as _i5;
+import 'package:schulplaner/features/account_creation/models/create_weekly_schedule_data.dart'
+    as _i6;
 import 'package:schulplaner/features/account_creation/pages/configure_hobby_page.dart'
     as _i1;
 import 'package:schulplaner/features/account_creation/pages/configure_weekly_schedule_page.dart'
@@ -18,10 +21,17 @@ import 'package:schulplaner/features/account_creation/pages/intro_page.dart'
 
 /// generated route for
 /// [_i1.ConfigureHobbyPage]
-class ConfigureHobbyRoute extends _i4.PageRouteInfo<void> {
-  const ConfigureHobbyRoute({List<_i4.PageRouteInfo>? children})
-      : super(
+class ConfigureHobbyRoute extends _i4.PageRouteInfo<ConfigureHobbyRouteArgs> {
+  ConfigureHobbyRoute({
+    _i5.Key? key,
+    required _i6.CreateWeeklyScheduleData createWeeklyScheduleData,
+    List<_i4.PageRouteInfo>? children,
+  }) : super(
           ConfigureHobbyRoute.name,
+          args: ConfigureHobbyRouteArgs(
+            key: key,
+            createWeeklyScheduleData: createWeeklyScheduleData,
+          ),
           initialChildren: children,
         );
 
@@ -30,9 +40,29 @@ class ConfigureHobbyRoute extends _i4.PageRouteInfo<void> {
   static _i4.PageInfo page = _i4.PageInfo(
     name,
     builder: (data) {
-      return const _i1.ConfigureHobbyPage();
+      final args = data.argsAs<ConfigureHobbyRouteArgs>();
+      return _i1.ConfigureHobbyPage(
+        key: args.key,
+        createWeeklyScheduleData: args.createWeeklyScheduleData,
+      );
     },
   );
+}
+
+class ConfigureHobbyRouteArgs {
+  const ConfigureHobbyRouteArgs({
+    this.key,
+    required this.createWeeklyScheduleData,
+  });
+
+  final _i5.Key? key;
+
+  final _i6.CreateWeeklyScheduleData createWeeklyScheduleData;
+
+  @override
+  String toString() {
+    return 'ConfigureHobbyRouteArgs{key: $key, createWeeklyScheduleData: $createWeeklyScheduleData}';
+  }
 }
 
 /// generated route for
