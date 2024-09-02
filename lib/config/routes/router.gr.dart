@@ -12,7 +12,7 @@ import 'package:auto_route/auto_route.dart' as _i4;
 import 'package:flutter/material.dart' as _i5;
 import 'package:schulplaner/features/account_creation/models/create_weekly_schedule_data.dart'
     as _i6;
-import 'package:schulplaner/features/account_creation/pages/configure_hobby_page.dart'
+import 'package:schulplaner/features/account_creation/pages/configure_hobbies_page.dart'
     as _i1;
 import 'package:schulplaner/features/account_creation/pages/configure_weekly_schedule_page.dart'
     as _i2;

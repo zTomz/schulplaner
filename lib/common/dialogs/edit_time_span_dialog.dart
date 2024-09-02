@@ -9,19 +9,25 @@ import 'package:schulplaner/config/theme/numbers.dart';
 
 /// A dialog, which askes the user to enter a new time span. When the user has entered the time span, it will be returned
 /// in the .pop() method
-class NewTimeSpanDialog extends HookWidget {
-  const NewTimeSpanDialog({super.key});
+class EditTimeSpanDialog extends HookWidget {
+  final TimeSpan? timeSpan;
+
+  const EditTimeSpanDialog({
+    super.key,
+    this.timeSpan,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final from = useState<TimeOfDay?>(null);
-    final to = useState<TimeOfDay?>(null);
+    final from = useState<TimeOfDay?>(timeSpan?.from);
+    final to = useState<TimeOfDay?>(timeSpan?.to);
 
     final error = useState<String?>(null);
 
     return CustomDialog(
       icon: const Icon(LucideIcons.timer),
-      title: const Text("Neue Schulzeit"),
+      title:
+          Text(timeSpan == null ? "Neue Zeitspanne" : "Zeitspanne bearbeiten"),
       content: TimeSpanPicker(
         onChanged: (fromValue, toValue) {
           from.value = fromValue;
@@ -57,7 +63,7 @@ class NewTimeSpanDialog extends HookWidget {
               ),
             );
           },
-          child: const Text("Hinzufügen"),
+          child: Text(timeSpan == null ? "Hinzufügen" : "Bearbeiten"),
         ),
       ],
       error: error.value != null ? Text(error.value!) : null,

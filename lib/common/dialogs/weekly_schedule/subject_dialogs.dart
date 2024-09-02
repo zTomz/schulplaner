@@ -4,12 +4,12 @@
 // - The subject creation dialog -> User can create a new subject
 
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/common/dialogs/custom_dialog.dart';
 import 'package:schulplaner/common/dialogs/weekly_schedule/teacher_dialogs.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
+import 'package:schulplaner/common/widgets/color_choose_list_tile.dart';
 import 'package:schulplaner/common/widgets/custom_text_field.dart';
 import 'package:schulplaner/common/widgets/required_field.dart';
 import 'package:schulplaner/common/widgets/selection_button.dart';
@@ -84,7 +84,8 @@ class EditSubjectDialog extends HookWidget {
             ),
             const SizedBox(height: Spacing.small),
             RequiredField(
-              error: teacherError.value,
+              errorText: "Ein Lehrer ist erforderlich.",
+              value: teacher.value,
               child: SelectionButton(
                 title: "Lehrer",
                 selection: teacher.value?.salutation,
@@ -102,24 +103,11 @@ class EditSubjectDialog extends HookWidget {
               ),
             ),
             const SizedBox(height: Spacing.small),
-            ListTile(
-              title: const Text("Color"),
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radii.small),
-              ),
-              onTap: () async {
-                color.value = await _chooseColor(
-                  context,
-                  color.value,
-                );
+            ColorChooseListTile(
+              color: color.value,
+              onColorChanged: (newColor) {
+                color.value = newColor;
               },
-              trailing: Material(
-                color: color.value,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const SizedBox.square(dimension: 30),
-              ),
             ),
           ],
         ),
@@ -134,24 +122,14 @@ class EditSubjectDialog extends HookWidget {
         const SizedBox(width: Spacing.small),
         ElevatedButton(
           onPressed: () {
-            const String teacherErrorMessage = "Ein Lehrer ist erforderlich";
 
             if (!formKey.currentState!.validate()) {
-              if (teacher.value == null) {
-                teacherError.value = teacherErrorMessage;
-              } else {
-                teacherError.value = null;
-              }
+              
 
               return;
             }
 
-            if (teacher.value == null) {
-              teacherError.value = teacherErrorMessage;
-              return;
-            } else {
-              teacherError.value = null;
-            }
+            
 
             Navigator.of(context).pop(
               Subject(
@@ -166,45 +144,5 @@ class EditSubjectDialog extends HookWidget {
         ),
       ],
     );
-  }
-
-  Future<Color> _chooseColor(BuildContext context, Color color) async {
-    // Create a seperate variable, so the input variable is not changed
-    Color pickerColor = color;
-
-    final choosenColor = await showDialog<Color>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Wähle eine Farbe'),
-        content: SingleChildScrollView(
-          child: HueRingPicker(
-            pickerColor: pickerColor,
-            onColorChanged: (changeColor) {
-              pickerColor = changeColor;
-            },
-            portraitOnly: true,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text("Schließen"),
-          ),
-          const SizedBox(width: Spacing.small),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop(
-                pickerColor,
-              );
-            },
-            child: const Text("Bestätigen"),
-          ),
-        ],
-      ),
-    );
-
-    return choosenColor ?? color;
   }
 }

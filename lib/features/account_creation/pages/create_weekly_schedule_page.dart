@@ -4,7 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/common/dialogs/custom_dialog.dart';
 import 'package:schulplaner/common/dialogs/weekly_schedule/edit_lesson_dialog.dart';
-import 'package:schulplaner/common/dialogs/weekly_schedule/new_time_span_dialog.dart';
+import 'package:schulplaner/common/dialogs/edit_time_span_dialog.dart';
 import 'package:schulplaner/common/models/time.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
 import 'package:schulplaner/common/widgets/gradient_scaffold.dart';
@@ -47,7 +47,7 @@ class CreateWeeklySchedulePage extends HookWidget {
                 onPressed: () async {
                   final result = await showDialog<TimeSpan>(
                     context: context,
-                    builder: (context) => const NewTimeSpanDialog(),
+                    builder: (context) => const EditTimeSpanDialog(),
                   );
 
                   if (result != null) {

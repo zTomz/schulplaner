@@ -121,7 +121,7 @@ class WeeklySchedule extends StatelessWidget {
       ),
     ];
 
-    for (Weekday weekday in Weekday.values) {
+    for (Weekday weekday in Weekday.mondayToFriday) {
       // Get all lessons for the current weekday
       final lessonsForWeekday = lessonsToBuild
           .where(

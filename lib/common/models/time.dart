@@ -31,6 +31,17 @@ class TimeSpan extends Equatable {
   }
 }
 
+/// A class holding a day and a timespan of that day. Used for [Hobby] class
+class TimeInDay {
+  final Weekday day;
+  final TimeSpan timeSpan;
+
+  const TimeInDay({
+    required this.day,
+    required this.timeSpan,
+  });
+}
+
 /// The days of a week. From Monday to Friday
 enum Weekday {
   monday,
@@ -57,6 +68,35 @@ enum Weekday {
         return 6;
       case Weekday.sunday:
         return 7;
+    }
+  }
+
+  static List<Weekday> get mondayToFriday {
+    return [
+      Weekday.monday,
+      Weekday.tuesday,
+      Weekday.wednesday,
+      Weekday.thursday,
+      Weekday.friday
+    ];
+  }
+
+  String get name {
+    switch (this) {
+      case Weekday.monday:
+        return "Montag";
+      case Weekday.tuesday:
+        return "Dienstag";
+      case Weekday.wednesday:
+        return "Mittwoch";
+      case Weekday.thursday:
+        return "Donnerstag";
+      case Weekday.friday:
+        return "Freitag";
+      case Weekday.saturday:
+        return "Samstag";
+      case Weekday.sunday:
+        return "Sonntag";
     }
   }
 }

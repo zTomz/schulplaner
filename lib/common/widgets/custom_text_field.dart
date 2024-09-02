@@ -5,6 +5,7 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController? controller;
   final String? labelText;
   final TextInputType? keyboardType;
+  final int maxLines;
   final bool validate;
   final String? Function(String? value)? validator;
 
@@ -13,6 +14,7 @@ class CustomTextField extends StatelessWidget {
     this.controller,
     this.labelText,
     this.keyboardType,
+    this.maxLines = 1,
     this.validate = false,
     this.validator,
   }) : assert(
@@ -32,10 +34,12 @@ class CustomTextField extends StatelessWidget {
           : validator ??
               (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Dieses Feld ist erforderlich';
+                  return "Dieses Feld ist erforderlich.";
                 }
                 return null;
               },
+              minLines: 1,
+      maxLines: maxLines,
       decoration: InputDecoration(
         labelText: labelText,
         border: const OutlineInputBorder(

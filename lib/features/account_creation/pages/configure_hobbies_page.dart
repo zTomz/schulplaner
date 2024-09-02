@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/features/account_creation/models/create_weekly_schedule_data.dart';
-import 'package:schulplaner/features/account_creation/pages/create_hobbys_page.dart';
+import 'package:schulplaner/features/account_creation/pages/create_hobbies_page.dart';
 import 'package:schulplaner/features/account_creation/widgets/account_creation_layout.dart';
 
 @RoutePage()
@@ -49,7 +49,7 @@ class ConfigureHobbyPage extends HookWidget {
             ),
           ),
         ),
-        const CreateHobbysPage(),
+        const CreateHobbiesPage(),
       ],
     );
   }

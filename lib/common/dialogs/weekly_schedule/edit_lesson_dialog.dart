@@ -33,7 +33,6 @@ class EditLessonDialog extends HookWidget {
       text: lesson?.room,
     );
     final subject = useState<Subject?>(lesson?.subject);
-    final subjectError = useState<String?>(null);
 
     final formKey = useMemoized(() => GlobalKey<FormState>());
 
@@ -73,7 +72,8 @@ class EditLessonDialog extends HookWidget {
             ),
             const SizedBox(height: Spacing.small),
             RequiredField(
-              error: subjectError.value,
+              errorText: "Ein Fach ist erforderlich.",
+              value: subject.value,
               child: SelectionButton(
                 title: "Fach",
                 selection: subject.value?.subject,
@@ -102,23 +102,8 @@ class EditLessonDialog extends HookWidget {
         const SizedBox(width: Spacing.small),
         ElevatedButton(
           onPressed: () {
-            const String subjectErrorMessage = "Ein Fach ist erforderlich";
-
             if (!formKey.currentState!.validate()) {
-              if (subject.value == null) {
-                subjectError.value = subjectErrorMessage;
-              } else {
-                subjectError.value = null;
-              }
-
               return;
-            }
-
-            if (subject.value == null) {
-              subjectError.value = subjectErrorMessage;
-              return;
-            } else {
-              subjectError.value = null;
             }
 
             Navigator.of(context).pop(

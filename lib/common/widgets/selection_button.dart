@@ -30,10 +30,14 @@ class SelectionButton extends StatelessWidget {
         height: 50,
         child: Row(
           children: [
-            Text(title),
+            Text(
+              title,
+            ),
             const Spacer(),
-            if (selection != null) Text(selection!),
-            const SizedBox(width: Spacing.medium),
+            if (selection != null) ...[
+              Text(selection!),
+              const SizedBox(width: Spacing.medium),
+            ],
             const Icon(LucideIcons.chevron_right),
           ],
         ),

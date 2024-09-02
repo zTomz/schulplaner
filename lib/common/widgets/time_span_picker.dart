@@ -37,8 +37,11 @@ class TimeSpanPicker extends StatelessWidget {
     );
   }
 
-  Widget _buildPicker(BuildContext context, TimeOfDay? value,
-      void Function(TimeOfDay? value) onValueChanged) {
+  static Widget _buildPicker(
+    BuildContext context,
+    TimeOfDay? value,
+    void Function(TimeOfDay? value) onValueChanged,
+  ) {
     return Material(
       borderRadius: const BorderRadius.all(Radii.small),
       color: Theme.of(context).colorScheme.surfaceContainerHigh,
