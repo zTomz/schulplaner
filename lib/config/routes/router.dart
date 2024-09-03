@@ -8,7 +8,7 @@ class AppRouter extends RootStackRouter {
         // Intro pages
         AutoRoute(
           page: IntroRoute.page,
-          initial: true,
+          // initial: true, // FIXME: Remove comment and comment AppNavigationRoute as initial route
         ),
         CustomRoute(
           page: ConfigureWeeklyScheduleRoute.page,
@@ -24,6 +24,24 @@ class AppRouter extends RootStackRouter {
           page: SignUpSignInRoute.page,
           transitionsBuilder: TransitionsBuilders.fadeIn,
           durationInMilliseconds: 400,
+        ),
+
+        // App pages
+        AutoRoute(
+          page: AppNavigationRoute.page,
+          initial: true,
+          children: [
+            AutoRoute(
+              page: OverviewRoute.page,
+              initial: true,
+            ),
+            AutoRoute(
+              page: CalendarRoute.page,
+            ),
+            AutoRoute(
+              page: WeeklyScheduleRoute.page,
+            ),
+          ],
         ),
       ];
 }

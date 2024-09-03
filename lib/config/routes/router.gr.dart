@@ -8,27 +8,71 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i5;
-import 'package:flutter/material.dart' as _i6;
-import 'package:schulplaner/common/models/hobby.dart' as _i8;
+import 'package:auto_route/auto_route.dart' as _i9;
+import 'package:flutter/material.dart' as _i10;
+import 'package:schulplaner/common/models/hobby.dart' as _i12;
 import 'package:schulplaner/features/account_creation/models/create_weekly_schedule_data.dart'
-    as _i7;
+    as _i11;
 import 'package:schulplaner/features/account_creation/pages/configure_hobbies_page.dart'
-    as _i1;
-import 'package:schulplaner/features/account_creation/pages/configure_weekly_schedule_page.dart'
-    as _i2;
-import 'package:schulplaner/features/account_creation/pages/intro_page.dart'
     as _i3;
-import 'package:schulplaner/features/account_creation/pages/sign_up_sign_in_page.dart'
+import 'package:schulplaner/features/account_creation/pages/configure_weekly_schedule_page.dart'
     as _i4;
+import 'package:schulplaner/features/account_creation/pages/intro_page.dart'
+    as _i5;
+import 'package:schulplaner/features/account_creation/pages/sign_up_sign_in_page.dart'
+    as _i7;
+import 'package:schulplaner/features/app_navigation/app_navigation_page.dart'
+    as _i1;
+import 'package:schulplaner/features/calendar/calendar_page.dart' as _i2;
+import 'package:schulplaner/features/overview/overview_page.dart' as _i6;
+import 'package:schulplaner/features/weekly_schedule/weekly_schedule_page.dart'
+    as _i8;
 
 /// generated route for
-/// [_i1.ConfigureHobbyPage]
-class ConfigureHobbyRoute extends _i5.PageRouteInfo<ConfigureHobbyRouteArgs> {
+/// [_i1.AppNavigationPage]
+class AppNavigationRoute extends _i9.PageRouteInfo<void> {
+  const AppNavigationRoute({List<_i9.PageRouteInfo>? children})
+      : super(
+          AppNavigationRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'AppNavigationRoute';
+
+  static _i9.PageInfo page = _i9.PageInfo(
+    name,
+    builder: (data) {
+      return const _i1.AppNavigationPage();
+    },
+  );
+}
+
+/// generated route for
+/// [_i2.CalendarPage]
+class CalendarRoute extends _i9.PageRouteInfo<void> {
+  const CalendarRoute({List<_i9.PageRouteInfo>? children})
+      : super(
+          CalendarRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'CalendarRoute';
+
+  static _i9.PageInfo page = _i9.PageInfo(
+    name,
+    builder: (data) {
+      return const _i2.CalendarPage();
+    },
+  );
+}
+
+/// generated route for
+/// [_i3.ConfigureHobbyPage]
+class ConfigureHobbyRoute extends _i9.PageRouteInfo<ConfigureHobbyRouteArgs> {
   ConfigureHobbyRoute({
-    _i6.Key? key,
-    required _i7.CreateWeeklyScheduleData createWeeklyScheduleData,
-    List<_i5.PageRouteInfo>? children,
+    _i10.Key? key,
+    required _i11.CreateWeeklyScheduleData createWeeklyScheduleData,
+    List<_i9.PageRouteInfo>? children,
   }) : super(
           ConfigureHobbyRoute.name,
           args: ConfigureHobbyRouteArgs(
@@ -40,11 +84,11 @@ class ConfigureHobbyRoute extends _i5.PageRouteInfo<ConfigureHobbyRouteArgs> {
 
   static const String name = 'ConfigureHobbyRoute';
 
-  static _i5.PageInfo page = _i5.PageInfo(
+  static _i9.PageInfo page = _i9.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<ConfigureHobbyRouteArgs>();
-      return _i1.ConfigureHobbyPage(
+      return _i3.ConfigureHobbyPage(
         key: args.key,
         createWeeklyScheduleData: args.createWeeklyScheduleData,
       );
@@ -58,9 +102,9 @@ class ConfigureHobbyRouteArgs {
     required this.createWeeklyScheduleData,
   });
 
-  final _i6.Key? key;
+  final _i10.Key? key;
 
-  final _i7.CreateWeeklyScheduleData createWeeklyScheduleData;
+  final _i11.CreateWeeklyScheduleData createWeeklyScheduleData;
 
   @override
   String toString() {
@@ -69,9 +113,9 @@ class ConfigureHobbyRouteArgs {
 }
 
 /// generated route for
-/// [_i2.ConfigureWeeklySchedulePage]
-class ConfigureWeeklyScheduleRoute extends _i5.PageRouteInfo<void> {
-  const ConfigureWeeklyScheduleRoute({List<_i5.PageRouteInfo>? children})
+/// [_i4.ConfigureWeeklySchedulePage]
+class ConfigureWeeklyScheduleRoute extends _i9.PageRouteInfo<void> {
+  const ConfigureWeeklyScheduleRoute({List<_i9.PageRouteInfo>? children})
       : super(
           ConfigureWeeklyScheduleRoute.name,
           initialChildren: children,
@@ -79,18 +123,18 @@ class ConfigureWeeklyScheduleRoute extends _i5.PageRouteInfo<void> {
 
   static const String name = 'ConfigureWeeklyScheduleRoute';
 
-  static _i5.PageInfo page = _i5.PageInfo(
+  static _i9.PageInfo page = _i9.PageInfo(
     name,
     builder: (data) {
-      return const _i2.ConfigureWeeklySchedulePage();
+      return const _i4.ConfigureWeeklySchedulePage();
     },
   );
 }
 
 /// generated route for
-/// [_i3.IntroPage]
-class IntroRoute extends _i5.PageRouteInfo<void> {
-  const IntroRoute({List<_i5.PageRouteInfo>? children})
+/// [_i5.IntroPage]
+class IntroRoute extends _i9.PageRouteInfo<void> {
+  const IntroRoute({List<_i9.PageRouteInfo>? children})
       : super(
           IntroRoute.name,
           initialChildren: children,
@@ -98,22 +142,41 @@ class IntroRoute extends _i5.PageRouteInfo<void> {
 
   static const String name = 'IntroRoute';
 
-  static _i5.PageInfo page = _i5.PageInfo(
+  static _i9.PageInfo page = _i9.PageInfo(
     name,
     builder: (data) {
-      return const _i3.IntroPage();
+      return const _i5.IntroPage();
     },
   );
 }
 
 /// generated route for
-/// [_i4.SignUpSignInPage]
-class SignUpSignInRoute extends _i5.PageRouteInfo<SignUpSignInRouteArgs> {
+/// [_i6.OverviewPage]
+class OverviewRoute extends _i9.PageRouteInfo<void> {
+  const OverviewRoute({List<_i9.PageRouteInfo>? children})
+      : super(
+          OverviewRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'OverviewRoute';
+
+  static _i9.PageInfo page = _i9.PageInfo(
+    name,
+    builder: (data) {
+      return const _i6.OverviewPage();
+    },
+  );
+}
+
+/// generated route for
+/// [_i7.SignUpSignInPage]
+class SignUpSignInRoute extends _i9.PageRouteInfo<SignUpSignInRouteArgs> {
   SignUpSignInRoute({
-    _i6.Key? key,
-    required _i7.CreateWeeklyScheduleData createWeeklyScheduleData,
-    required List<_i8.Hobby> hobbies,
-    List<_i5.PageRouteInfo>? children,
+    _i10.Key? key,
+    required _i11.CreateWeeklyScheduleData createWeeklyScheduleData,
+    required List<_i12.Hobby> hobbies,
+    List<_i9.PageRouteInfo>? children,
   }) : super(
           SignUpSignInRoute.name,
           args: SignUpSignInRouteArgs(
@@ -126,11 +189,11 @@ class SignUpSignInRoute extends _i5.PageRouteInfo<SignUpSignInRouteArgs> {
 
   static const String name = 'SignUpSignInRoute';
 
-  static _i5.PageInfo page = _i5.PageInfo(
+  static _i9.PageInfo page = _i9.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<SignUpSignInRouteArgs>();
-      return _i4.SignUpSignInPage(
+      return _i7.SignUpSignInPage(
         key: args.key,
         createWeeklyScheduleData: args.createWeeklyScheduleData,
         hobbies: args.hobbies,
@@ -146,14 +209,33 @@ class SignUpSignInRouteArgs {
     required this.hobbies,
   });
 
-  final _i6.Key? key;
+  final _i10.Key? key;
 
-  final _i7.CreateWeeklyScheduleData createWeeklyScheduleData;
+  final _i11.CreateWeeklyScheduleData createWeeklyScheduleData;
 
-  final List<_i8.Hobby> hobbies;
+  final List<_i12.Hobby> hobbies;
 
   @override
   String toString() {
     return 'SignUpSignInRouteArgs{key: $key, createWeeklyScheduleData: $createWeeklyScheduleData, hobbies: $hobbies}';
   }
+}
+
+/// generated route for
+/// [_i8.WeeklySchedulePage]
+class WeeklyScheduleRoute extends _i9.PageRouteInfo<void> {
+  const WeeklyScheduleRoute({List<_i9.PageRouteInfo>? children})
+      : super(
+          WeeklyScheduleRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'WeeklyScheduleRoute';
+
+  static _i9.PageInfo page = _i9.PageInfo(
+    name,
+    builder: (data) {
+      return const _i8.WeeklySchedulePage();
+    },
+  );
 }
