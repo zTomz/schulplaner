@@ -129,14 +129,6 @@ class CreateWeeklySchedulePage extends HookWidget {
                 title: "Schulzeit löschen",
                 description:
                     "Soll die Schulzeit ${timeSpanToDelete.from.format(context)} - ${timeSpanToDelete.to.format(context)} wirklich gelöscht werden?",
-                onConfirm: () {
-                  Navigator.of(context).pop();
-                },
-                onCancel: () {
-                  Navigator.of(context).pop(
-                    true,
-                  );
-                },
               ),
             );
 

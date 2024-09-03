@@ -33,26 +33,39 @@ class CustomDialog extends StatelessWidget {
     this.error,
   }) : _type = _CustomDialogType.normal;
 
+  /// Returns true or false.
   CustomDialog.confirmation({
     super.key,
     String? title,
     required String description,
-    required void Function() onConfirm,
-    required void Function() onCancel,
     this.error,
   })  : _type = _CustomDialogType.normal,
         icon = const Icon(LucideIcons.badge_alert),
-        title = Text(title ?? "Bist du dir sicher?"),
+        title = Text(title ?? "Sind Sie sich sicher?"),
         content = Text(description),
         actions = [
-          TextButton(
-            onPressed: onCancel,
-            child: const Text("Nein"),
-          ),
+          Builder(builder: (context) {
+            return TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(
+                  false,
+                );
+              },
+              child: const Text("Nein"),
+            );
+          }),
           const SizedBox(width: Spacing.small),
-          ElevatedButton(
-            onPressed: onConfirm,
-            child: const Text("Ja"),
+          Builder(
+            builder: (context) {
+              return ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop(
+                    true,
+                  );
+                },
+                child: const Text("Ja"),
+              );
+            },
           ),
         ];
 

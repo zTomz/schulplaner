@@ -33,25 +33,13 @@ class CreateHobbiesPage extends HookWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
-          ElevatedButton.icon(
-            onPressed: () async {
-              final result = await showDialog<Hobby>(
-                context: context,
-                builder: (context) {
-                  return const EditHobbyDialog();
-                },
-              );
-
-              if (result != null) {
-                hobbies.value = [...hobbies.value, result];
-              }
-            },
-            icon: const Icon(
-              LucideIcons.circle_plus,
-              size: 20,
+          if (hobbies.value.isNotEmpty)
+            _addHobbyButton(
+              context,
+              onHobbyAdded: (hobby) {
+                hobbies.value = [...hobbies.value, hobby];
+              },
             ),
-            label: const Text("Hobby hinzufügen"),
-          ),
           const SizedBox(width: Spacing.medium),
         ],
       ),
@@ -62,37 +50,86 @@ class CreateHobbiesPage extends HookWidget {
         tooltip: "Weiter",
         child: const Icon(LucideIcons.arrow_right),
       ),
-      body: ListView.builder(
-        itemCount: hobbies.value.length,
-        itemBuilder: (context, index) {
-          final hobby = hobbies.value[index];
-
-          return DisplayHobbyTile(
-            hobby: hobby,
-            onEdit: () async {
-              // TODO: Edit hobby
-              final result = await showDialog<Hobby>(
-                context: context,
-                builder: (context) {
-                  return EditHobbyDialog(
-                    hobby: hobby,
-                  );
+      body: hobbies.value.isEmpty
+          ? Center(
+            child: _addHobbyButton(
+                context,
+                onHobbyAdded: (hobby) {
+                  hobbies.value = [...hobbies.value, hobby];
                 },
-              );
+              ),
+          )
+          : ListView.builder(
+              itemCount: hobbies.value.length,
+              itemBuilder: (context, index) {
+                final hobby = hobbies.value[index];
 
-              if (result != null) {
-                // Remove the old hobby and replace it
-                hobbies.value = hobbies.value
-                  ..removeAt(index)
-                  ..insert(index, result);
+                return DisplayHobbyTile(
+                  hobby: hobby,
+                  onEdit: () async {
+                    final result = await showDialog<Hobby>(
+                      context: context,
+                      builder: (context) {
+                        return EditHobbyDialog(
+                          hobby: hobby,
+                        );
+                      },
+                    );
 
-                // Update the state
-                hobbies.value = [...hobbies.value];
-              }
-            },
-          );
-        },
+                    if (result != null) {
+                      // Remove the old hobby and replace it
+                      hobbies.value = hobbies.value
+                        ..removeAt(index)
+                        ..insert(index, result);
+
+                      // Update the state
+                      hobbies.value = [...hobbies.value];
+                    }
+                  },
+                  onDelete: () async {
+                    final result = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => CustomDialog.confirmation(
+                        description:
+                            "Sind Sie sich sicher, dass Sie das Hobby \"${hobby.name}\" löschen möchten.",
+                      ),
+                    );
+
+                    if (result == true) {
+                      //  Delete the hobby
+                      hobbies.value.removeAt(index);
+
+                      hobbies.value = [...hobbies.value];
+                    }
+                  },
+                );
+              },
+            ),
+    );
+  }
+
+  Widget _addHobbyButton(
+    BuildContext context, {
+    required void Function(Hobby hobby) onHobbyAdded,
+  }) {
+    return ElevatedButton.icon(
+      onPressed: () async {
+        final result = await showDialog<Hobby>(
+          context: context,
+          builder: (context) {
+            return const EditHobbyDialog();
+          },
+        );
+
+        if (result != null) {
+          onHobbyAdded(result);
+        }
+      },
+      icon: const Icon(
+        LucideIcons.circle_plus,
+        size: 20,
       ),
+      label: const Text("Hobby hinzufügen"),
     );
   }
 }
@@ -100,11 +137,13 @@ class CreateHobbiesPage extends HookWidget {
 class DisplayHobbyTile extends StatelessWidget {
   final Hobby hobby;
   final void Function() onEdit;
+  final void Function() onDelete;
 
   const DisplayHobbyTile({
     super.key,
     required this.hobby,
     required this.onEdit,
+    required this.onDelete,
   });
 
   @override
@@ -145,9 +184,19 @@ class DisplayHobbyTile extends StatelessWidget {
                   ],
                 ),
                 const Spacer(),
-                const Tooltip(
+                Tooltip(
                   message: "Hobby bearbeiten",
-                  child: Icon(LucideIcons.pencil),
+                  child: Icon(
+                    LucideIcons.pencil,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                const SizedBox(width: Spacing.small),
+                IconButton(
+                  onPressed: () => onDelete(),
+                  tooltip: "Hobby löschen",
+                  color: Theme.of(context).colorScheme.onSurface,
+                  icon: const Icon(LucideIcons.trash_2),
                 ),
                 const SizedBox(width: Spacing.large),
               ],
