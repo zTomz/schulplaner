@@ -37,7 +37,117 @@ class SignUpSignInPage extends HookWidget {
     final formKey = useMemoized(() => GlobalKey<FormState>());
 
     return GradientScaffold(
-      body: Align(
+      body: _buildBox(
+        context,
+        child: Form(
+          key: formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                isSigningUp.value
+                    ? "Erstelle einen Account"
+                    : "Melden Sie sich an",
+                style: TextStyles.title,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: Spacing.small),
+              Text(
+                isSigningUp.value
+                    ? "Zuletzt müssen Sie einen Account erstellen, dann kann es losgehen!"
+                    : "Melden Sie sich nun noch bei Ihrem Account an, um loszulegen.",
+                style: TextStyles.body,
+                textAlign: TextAlign.center,
+                softWrap: true,
+              ),
+              const SizedBox(height: Spacing.large),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 400),
+                child: Column(
+                  children: [
+                    if (isSigningUp.value) ...[
+                      CustomTextField(
+                        controller: usernameController,
+                        labelText: "Name",
+                        keyboardType: TextInputType.name,
+                        prefixIcon: const Icon(LucideIcons.user),
+                        validate: true,
+                      ),
+                      const SizedBox(height: Spacing.small),
+                    ],
+                    CustomTextField(
+                      controller: emailController,
+                      labelText: "E-Mail",
+                      keyboardType: TextInputType.emailAddress,
+                      prefixIcon: const Icon(LucideIcons.mail),
+                      validate: true,
+                    ),
+                    const SizedBox(height: Spacing.small),
+                    CustomTextField.password(
+                      controller: passwordController,
+                      labelText: "Password",
+                      keyboardType: TextInputType.visiblePassword,
+                      prefixIcon: const Icon(LucideIcons.key_round),
+                      validate: true,
+                    ),
+                    const SizedBox(height: Spacing.medium),
+                    CustomButton(
+                      onPressed: () {
+                        if (!formKey.currentState!.validate()) {
+                          return;
+                        }
+
+                        // TODO: Create the user or sign him in
+                      },
+                      child: Text(
+                        isSigningUp.value ? "Account erstellen" : "Einloggen",
+                      ),
+                    ),
+                    const SizedBox(height: Spacing.small),
+                    TextButton(
+                      onPressed: () {
+                        isSigningUp.value = !isSigningUp.value;
+                      },
+                      child: Text(
+                        isSigningUp.value
+                            ? "Sie haben bereits einen Account?"
+                            : "Sie haben noch keinen Account?",
+                      ),
+                    ),
+                    const SizedBox(height: Spacing.small),
+                    SizedBox.square(
+                      dimension: 50,
+                      child: Material(
+                        color: Colors.white,
+                        type: MaterialType.button,
+                        shape: const CircleBorder(),
+                        child: InkWell(
+                          onTap: () {},
+                          borderRadius: BorderRadius.circular(360),
+                          child: Padding(
+                            padding: const EdgeInsets.all(Spacing.small),
+                            child: SvgPicture.asset(
+                              SvgPictures.googleLogo,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBox(
+    BuildContext context, {
+    required Widget child,
+  }) =>
+      Align(
         alignment: Alignment.center,
         child: Container(
           padding: const EdgeInsets.all(Spacing.large),
@@ -47,108 +157,7 @@ class SignUpSignInPage extends HookWidget {
             color: Theme.of(context).colorScheme.surface.withOpacity(0.5),
             borderRadius: const BorderRadius.all(Radii.medium),
           ),
-          child: Form(
-            key: formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  isSigningUp.value
-                      ? "Erstelle einen Account"
-                      : "Melden Sie sich an",
-                  style: TextStyles.title,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: Spacing.small),
-                Text(
-                  isSigningUp.value
-                      ? "Zuletzt müssen Sie einen Account erstellen, dann kann es losgehen!"
-                      : "Melden Sie sich nun noch bei Ihrem Account an, um loszulegen.",
-                  style: TextStyles.body,
-                  textAlign: TextAlign.center,
-                  softWrap: true,
-                ),
-                const SizedBox(height: Spacing.large),
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 400),
-                  child: Column(
-                    children: [
-                      if (isSigningUp.value) ...[
-                        CustomTextField(
-                          controller: usernameController,
-                          labelText: "Name",
-                          keyboardType: TextInputType.name,
-                          prefixIcon: const Icon(LucideIcons.user),
-                        validate: true,
-                        ),
-                        const SizedBox(height: Spacing.small),
-                      ],
-                      CustomTextField(
-                        controller: emailController,
-                        labelText: "E-Mail",
-                        keyboardType: TextInputType.emailAddress,
-                        prefixIcon: const Icon(LucideIcons.mail),
-                        validate: true,
-                      ),
-                      const SizedBox(height: Spacing.small),
-                      CustomTextField.password(
-                        controller: passwordController,
-                        labelText: "Password",
-                        keyboardType: TextInputType.visiblePassword,
-                        prefixIcon: const Icon(LucideIcons.key_round),
-                        validate: true,
-                      ),
-                      const SizedBox(height: Spacing.medium),
-                      CustomButton(
-                        onPressed: () {
-                          if (!formKey.currentState!.validate()) {
-                            return;
-                          }
-
-                          // TODO: Create the user or sign him in
-                        },
-                        child: Text(
-                          isSigningUp.value ? "Account erstellen" : "Einloggen",
-                        ),
-                      ),
-                      const SizedBox(height: Spacing.small),
-                      TextButton(
-                        onPressed: () {
-                          isSigningUp.value = !isSigningUp.value;
-                        },
-                        child: Text(
-                          isSigningUp.value
-                              ? "Sie haben bereits einen Account?"
-                              : "Sie haben noch keinen Account?",
-                        ),
-                      ),
-                      const SizedBox(height: Spacing.small),
-                      SizedBox.square(
-                        dimension: 50,
-                        child: Material(
-                          color: Colors.white,
-                          type: MaterialType.button,
-                          shape: const CircleBorder(),
-                          child: InkWell(
-                            onTap: () {},
-                            borderRadius: BorderRadius.circular(360),
-                            child: Padding(
-                              padding: const EdgeInsets.all(Spacing.small),
-                              child: SvgPicture.asset(
-                                SvgPictures.googleLogo,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
+          child: child,
         ),
-      ),
-    );
-  }
+      );
 }
