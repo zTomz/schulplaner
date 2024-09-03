@@ -11,8 +11,8 @@ import 'package:schulplaner/common/functions/build_body_part.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
 import 'package:schulplaner/common/widgets/custom_text_field.dart';
 import 'package:schulplaner/common/widgets/weekly_schedule/models.dart';
-import 'package:schulplaner/config/theme/numbers.dart';
-import 'package:schulplaner/common/widgets/selection_button.dart';
+import 'package:schulplaner/common/constants/numbers.dart';
+import 'package:schulplaner/common/widgets/custom_button.dart';
 import 'package:uuid/uuid.dart';
 
 class TeacherDialog extends StatelessWidget {
@@ -28,9 +28,7 @@ class TeacherDialog extends StatelessWidget {
       content: Column(
         children: [
           const SizedBox(height: Spacing.medium),
-          SelectionButton(
-            title: "Lehrer erstellen",
-            selection: null,
+          CustomButton(
             onPressed: () async {
               final result = await showDialog<Teacher>(
                 context: context,
@@ -41,6 +39,7 @@ class TeacherDialog extends StatelessWidget {
                 Navigator.of(context).pop(result);
               }
             },
+            child: const Text("Lehrer erstellen"),
           ),
         ],
       ),
@@ -122,9 +121,12 @@ class EditTeacherDialog extends HookWidget {
               keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: Spacing.small),
-            SelectionButton(
-              title: "Fach",
+            CustomButton.selection(
               selection: subject.value?.subject,
+              onPressed: () async {
+                // TODO: Add a subject to a teacher
+              },
+              child: const Text("Fach"),
             ),
             const SizedBox(height: Spacing.medium),
             CheckboxListTile(

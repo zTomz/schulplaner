@@ -8,9 +8,9 @@ import 'package:schulplaner/common/models/time.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
 import 'package:schulplaner/common/widgets/custom_text_field.dart';
 import 'package:schulplaner/common/widgets/required_field.dart';
-import 'package:schulplaner/common/widgets/selection_button.dart';
+import 'package:schulplaner/common/widgets/custom_button.dart';
 import 'package:schulplaner/common/widgets/weekly_schedule/models.dart';
-import 'package:schulplaner/config/theme/numbers.dart';
+import 'package:schulplaner/common/constants/numbers.dart';
 import 'package:uuid/uuid.dart';
 
 class EditLessonDialog extends HookWidget {
@@ -74,8 +74,7 @@ class EditLessonDialog extends HookWidget {
             RequiredField(
               errorText: "Ein Fach ist erforderlich.",
               value: subject.value,
-              child: SelectionButton(
-                title: "Fach",
+              child: CustomButton.selection(
                 selection: subject.value?.subject,
                 onPressed: () async {
                   final result = await showDialog<Subject>(
@@ -87,6 +86,7 @@ class EditLessonDialog extends HookWidget {
                     subject.value = result;
                   }
                 },
+                child: const Text("Fach"),
               ),
             ),
           ],

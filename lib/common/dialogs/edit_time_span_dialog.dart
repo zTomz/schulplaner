@@ -5,7 +5,7 @@ import 'package:schulplaner/common/dialogs/custom_dialog.dart';
 import 'package:schulplaner/common/extensions/time_of_day_extension.dart';
 import 'package:schulplaner/common/models/time.dart';
 import 'package:schulplaner/common/widgets/time_span_picker.dart';
-import 'package:schulplaner/config/theme/numbers.dart';
+import 'package:schulplaner/common/constants/numbers.dart';
 
 /// A dialog, which askes the user to enter a new time span. When the user has entered the time span, it will be returned
 /// in the .pop() method

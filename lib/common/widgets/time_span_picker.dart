@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:schulplaner/config/theme/numbers.dart';
+import 'package:schulplaner/common/constants/numbers.dart';
 
 class TimeSpanPicker extends StatelessWidget {
   final void Function(TimeOfDay? from, TimeOfDay? to) onChanged;

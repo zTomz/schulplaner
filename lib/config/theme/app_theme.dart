@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 abstract class AppTheme {
   static final ThemeData darkTheme = ThemeData(
       brightness: Brightness.dark,
       colorScheme: darkScheme(),
-      textTheme: const TextTheme(
-        displayLarge: TextStyle(
+      textTheme: GoogleFonts.interTextTheme(
+        ThemeData(brightness: Brightness.dark).textTheme,
+      ).copyWith(
+        displayLarge: const TextStyle(
           fontSize: 70,
         ),
-        displayMedium: TextStyle(
+        displayMedium: const TextStyle(
           fontSize: 50,
         ),
       ),

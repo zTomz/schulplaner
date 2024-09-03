@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:schulplaner/common/widgets/gradient_scaffold.dart';
 import 'package:schulplaner/config/theme/app_colors.dart';
-import 'package:schulplaner/config/theme/numbers.dart';
+import 'package:schulplaner/common/constants/numbers.dart';
 import 'package:schulplaner/config/theme/text_styles.dart';
 
 class AccountCreationLayout extends StatelessWidget {
@@ -47,20 +47,29 @@ class AccountCreationLayout extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Text(
-              title,
-              style: TextStyles.titleLarge,
-            ),
-            const SizedBox(height: Spacing.medium),
-            SizedBox(
-              width: MediaQuery.sizeOf(context).width * 0.6,
-              child: Text(
-                description,
-                style: TextStyles.body,
-                textAlign: TextAlign.center,
+            Expanded(
+              child: SizedBox(
+                width: MediaQuery.sizeOf(context).width * 0.8,
+                child: Column(
+                  children: [
+                    FittedBox(
+                      child: Text(
+                        title,
+                        style: TextStyles.titleLarge,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    const SizedBox(height: Spacing.medium),
+                    Text(
+                      description,
+                      style: TextStyles.body,
+                      textAlign: TextAlign.center,
+                      softWrap: true,
+                    ),
+                  ],
+                ),
               ),
             ),
-            const Spacer(),
             Container(
               decoration: BoxDecoration(
                 boxShadow: [
@@ -83,7 +92,9 @@ class AccountCreationLayout extends StatelessWidget {
               ),
             ),
             if (secondButton != null) ...[
-              const SizedBox(height: Spacing.medium),
+              SizedBox(
+                height: buttonHasShadow ? Spacing.large : Spacing.small,
+              ),
               secondButton!,
             ],
           ],

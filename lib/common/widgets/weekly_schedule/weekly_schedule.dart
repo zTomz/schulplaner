@@ -1,9 +1,7 @@
-// TODO: Delete a time span
-
 import 'package:flutter/material.dart';
 import 'package:schulplaner/common/models/time.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
-import 'package:schulplaner/config/theme/numbers.dart';
+import 'package:schulplaner/common/constants/numbers.dart';
 
 import 'cells.dart';
 import 'days_header.dart';

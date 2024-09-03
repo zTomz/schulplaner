@@ -12,8 +12,8 @@ import 'package:schulplaner/common/models/weekly_schedule.dart';
 import 'package:schulplaner/common/widgets/color_choose_list_tile.dart';
 import 'package:schulplaner/common/widgets/custom_text_field.dart';
 import 'package:schulplaner/common/widgets/required_field.dart';
-import 'package:schulplaner/common/widgets/selection_button.dart';
-import 'package:schulplaner/config/theme/numbers.dart';
+import 'package:schulplaner/common/widgets/custom_button.dart';
+import 'package:schulplaner/common/constants/numbers.dart';
 import 'package:uuid/uuid.dart';
 
 class SubjectDialog extends StatelessWidget {
@@ -29,9 +29,7 @@ class SubjectDialog extends StatelessWidget {
       content: Column(
         children: [
           const SizedBox(height: Spacing.medium),
-          SelectionButton(
-            title: "Fach erstellen",
-            selection: null,
+          CustomButton(
             onPressed: () async {
               final result = await showDialog<Subject>(
                 context: context,
@@ -42,6 +40,7 @@ class SubjectDialog extends StatelessWidget {
                 Navigator.of(context).pop(result);
               }
             },
+            child: const Text("Fach erstellen"),
           ),
         ],
       ),
@@ -86,8 +85,7 @@ class EditSubjectDialog extends HookWidget {
             RequiredField(
               errorText: "Ein Lehrer ist erforderlich.",
               value: teacher.value,
-              child: SelectionButton(
-                title: "Lehrer",
+              child: CustomButton.selection(
                 selection: teacher.value?.salutation,
                 onPressed: () async {
                   final result = await showDialog<Teacher>(
@@ -100,6 +98,7 @@ class EditSubjectDialog extends HookWidget {
                     teacherError.value = null;
                   }
                 },
+                child: const Text("Lehrer"),
               ),
             ),
             const SizedBox(height: Spacing.small),
@@ -122,14 +121,9 @@ class EditSubjectDialog extends HookWidget {
         const SizedBox(width: Spacing.small),
         ElevatedButton(
           onPressed: () {
-
             if (!formKey.currentState!.validate()) {
-              
-
               return;
             }
-
-            
 
             Navigator.of(context).pop(
               Subject(

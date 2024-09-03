@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
@@ -7,16 +8,23 @@ import 'package:schulplaner/common/functions/build_body_part.dart';
 import 'package:schulplaner/common/models/hobby.dart';
 import 'package:schulplaner/common/models/time.dart';
 import 'package:schulplaner/common/widgets/color_choose_list_tile.dart';
+import 'package:schulplaner/common/widgets/custom_button.dart';
 import 'package:schulplaner/common/widgets/custom_text_field.dart';
 import 'package:schulplaner/common/widgets/gradient_scaffold.dart';
 import 'package:schulplaner/common/widgets/required_field.dart';
-import 'package:schulplaner/common/widgets/selection_button.dart';
-import 'package:schulplaner/config/theme/numbers.dart';
+import 'package:schulplaner/config/routes/router.gr.dart';
+import 'package:schulplaner/common/constants/numbers.dart';
 import 'package:schulplaner/config/theme/text_styles.dart';
+import 'package:schulplaner/features/account_creation/models/create_weekly_schedule_data.dart';
 import 'package:uuid/uuid.dart';
 
 class CreateHobbiesPage extends HookWidget {
-  const CreateHobbiesPage({super.key});
+  final CreateWeeklyScheduleData createWeeklyScheduleData;
+
+  const CreateHobbiesPage({
+    super.key,
+    required this.createWeeklyScheduleData,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -45,20 +53,25 @@ class CreateHobbiesPage extends HookWidget {
       ),
       floatingActionButton: FloatingActionButton.large(
         onPressed: () async {
-          // TODO: Go to the next page
+          await context.router.push(
+            SignUpSignInRoute(
+              createWeeklyScheduleData: createWeeklyScheduleData,
+              hobbies: hobbies.value,
+            ),
+          );
         },
         tooltip: "Weiter",
         child: const Icon(LucideIcons.arrow_right),
       ),
       body: hobbies.value.isEmpty
           ? Center(
-            child: _addHobbyButton(
+              child: _addHobbyButton(
                 context,
                 onHobbyAdded: (hobby) {
                   hobbies.value = [...hobbies.value, hobby];
                 },
               ),
-          )
+            )
           : ListView.builder(
               itemCount: hobbies.value.length,
               itemBuilder: (context, index) {
@@ -278,9 +291,7 @@ class EditHobbyDialog extends HookWidget {
                 ),
                 trailing: SizedBox(
                   width: 200,
-                  child: SelectionButton(
-                    title: "Tag hinzufügen",
-                    selection: null,
+                  child: CustomButton(
                     onPressed: () async {
                       final result = await showDialog<TimeInDay>(
                         context: context,
@@ -291,6 +302,7 @@ class EditHobbyDialog extends HookWidget {
                         days.value = [...days.value, result];
                       }
                     },
+                    child: const Text("Tag hinzufügen"),
                   ),
                 ),
               ),
@@ -487,8 +499,7 @@ class EditDayDialog extends HookWidget {
             RequiredField(
               errorText: "Eine Zeitspanne ist erforderlich.",
               value: timeSpan.value,
-              child: SelectionButton(
-                title: "Zeitspanne",
+              child: CustomButton.selection(
                 selection: timeSpan.value?.toFormattedString(),
                 onPressed: () async {
                   final result = await showDialog<TimeSpan>(
@@ -502,6 +513,7 @@ class EditDayDialog extends HookWidget {
                     timeSpan.value = result;
                   }
                 },
+                child: const Text("Zeitspanne"),
               ),
             ),
           ],

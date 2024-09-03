@@ -30,6 +30,16 @@ class ConfigureWeeklySchedulePage extends HookWidget {
               curve: Curves.easeIn,
             );
           },
+          secondButton: TextButton(
+            onPressed: () async {
+              // await context.router.push(
+          
+              // );
+            },
+            child: const Text(
+              "Sie möchten Ihren Stundenplan erst später erstellen?",
+            ),
+          ),
           buttonHasShadow: true,
         ),
         const CreateWeeklySchedulePage(),

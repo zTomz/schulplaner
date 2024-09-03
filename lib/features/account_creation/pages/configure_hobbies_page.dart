@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:schulplaner/config/routes/router.gr.dart';
 import 'package:schulplaner/features/account_creation/models/create_weekly_schedule_data.dart';
 import 'package:schulplaner/features/account_creation/pages/create_hobbies_page.dart';
 import 'package:schulplaner/features/account_creation/widgets/account_creation_layout.dart';
@@ -37,11 +38,16 @@ class ConfigureHobbyPage extends HookWidget {
             );
           },
           secondButton: TextButton(
-            onPressed: () {
-              // TODO: Go to the sign up page
+            onPressed: () async {
+              await context.router.push(
+                SignUpSignInRoute(
+                  createWeeklyScheduleData: createWeeklyScheduleData,
+                  hobbies: const [],
+                ),
+              );
             },
             child: Text(
-              "Ich habe keine Hobbies",
+              "Sie möchten Ihre Hobbies später hinzufügen?",
               style: TextStyle(
                 color: Theme.of(context).colorScheme.surfaceContainer,
                 fontWeight: FontWeight.bold,
@@ -49,7 +55,9 @@ class ConfigureHobbyPage extends HookWidget {
             ),
           ),
         ),
-        const CreateHobbiesPage(),
+        CreateHobbiesPage(
+          createWeeklyScheduleData: createWeeklyScheduleData,
+        ),
       ],
     );
   }
