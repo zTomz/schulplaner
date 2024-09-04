@@ -33,10 +33,13 @@ class AppNavigationPage extends HookWidget {
               CustomNavigationRail(
                 selectedIndex: tabsRouter.activeIndex,
                 onDestinationSelected: tabsRouter.setActiveIndex,
+                onProfilePressed: () {
+                  // TODO: Go to profile page
+                },
+                extended: navigationRailIsExtended.value,
                 onExtendedChanged: (isExtended) {
                   navigationRailIsExtended.value = isExtended;
                 },
-                extended: navigationRailIsExtended.value,
                 destinations: const [
                   CustomNavigationDestination(
                     label: "Übersicht",
@@ -66,23 +69,30 @@ class CustomNavigationRail extends StatelessWidget {
   final void Function(int index) onDestinationSelected;
   final List<CustomNavigationDestination> destinations;
 
-  final void Function(bool isExtended) onExtendedChanged;
+  final void Function() onProfilePressed;
+
   final bool extended;
+  final void Function(bool isExtended) onExtendedChanged;
 
   const CustomNavigationRail({
     super.key,
     required this.selectedIndex,
     required this.onDestinationSelected,
     required this.destinations,
+    required this.onProfilePressed,
     required this.extended,
     required this.onExtendedChanged,
   });
+
+  static const _kRailWidth = 80.0;
+  static const _kExtendedRailWidth = 270.0;
 
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
       duration: AnimationDurations.normal,
-      width: extended ? 270 : 80,
+      curve: Curves.decelerate,
+      width: extended ? _kExtendedRailWidth : _kRailWidth,
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
       ),
@@ -95,76 +105,15 @@ class CustomNavigationRail extends StatelessWidget {
             child: Center(
               child: IconButton.filled(
                 onPressed: () {
-                  // TODO: Go to profile page
+                  onProfilePressed();
                 },
                 iconSize: extended ? 50 : 30,
+                color: Theme.of(context).colorScheme.onPrimary,
                 icon: const Icon(LucideIcons.user_round),
               ),
             ),
           ),
-          const Spacer(),
-          ...destinations.map(
-            (destination) => Padding(
-              padding: EdgeInsets.only(
-                top: Spacing.small,
-                bottom: Spacing.small,
-                left: extended ? Spacing.medium : 0,
-              ),
-              child: Row(
-                mainAxisAlignment: extended
-                    ? MainAxisAlignment.start
-                    : MainAxisAlignment.center,
-                children: [
-                  Material(
-                    color: selectedIndex == destinations.indexOf(destination)
-                        ? Theme.of(context).colorScheme.primary
-                        : null,
-                    shape: const CircleBorder(),
-                    child: InkWell(
-                      onTap: () => onDestinationSelected(
-                        destinations.indexOf(destination),
-                      ),
-                      borderRadius: BorderRadius.circular(360),
-                      child: Padding(
-                        padding: const EdgeInsets.all(Spacing.small),
-                        child: IconTheme(
-                          data: IconThemeData(
-                            color: selectedIndex ==
-                                    destinations.indexOf(destination)
-                                ? Theme.of(context).colorScheme.onPrimary
-                                : Theme.of(context).colorScheme.onSurface,
-                          ),
-                          child: destination.icon,
-                        ),
-                      ),
-                    ),
-                  ),
-                  if (extended) ...[
-                    const SizedBox(width: Spacing.small),
-                    Expanded(
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          destination.label,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge!
-                              .copyWith(
-                                color: selectedIndex ==
-                                        destinations.indexOf(destination)
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Theme.of(context).colorScheme.onSurface,
-                              ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ),
-          const Spacer(),
+          _buildDestinations(),
           SizedBox(
             height: 80,
             child: Center(
@@ -186,6 +135,87 @@ class CustomNavigationRail extends StatelessWidget {
       ),
     );
   }
+
+  /// Build the destinations.
+  Widget _buildDestinations() => Expanded(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ...destinations.map(
+                  (destination) => Padding(
+                    padding: EdgeInsets.only(
+                      top: Spacing.small,
+                      bottom: Spacing.small,
+                      left: extended ? Spacing.medium : 0,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: extended
+                          ? MainAxisAlignment.start
+                          : MainAxisAlignment.center,
+                      children: [
+                        if (constraints.maxWidth != _kRailWidth)
+                          const SizedBox(width: Spacing.medium),
+                        Material(
+                          color:
+                              selectedIndex == destinations.indexOf(destination)
+                                  ? Theme.of(context).colorScheme.primary
+                                  : null,
+                          shape: const CircleBorder(),
+                          child: InkWell(
+                            onTap: () => onDestinationSelected(
+                              destinations.indexOf(destination),
+                            ),
+                            borderRadius: BorderRadius.circular(360),
+                            child: Padding(
+                              padding: const EdgeInsets.all(Spacing.small),
+                              child: IconTheme(
+                                data: IconThemeData(
+                                  color: selectedIndex ==
+                                          destinations.indexOf(destination)
+                                      ? Theme.of(context).colorScheme.onPrimary
+                                      : Theme.of(context).colorScheme.onSurface,
+                                ),
+                                child: destination.icon,
+                              ),
+                            ),
+                          ),
+                        ),
+                        if (constraints.maxWidth != _kRailWidth) ...[
+                          const SizedBox(width: Spacing.small),
+                          Expanded(
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                destination.label,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .copyWith(
+                                      color: selectedIndex ==
+                                              destinations.indexOf(destination)
+                                          ? Theme.of(context)
+                                              .colorScheme
+                                              .primary
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .onSurface,
+                                    ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      );
 }
 
 class CustomNavigationDestination {

@@ -15,5 +15,5 @@ abstract class Radii {
 }
 
 abstract class AnimationDurations {
-  static const Duration normal = Duration(milliseconds: 300);
+  static const Duration normal = Duration(milliseconds: 200);
 }
