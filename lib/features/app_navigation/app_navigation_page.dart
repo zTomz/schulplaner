@@ -96,42 +96,44 @@ class CustomNavigationRail extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            height: 80,
-            margin: const EdgeInsets.only(top: Spacing.large),
-            child: Center(
-              child: IconButton.filled(
-                onPressed: () {
-                  onProfilePressed();
-                },
-                iconSize: extended ? 50 : 30,
-                color: Theme.of(context).colorScheme.onPrimary,
-                icon: const Icon(LucideIcons.user_round),
-              ),
-            ),
-          ),
-          _buildDestinations(),
-          SizedBox(
-            height: 80,
-            child: Center(
-              child: IconButton(
-                onPressed: () {
-                  onExtendedChanged(!extended);
-                },
-                tooltip: "Navigationleiste ein-/ausklappen",
-                iconSize: 30,
-                icon: Icon(
-                  extended
-                      ? LucideIcons.between_horizontal_end
-                      : LucideIcons.between_horizontal_start,
+      child: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              height: 80,
+              margin: const EdgeInsets.only(top: Spacing.medium),
+              child: Center(
+                child: IconButton.filled(
+                  onPressed: () {
+                    onProfilePressed();
+                  },
+                  iconSize: extended ? 50 : 30,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                  icon: const Icon(LucideIcons.user_round),
                 ),
               ),
             ),
-          )
-        ],
+            _buildDestinations(),
+            SizedBox(
+              height: 80,
+              child: Center(
+                child: IconButton(
+                  onPressed: () {
+                    onExtendedChanged(!extended);
+                  },
+                  tooltip: "Navigationleiste ein-/ausklappen",
+                  iconSize: 30,
+                  icon: Icon(
+                    extended
+                        ? LucideIcons.between_horizontal_end
+                        : LucideIcons.between_horizontal_start,
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
