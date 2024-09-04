@@ -3,30 +3,39 @@ import 'package:google_fonts/google_fonts.dart';
 
 abstract class AppTheme {
   static final ThemeData darkTheme = ThemeData(
-      brightness: Brightness.dark,
-      colorScheme: darkScheme(),
-      textTheme: GoogleFonts.interTextTheme(
-        ThemeData(brightness: Brightness.dark).textTheme,
-      ).copyWith(
-        displayLarge: const TextStyle(
-          fontSize: 70,
-        ),
-        displayMedium: const TextStyle(
-          fontSize: 50,
+    brightness: Brightness.dark,
+    colorScheme: darkScheme(),
+    textTheme: GoogleFonts.interTextTheme(
+      ThemeData(brightness: Brightness.dark).textTheme,
+    ).copyWith(
+      displayLarge: const TextStyle(
+        fontSize: 70,
+      ),
+      displayMedium: const TextStyle(
+        fontSize: 50,
+      ),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 30,
+          vertical: 16,
         ),
       ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 30,
-            vertical: 16,
-          ),
-        ),
+    ),
+    floatingActionButtonTheme: const FloatingActionButtonThemeData(
+      backgroundColor: Color(0xff1f1f1f), // Surface container
+      foregroundColor: Color(0xff55e071), // Primary
+    ),
+    iconTheme: const IconThemeData(
+      color: Colors.white,
+    ),
+    iconButtonTheme: IconButtonThemeData(
+      style: IconButton.styleFrom(
+        foregroundColor: Colors.white,
       ),
-      floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        backgroundColor: Color(0xff1f1f1f), // Surface container
-        foregroundColor: Color(0xff55e071), // Primary
-      ));
+    ),
+  );
 
   static ColorScheme darkScheme() {
     return const ColorScheme(

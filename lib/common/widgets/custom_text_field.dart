@@ -71,7 +71,7 @@ class CustomTextField extends HookWidget {
         prefixIcon: prefixIcon,
         suffix: _type == _CustomTextFieldType.password
             ? ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: 28, maxWidth: 28),
+                constraints: const BoxConstraints(maxHeight: 28, maxWidth: 28),
                 child: IconButton(
                   onPressed: () {
                     showPassword.value = !showPassword.value;

@@ -122,7 +122,8 @@ class CustomNavigationRail extends StatelessWidget {
                     shape: const CircleBorder(),
                     child: InkWell(
                       onTap: () => onDestinationSelected(
-                          destinations.indexOf(destination)),
+                        destinations.indexOf(destination),
+                      ),
                       borderRadius: BorderRadius.circular(360),
                       child: Padding(
                         padding: const EdgeInsets.all(Spacing.small),
@@ -140,13 +141,22 @@ class CustomNavigationRail extends StatelessWidget {
                   ),
                   if (extended) ...[
                     const SizedBox(width: Spacing.small),
-                    Text(
-                      destination.label,
-                      style: TextStyle(
-                        color:
-                            selectedIndex == destinations.indexOf(destination)
-                                ? Theme.of(context).colorScheme.primary
-                                : Theme.of(context).colorScheme.onSurface,
+                    Expanded(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          destination.label,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge!
+                              .copyWith(
+                                color: selectedIndex ==
+                                        destinations.indexOf(destination)
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Theme.of(context).colorScheme.onSurface,
+                              ),
+                        ),
                       ),
                     ),
                   ],
@@ -164,9 +174,11 @@ class CustomNavigationRail extends StatelessWidget {
                 },
                 tooltip: "Navigationleiste ein-/ausklappen",
                 iconSize: 30,
-                icon: Icon(extended
-                    ? LucideIcons.between_horizontal_end
-                    : LucideIcons.between_horizontal_start),
+                icon: Icon(
+                  extended
+                      ? LucideIcons.between_horizontal_end
+                      : LucideIcons.between_horizontal_start,
+                ),
               ),
             ),
           )
