@@ -106,27 +106,30 @@ class CustomNavigationRail extends StatelessWidget {
                       children: [
                         if (constraints.maxWidth != _kRailWidth)
                           const SizedBox(width: Spacing.medium),
-                        Material(
-                          color:
-                              selectedIndex == destinations.indexOf(destination)
-                                  ? Theme.of(context).colorScheme.primary
-                                  : null,
-                          shape: const CircleBorder(),
-                          child: InkWell(
-                            onTap: () => onDestinationSelected(
-                              destinations.indexOf(destination),
-                            ),
-                            borderRadius: BorderRadius.circular(360),
-                            child: Padding(
-                              padding: const EdgeInsets.all(Spacing.small),
-                              child: IconTheme(
-                                data: IconThemeData(
-                                  color: selectedIndex ==
-                                          destinations.indexOf(destination)
-                                      ? Theme.of(context).colorScheme.onPrimary
-                                      : Theme.of(context).colorScheme.onSurface,
+                        Tooltip(
+                          message: destination.label,
+                          child: Material(
+                            color:
+                                selectedIndex == destinations.indexOf(destination)
+                                    ? Theme.of(context).colorScheme.primary
+                                    : null,
+                            shape: const CircleBorder(),
+                            child: InkWell(
+                              onTap: () => onDestinationSelected(
+                                destinations.indexOf(destination),
+                              ),
+                              borderRadius: BorderRadius.circular(360),
+                              child: Padding(
+                                padding: const EdgeInsets.all(Spacing.small),
+                                child: IconTheme(
+                                  data: IconThemeData(
+                                    color: selectedIndex ==
+                                            destinations.indexOf(destination)
+                                        ? Theme.of(context).colorScheme.onPrimary
+                                        : Theme.of(context).colorScheme.onSurface,
+                                  ),
+                                  child: destination.icon,
                                 ),
-                                child: destination.icon,
                               ),
                             ),
                           ),
