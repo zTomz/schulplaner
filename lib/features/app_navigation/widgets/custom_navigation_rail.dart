@@ -55,6 +55,7 @@ class CustomNavigationRail extends StatelessWidget {
                   onPressed: () {
                     onProfilePressed();
                   },
+                  tooltip: "Profil",
                   iconSize: extended ? 50 : 30,
                   color: Theme.of(context).colorScheme.onPrimary,
                   icon: const Icon(LucideIcons.user_round),

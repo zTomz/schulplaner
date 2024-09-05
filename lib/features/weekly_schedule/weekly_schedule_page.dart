@@ -8,6 +8,7 @@ import 'package:schulplaner/common/dialogs/edit_time_span_dialog.dart';
 import 'package:schulplaner/common/dialogs/weekly_schedule/edit_lesson_dialog.dart';
 import 'package:schulplaner/common/models/time.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
+import 'package:schulplaner/common/widgets/custom_app_bar.dart';
 import 'package:schulplaner/common/widgets/gradient_scaffold.dart';
 import 'package:schulplaner/common/widgets/weekly_schedule/weekly_schedule.dart';
 import 'package:schulplaner/config/theme/text_styles.dart';
@@ -31,60 +32,51 @@ class WeeklySchedulePage extends HookWidget {
     final lessons = useState<List<Lesson>>([]);
 
     return GradientScaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
+      appBar: CustomAppBar(
         title: const Text(
           "Stundenplan",
           style: TextStyles.title,
         ),
-        toolbarHeight: 130,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
         actions: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () async {
-                  final result = await showDialog<TimeSpan>(
-                    context: context,
-                    builder: (context) => const EditTimeSpanDialog(),
-                  );
+          ElevatedButton.icon(
+            onPressed: () async {
+              final result = await showDialog<TimeSpan>(
+                context: context,
+                builder: (context) => const EditTimeSpanDialog(),
+              );
 
-                  if (result != null) {
-                    timeSpans.value = {...timeSpans.value, result};
-                  }
-                },
-                icon: const Icon(
-                  LucideIcons.timer,
-                  size: 20,
-                ),
-                label: const Text("Schulzeit hinzufügen"),
-              ),
-              const SizedBox(width: Spacing.medium),
-              ElevatedButton.icon(
-                onPressed: selectedSchoolTimeCell.value == null
-                    ? null
-                    : () async {
-                        final result = await showDialog<Lesson>(
-                          context: context,
-                          builder: (context) => EditLessonDialog(
-                            timeSpan: selectedSchoolTimeCell.value!.timeSpan,
-                            weekday: selectedSchoolTimeCell.value!.weekday,
-                          ),
-                        );
+              if (result != null) {
+                timeSpans.value = {...timeSpans.value, result};
+              }
+            },
+            icon: const Icon(
+              LucideIcons.timer,
+              size: 20,
+            ),
+            label: const Text("Schulzeit hinzufügen"),
+          ),
+          const SizedBox(width: Spacing.medium),
+          ElevatedButton.icon(
+            onPressed: selectedSchoolTimeCell.value == null
+                ? null
+                : () async {
+                    final result = await showDialog<Lesson>(
+                      context: context,
+                      builder: (context) => EditLessonDialog(
+                        timeSpan: selectedSchoolTimeCell.value!.timeSpan,
+                        weekday: selectedSchoolTimeCell.value!.weekday,
+                      ),
+                    );
 
-                        if (result != null) {
-                          lessons.value = [...lessons.value, result];
-                        }
-                      },
-                icon: const Icon(
-                  LucideIcons.circle_plus,
-                  size: 20,
-                ),
-                label: const Text("Schulstunde hinzufügen"),
-              ),
-            ],
+                    if (result != null) {
+                      lessons.value = [...lessons.value, result];
+                    }
+                  },
+            icon: const Icon(
+              LucideIcons.circle_plus,
+              size: 20,
+            ),
+            label: const Text("Schulstunde hinzufügen"),
           ),
           const SizedBox(width: Spacing.medium),
         ],
