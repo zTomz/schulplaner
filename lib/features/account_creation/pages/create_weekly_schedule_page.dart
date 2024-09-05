@@ -7,6 +7,7 @@ import 'package:schulplaner/common/dialogs/weekly_schedule/edit_lesson_dialog.da
 import 'package:schulplaner/common/dialogs/edit_time_span_dialog.dart';
 import 'package:schulplaner/common/models/time.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
+import 'package:schulplaner/common/widgets/custom_app_bar.dart';
 import 'package:schulplaner/common/widgets/gradient_scaffold.dart';
 import 'package:schulplaner/common/widgets/weekly_schedule/weekly_schedule.dart';
 import 'package:schulplaner/config/routes/router.gr.dart';
@@ -30,15 +31,11 @@ class CreateWeeklySchedulePage extends HookWidget {
     final lessons = useState<List<Lesson>>([]);
 
     return GradientScaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
+      appBar: CustomAppBar(
         title: const Text(
           "Stundenplan erstellen",
           style: TextStyles.title,
         ),
-        toolbarHeight: 130,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
         actions: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
