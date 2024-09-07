@@ -17,8 +17,11 @@ class CalendarPage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(Spacing.medium),
-        child: CalendarView(
-          startDate: DateTime.now(),
+        child: SizedBox(
+          width: MediaQuery.sizeOf(context).width * 0.4,
+          child: CalendarView(
+            startDate: DateTime.now(),
+          ),
         ),
       ),
     );
