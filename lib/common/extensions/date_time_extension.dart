@@ -1,3 +1,4 @@
+import 'package:schulplaner/common/models/event.dart';
 import 'package:schulplaner/common/models/time.dart';
 
 extension DateTimeExtension on DateTime {
@@ -31,6 +32,22 @@ extension DateTimeExtension on DateTime {
         return "Unbekannt";
     }
   }
+
+  /// Compares only [day], [month] and [year] of [DateTime]. Optional a repeating type can be 
+  /// added
+  bool compareWithoutTime(DateTime date, {RepeatingEventType? repeatingType}) {
+    if (repeatingType == RepeatingEventType.daily) {
+      // It's not necessary to compare time. Because it's every day
+      return true;
+    } else if (repeatingType == RepeatingEventType.weekly) {
+      return weekday == date.weekday && month == date.month && year == date.year;
+    } else if (repeatingType == RepeatingEventType.monthly) {
+      return day == date.day && month == date.month;
+    } else {
+      return day == date.day && month == date.month && year == date.year;
+    }
+  }
+
 
   /// Returns The List of date of Current Week, all of the dates will be without
   /// time.

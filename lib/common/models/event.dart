@@ -38,13 +38,9 @@ class EventDate {
   /// How long the event lasts
   final Duration duration;
 
-  /// A unique identifier
-  final String uuid;
-
   EventDate({
     required this.date,
     required this.duration,
-    required this.uuid,
   });
 }
 

@@ -1,21 +1,29 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/common/constants/numbers.dart';
 import 'package:schulplaner/common/extensions/date_time_extension.dart';
+import 'package:schulplaner/common/models/event.dart';
 import 'package:schulplaner/common/models/time.dart';
 
 class CalendarView extends HookWidget {
   final DateTime startDate;
+  final void Function(DateTime date) onDaySelected;
+  final List<Event> events;
 
   const CalendarView({
     super.key,
     required this.startDate,
+    required this.onDaySelected,
+    required this.events,
   });
 
   @override
   Widget build(BuildContext context) {
     final currentMonth = useState<DateTime>(startDate);
+    final selectedDay = useState(DateTime.now());
 
     final monthDays = currentMonth.value.datesOfMonths();
 
@@ -31,6 +39,7 @@ class CalendarView extends HookWidget {
                 currentMonth.value = currentMonth.value
                     .copyWith(month: currentMonth.value.month - 1);
               },
+              tooltip: "Vorheriger Monat",
               icon: const Icon(LucideIcons.chevron_left),
             ),
             TextButton(
@@ -57,6 +66,7 @@ class CalendarView extends HookWidget {
                 currentMonth.value = currentMonth.value
                     .copyWith(month: currentMonth.value.month + 1);
               },
+              tooltip: "Nächster Monat",
               icon: const Icon(LucideIcons.chevron_right),
             ),
           ],
@@ -66,14 +76,21 @@ class CalendarView extends HookWidget {
 
         // The days header
         Container(
-          color: Colors.red,
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Theme.of(context).colorScheme.outline,
+            ),
+            borderRadius: const BorderRadius.all(Radii.small),
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: Weekday.values
-                .map((day) => Text(
-                      day.name.substring(0, 1),
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ))
+                .map(
+                  (day) => Text(
+                    day.name.substring(0, 1),
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                )
                 .toList(),
           ),
         ),
@@ -84,18 +101,89 @@ class CalendarView extends HookWidget {
         Expanded(
           child: GridView.builder(
             padding: EdgeInsets.zero,
+            physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 7,
-              childAspectRatio: 4 / 5,
+              childAspectRatio: 9 / 10,
             ),
             itemBuilder: (context, index) {
               final day = monthDays[index];
+              final dayIsSelected = day.compareWithoutTime(selectedDay.value);
+              final eventsOfDay = events
+                  .where(
+                    (event) => event.date.date.compareWithoutTime(
+                      day,
+                      repeatingType: event.repeatingEventType,
+                    ),
+                  )
+                  .toList(growable: false);
 
-              return Container(
-                color: Colors.primaries[index % Colors.primaries.length],
-                child: Text(
-                  day.day.toString(),
-                  textAlign: TextAlign.center,
+              return MaterialButton(
+                onPressed: () {
+                  selectedDay.value = day;
+
+                  onDaySelected(day);
+                },
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(Spacing.small),
+                ),
+                padding: const EdgeInsets.all(Spacing.extraSmall),
+                child: Column(
+                  children: [
+                    Container(
+                      width: 25,
+                      height: 25,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: day.compareWithoutTime(DateTime.now())
+                            ? Border.all(
+                                color: Theme.of(context).colorScheme.primary,
+                              )
+                            : null,
+                        color: dayIsSelected
+                            ? Theme.of(context).colorScheme.primary
+                            : null,
+                      ),
+                      child: Text(
+                        day.day.toString(),
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              color: dayIsSelected
+                                  ? Theme.of(context).colorScheme.onPrimary
+                                  : day.month != currentMonth.value.month
+                                      ? Theme.of(context).colorScheme.outline
+                                      : null,
+                            ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    const SizedBox(height: Spacing.small),
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      direction: Axis.horizontal,
+                      spacing: 4,
+                      runSpacing: 8,
+                      children: [
+                        for (int i = 0; i < min(8, eventsOfDay.length); i++)
+                          Container(
+                            width: 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: eventsOfDay[i].color,
+                            ),
+                          ),
+                        if (eventsOfDay.length - 8 > 0)
+                          Text(
+                            "+${eventsOfDay.length - 8}",
+                            style:
+                                Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      height: 1,
+                                    ),
+                          ),
+                      ],
+                    ),
+                  ],
                 ),
               );
             },
