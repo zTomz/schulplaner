@@ -30,6 +30,8 @@ class Event {
   });
 }
 
+// TODO: Add homework and other classes here. These should be subclasses of [Event]
+
 /// A date with a duration
 class EventDate {
   /// The date of the event

@@ -154,7 +154,7 @@ class SignUpSignInPage extends HookWidget {
           width: MediaQuery.sizeOf(context).width * 0.7,
           height: MediaQuery.sizeOf(context).height * 0.9,
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface.withOpacity(0.5),
+            color: Theme.of(context).colorScheme.surface.withOpacity(kDefaultOpacity),
             borderRadius: const BorderRadius.all(Radii.medium),
           ),
           child: child,

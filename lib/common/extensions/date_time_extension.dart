@@ -33,21 +33,24 @@ extension DateTimeExtension on DateTime {
     }
   }
 
-  /// Compares only [day], [month] and [year] of [DateTime]. Optional a repeating type can be 
+  /// Compares only [day], [month] and [year] of [DateTime]. Optional a repeating type can be
   /// added
   bool compareWithoutTime(DateTime date, {RepeatingEventType? repeatingType}) {
-    if (repeatingType == RepeatingEventType.daily) {
-      // It's not necessary to compare time. Because it's every day
-      return true;
-    } else if (repeatingType == RepeatingEventType.weekly) {
-      return weekday == date.weekday && month == date.month && year == date.year;
-    } else if (repeatingType == RepeatingEventType.monthly) {
-      return day == date.day && month == date.month;
-    } else {
-      return day == date.day && month == date.month && year == date.year;
+    if (repeatingType != null) {
+      switch (repeatingType) {
+        case RepeatingEventType.daily:
+          return true;
+        case RepeatingEventType.weekly:
+          return weekday == date.weekday;
+        case RepeatingEventType.monthly:
+          return day == date.day;
+        case RepeatingEventType.yearly:
+          return day == date.day && month == date.month;
+      }
     }
-  }
 
+    return day == date.day && month == date.month && year == date.year;
+  }
 
   /// Returns The List of date of Current Week, all of the dates will be without
   /// time.
