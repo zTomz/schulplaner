@@ -13,8 +13,8 @@ class IntroPage extends StatelessWidget {
     return AccountCreationLayout(
       title: "Schulplaner",
       description:
-          "Bringe Schule und Hobby unter einen Hut ohne auf etwas verzichten  zu müssen, nur mithilfe des Zeitmanagements und KI.",
-      buttonText: "Lass uns loslegen",
+          "Ihr digitaler Schulassistent: Effiziente Planung von Hausaufgaben, Prüfungen und mehr. 🔥",
+      buttonText: "Starten",
       buttonIcon: const Icon(LucideIcons.arrow_right),
       onPressed: () {
         context.pushRoute(const ConfigureWeeklyScheduleRoute());

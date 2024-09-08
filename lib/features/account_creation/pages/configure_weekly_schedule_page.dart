@@ -1,7 +1,8 @@
-import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:schulplaner/config/routes/router.gr.dart';
 import 'package:schulplaner/features/account_creation/pages/create_weekly_schedule_page.dart';
 import 'package:schulplaner/features/account_creation/widgets/account_creation_layout.dart';
 
@@ -21,7 +22,7 @@ class ConfigureWeeklySchedulePage extends HookWidget {
         AccountCreationLayout(
           title: "Stundenplan erstellen",
           description:
-              "Mithilfe von deinem Stundenplan, kann die App die Ereignisse und Termine so legen, dass sie in dein Zeitfenster passen.",
+              "Mithilfe Ihres Stundenplans, kann die App die Ereignisse und Termine noch intelligenter legen.",
           buttonText: "Erstellen einen Plan",
           buttonIcon: const Icon(LucideIcons.pencil_ruler),
           onPressed: () {
@@ -32,9 +33,11 @@ class ConfigureWeeklySchedulePage extends HookWidget {
           },
           secondButton: TextButton(
             onPressed: () async {
-              // await context.router.push(
-          
-              // );
+              await context.router.push(
+                ConfigureHobbyRoute(
+                  createWeeklyScheduleData: null,
+                ),
+              );
             },
             child: const Text(
               "Sie möchten Ihren Stundenplan erst später erstellen?",

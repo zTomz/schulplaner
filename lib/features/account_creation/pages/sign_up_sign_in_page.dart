@@ -15,15 +15,15 @@ import 'package:schulplaner/features/account_creation/models/create_weekly_sched
 @RoutePage()
 class SignUpSignInPage extends HookWidget {
   /// The data from the create weekly schedule page
-  final CreateWeeklyScheduleData createWeeklyScheduleData;
+  final CreateWeeklyScheduleData? createWeeklyScheduleData;
 
   /// The hobbies from the create hobbies page
-  final List<Hobby> hobbies;
+  final List<Hobby>? hobbies;
 
   const SignUpSignInPage({
     super.key,
-    required this.createWeeklyScheduleData,
-    required this.hobbies,
+    this.createWeeklyScheduleData,
+    this.hobbies,
   });
 
   @override
@@ -45,9 +45,7 @@ class SignUpSignInPage extends HookWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                isSigningUp.value
-                    ? "Erstelle einen Account"
-                    : "Melden Sie sich an",
+                isSigningUp.value ? "Account erstellen" : "Anmelden",
                 style: TextStyles.title,
                 textAlign: TextAlign.center,
               ),
@@ -100,7 +98,7 @@ class SignUpSignInPage extends HookWidget {
                         // TODO: Create the user or sign him in
                       },
                       child: Text(
-                        isSigningUp.value ? "Account erstellen" : "Einloggen",
+                        isSigningUp.value ? "Account erstellen" : "Anmelden",
                       ),
                     ),
                     const SizedBox(height: Spacing.small),
@@ -124,10 +122,13 @@ class SignUpSignInPage extends HookWidget {
                         child: InkWell(
                           onTap: () {},
                           borderRadius: BorderRadius.circular(360),
-                          child: Padding(
-                            padding: const EdgeInsets.all(Spacing.small),
-                            child: SvgPicture.asset(
-                              SvgPictures.googleLogo,
+                          child: Tooltip(
+                            message: "Anmelden mit Google",
+                            child: Padding(
+                              padding: const EdgeInsets.all(Spacing.small),
+                              child: SvgPicture.asset(
+                                SvgPictures.googleLogo,
+                              ),
                             ),
                           ),
                         ),
@@ -154,7 +155,10 @@ class SignUpSignInPage extends HookWidget {
           width: MediaQuery.sizeOf(context).width * 0.7,
           height: MediaQuery.sizeOf(context).height * 0.9,
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface.withOpacity(kDefaultOpacity),
+            color: Theme.of(context)
+                .colorScheme
+                .surface
+                .withOpacity(kDefaultOpacity),
             borderRadius: const BorderRadius.all(Radii.medium),
           ),
           child: child,

@@ -9,11 +9,11 @@ import 'package:schulplaner/features/account_creation/widgets/account_creation_l
 
 @RoutePage()
 class ConfigureHobbyPage extends HookWidget {
-  final CreateWeeklyScheduleData createWeeklyScheduleData;
+  final CreateWeeklyScheduleData? createWeeklyScheduleData;
 
   const ConfigureHobbyPage({
     super.key,
-    required this.createWeeklyScheduleData,
+    this.createWeeklyScheduleData,
   });
 
   @override
@@ -28,8 +28,8 @@ class ConfigureHobbyPage extends HookWidget {
         AccountCreationLayout(
           title: "Hast du ein Hobby?",
           description:
-              "Wenn du uns dein Hobby mitteilst, kann dir die App Ereignisse und Termine so legen, dass sie in dein Zeitfenster passen.",
-          buttonText: "Füge dein Hobby hinzu",
+              "Wenn Sie uns Ihre Hobby mitteilen, kann Ihnen die App Ereignisse und Termine so legen, dass sie in Ihr Zeitfenster passen.",
+          buttonText: "Fügen Sie Ihre Hobbies hinzu",
           buttonIcon: const Icon(LucideIcons.arrow_right),
           onPressed: () {
             pageController.nextPage(
@@ -42,18 +42,15 @@ class ConfigureHobbyPage extends HookWidget {
               await context.router.push(
                 SignUpSignInRoute(
                   createWeeklyScheduleData: createWeeklyScheduleData,
-                  hobbies: const [],
+                  hobbies: null,
                 ),
               );
             },
-            child: Text(
+            child: const Text(
               "Sie möchten Ihre Hobbies später hinzufügen?",
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.surfaceContainer,
-                fontWeight: FontWeight.bold,
-              ),
             ),
           ),
+          buttonHasShadow: true,
         ),
         CreateHobbiesPage(
           createWeeklyScheduleData: createWeeklyScheduleData,

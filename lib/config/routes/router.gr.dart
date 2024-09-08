@@ -71,7 +71,7 @@ class CalendarRoute extends _i9.PageRouteInfo<void> {
 class ConfigureHobbyRoute extends _i9.PageRouteInfo<ConfigureHobbyRouteArgs> {
   ConfigureHobbyRoute({
     _i10.Key? key,
-    required _i11.CreateWeeklyScheduleData createWeeklyScheduleData,
+    _i11.CreateWeeklyScheduleData? createWeeklyScheduleData,
     List<_i9.PageRouteInfo>? children,
   }) : super(
           ConfigureHobbyRoute.name,
@@ -87,7 +87,8 @@ class ConfigureHobbyRoute extends _i9.PageRouteInfo<ConfigureHobbyRouteArgs> {
   static _i9.PageInfo page = _i9.PageInfo(
     name,
     builder: (data) {
-      final args = data.argsAs<ConfigureHobbyRouteArgs>();
+      final args = data.argsAs<ConfigureHobbyRouteArgs>(
+          orElse: () => const ConfigureHobbyRouteArgs());
       return _i3.ConfigureHobbyPage(
         key: args.key,
         createWeeklyScheduleData: args.createWeeklyScheduleData,
@@ -99,12 +100,12 @@ class ConfigureHobbyRoute extends _i9.PageRouteInfo<ConfigureHobbyRouteArgs> {
 class ConfigureHobbyRouteArgs {
   const ConfigureHobbyRouteArgs({
     this.key,
-    required this.createWeeklyScheduleData,
+    this.createWeeklyScheduleData,
   });
 
   final _i10.Key? key;
 
-  final _i11.CreateWeeklyScheduleData createWeeklyScheduleData;
+  final _i11.CreateWeeklyScheduleData? createWeeklyScheduleData;
 
   @override
   String toString() {
@@ -174,8 +175,8 @@ class OverviewRoute extends _i9.PageRouteInfo<void> {
 class SignUpSignInRoute extends _i9.PageRouteInfo<SignUpSignInRouteArgs> {
   SignUpSignInRoute({
     _i10.Key? key,
-    required _i11.CreateWeeklyScheduleData createWeeklyScheduleData,
-    required List<_i12.Hobby> hobbies,
+    _i11.CreateWeeklyScheduleData? createWeeklyScheduleData,
+    List<_i12.Hobby>? hobbies,
     List<_i9.PageRouteInfo>? children,
   }) : super(
           SignUpSignInRoute.name,
@@ -192,7 +193,8 @@ class SignUpSignInRoute extends _i9.PageRouteInfo<SignUpSignInRouteArgs> {
   static _i9.PageInfo page = _i9.PageInfo(
     name,
     builder: (data) {
-      final args = data.argsAs<SignUpSignInRouteArgs>();
+      final args = data.argsAs<SignUpSignInRouteArgs>(
+          orElse: () => const SignUpSignInRouteArgs());
       return _i7.SignUpSignInPage(
         key: args.key,
         createWeeklyScheduleData: args.createWeeklyScheduleData,
@@ -205,15 +207,15 @@ class SignUpSignInRoute extends _i9.PageRouteInfo<SignUpSignInRouteArgs> {
 class SignUpSignInRouteArgs {
   const SignUpSignInRouteArgs({
     this.key,
-    required this.createWeeklyScheduleData,
-    required this.hobbies,
+    this.createWeeklyScheduleData,
+    this.hobbies,
   });
 
   final _i10.Key? key;
 
-  final _i11.CreateWeeklyScheduleData createWeeklyScheduleData;
+  final _i11.CreateWeeklyScheduleData? createWeeklyScheduleData;
 
-  final List<_i12.Hobby> hobbies;
+  final List<_i12.Hobby>? hobbies;
 
   @override
   String toString() {

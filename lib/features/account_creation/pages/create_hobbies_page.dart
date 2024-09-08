@@ -12,11 +12,11 @@ import 'package:schulplaner/common/constants/numbers.dart';
 import 'package:schulplaner/features/account_creation/models/create_weekly_schedule_data.dart';
 
 class CreateHobbiesPage extends HookWidget {
-  final CreateWeeklyScheduleData createWeeklyScheduleData;
+  final CreateWeeklyScheduleData? createWeeklyScheduleData;
 
   const CreateHobbiesPage({
     super.key,
-    required this.createWeeklyScheduleData,
+    this.createWeeklyScheduleData,
   });
 
   @override
