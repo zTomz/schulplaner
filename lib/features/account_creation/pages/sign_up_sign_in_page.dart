@@ -1,14 +1,17 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:schulplaner/common/constants/svg_pictures.dart';
 import 'package:schulplaner/common/models/hobby.dart';
+import 'package:schulplaner/common/services/auth_service.dart';
 import 'package:schulplaner/common/widgets/custom_button.dart';
 import 'package:schulplaner/common/widgets/custom_text_field.dart';
 import 'package:schulplaner/common/widgets/gradient_scaffold.dart';
 import 'package:schulplaner/common/constants/numbers.dart';
+import 'package:schulplaner/config/routes/router.gr.dart';
 import 'package:schulplaner/config/theme/text_styles.dart';
 import 'package:schulplaner/features/account_creation/models/create_weekly_schedule_data.dart';
 
@@ -38,7 +41,6 @@ class SignUpSignInPage extends HookWidget {
 
     return GradientScaffold(
       body: _buildBox(
-        context,
         child: Form(
           key: formKey,
           child: Column(
@@ -90,12 +92,33 @@ class SignUpSignInPage extends HookWidget {
                     ),
                     const SizedBox(height: Spacing.medium),
                     CustomButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (!formKey.currentState!.validate()) {
                           return;
                         }
 
-                        // TODO: Create the user or sign him in
+                        UserCredential? result;
+                        if (isSigningUp.value) {
+                          result = await AuthService.createAccount(
+                            context,
+                            name: usernameController.text.trim(),
+                            email: emailController.text.trim(),
+                            password: passwordController.text.trim(),
+                          );
+                        } else {
+                          result = await AuthService.signIn(
+                            context,
+                            email: emailController.text.trim(),
+                            password: passwordController.text.trim(),
+                          );
+                        }
+
+                        // When the result is not null, the user is signed in or has created an account
+                        if (result != null && context.mounted) {
+                          context.router.replaceAll([
+                            const AppNavigationRoute(),
+                          ]);
+                        }
                       },
                       child: Text(
                         isSigningUp.value ? "Account erstellen" : "Anmelden",
@@ -144,24 +167,28 @@ class SignUpSignInPage extends HookWidget {
     );
   }
 
-  Widget _buildBox(
-    BuildContext context, {
+  Widget _buildBox({
     required Widget child,
   }) =>
-      Align(
-        alignment: Alignment.center,
-        child: Container(
-          padding: const EdgeInsets.all(Spacing.large),
-          width: MediaQuery.sizeOf(context).width * 0.7,
-          height: MediaQuery.sizeOf(context).height * 0.9,
-          decoration: BoxDecoration(
-            color: Theme.of(context)
-                .colorScheme
-                .surface
-                .withOpacity(kDefaultOpacity),
-            borderRadius: const BorderRadius.all(Radii.medium),
+      Builder(builder: (context) {
+        return Align(
+          alignment: Alignment.center,
+          child: Container(
+            padding: const EdgeInsets.all(Spacing.large),
+            width: MediaQuery.sizeOf(context).width * 0.7,
+            height: MediaQuery.sizeOf(context).height * 0.9,
+            decoration: BoxDecoration(
+              color: Theme.of(context)
+                  .colorScheme
+                  .surface
+                  .withOpacity(kDefaultOpacity),
+              borderRadius: const BorderRadius.all(Radii.medium),
+            ),
+            alignment: Alignment.center,
+            child: SingleChildScrollView(
+              child: child,
+            ),
           ),
-          child: child,
-        ),
-      );
+        );
+      });
 }

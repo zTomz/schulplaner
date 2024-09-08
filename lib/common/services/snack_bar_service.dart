@@ -1,8 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/common/constants/numbers.dart';
 
-class CustomSnackbar {
+class SnackBarService {
   static void show({
     required BuildContext context,
     required Widget content,
@@ -10,6 +12,7 @@ class CustomSnackbar {
   }) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
+        width: min(MediaQuery.of(context).size.width, 600),
         content: Stack(
           children: [
             Positioned(
@@ -38,7 +41,8 @@ class CustomSnackbar {
                   if (type != CustomSnackbarType.normal) ...[
                     Icon(
                       type.icon,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: type.backgroundColor ??
+                          Theme.of(context).colorScheme.primary,
                     ),
                     const SizedBox(width: Spacing.medium),
                   ],
