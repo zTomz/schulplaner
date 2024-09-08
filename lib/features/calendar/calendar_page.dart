@@ -1,11 +1,15 @@
+// TODO: Also show hobbies for the selected day
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:schulplaner/common/constants/numbers.dart';
 import 'package:schulplaner/common/functions/get_events_for_day.dart';
 import 'package:schulplaner/common/models/event.dart';
+import 'package:schulplaner/common/models/weekly_schedule.dart';
 import 'package:schulplaner/common/widgets/custom_app_bar.dart';
 import 'package:schulplaner/common/widgets/gradient_scaffold.dart';
+import 'package:schulplaner/common/widgets/weekly_schedule/models.dart';
 import 'package:schulplaner/features/calendar/widgets/calendar_view.dart';
 import 'package:schulplaner/features/calendar/widgets/event_info_box.dart';
 import 'package:schulplaner/features/calendar/widgets/no_events_info.dart';
@@ -19,105 +23,68 @@ class CalendarPage extends HookWidget {
   Widget build(BuildContext context) {
     final selectedDate = useState<DateTime>(DateTime.now());
 
-    final List<Event> events = [
-      Event(
+    final testTeacher = Teacher(
+      lastName: "Mustermann",
+      gender: Gender.male,
+      uuid: const Uuid().v4(),
+    );
+    final testSubject = Subject(
+      name: "Deutsch",
+      teacher: testTeacher,
+      color: Colors.blue,
+      uuid: const Uuid().v4(),
+    );
+    final List<Event> testEvents = [
+      HomeworkEvent(
+        description: "The homework for Math",
+        color: Colors.blue,
+        uuid: const Uuid().v4(),
+        date: EventDate(
+          date: DateTime.now(),
+          duration: const Duration(minutes: 60),
+        ),
+        subject: testSubject,
+      ),
+      TestEvent(
+        description: "Test Test Test",
+        color: Colors.green,
+        uuid: const Uuid().v4(),
+        deadline: DateTime.now().add(const Duration(days: 5)),
+        praticeDates: [
+          EventDate(
+            date: DateTime.now(),
+            duration: const Duration(minutes: 60),
+          ),
+          EventDate(
+            date: DateTime.now().add(const Duration(days: 1)),
+            duration: const Duration(minutes: 60),
+          ),
+          EventDate(
+            date: DateTime.now().add(const Duration(days: 2)),
+            duration: const Duration(minutes: 60),
+          ),
+        ],
+        subject: testSubject,
+      ),
+      RepeatingEvent(
         name: "Test",
         description:
             "Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test",
         color: Colors.red,
         date: EventDate(
-          date: DateTime.now().add(const Duration(days: 5)),
+          date: DateTime.now(),
           duration: const Duration(minutes: 60),
         ),
         repeatingEventType: RepeatingEventType.weekly,
         uuid: const Uuid().v4(),
       ),
-      Event(
-        name: "Another test",
-        color: Colors.lightBlue,
+      FixedEvent(
+        name: "Klasenfahrt",
+        description: "Klassenfahrt zum  Gardersee",
+        place: "Gardersee",
+        color: Colors.pink,
         date: EventDate(
-          date: DateTime.now().add(const Duration(days: 5)),
-          duration: const Duration(minutes: 180),
-        ),
-        uuid: const Uuid().v4(),
-      ),
-      Event(
-        name: "Test",
-        color: Colors.red,
-        date: EventDate(
-          date: DateTime.now().add(const Duration(days: 5)),
-          duration: const Duration(minutes: 60),
-        ),
-        uuid: const Uuid().v4(),
-      ),
-      Event(
-        name: "Another test",
-        color: Colors.lightBlue,
-        date: EventDate(
-          date: DateTime.now().add(const Duration(days: 5)),
-          duration: const Duration(minutes: 180),
-        ),
-        uuid: const Uuid().v4(),
-      ),
-      Event(
-        name: "Test",
-        color: Colors.red,
-        date: EventDate(
-          date: DateTime.now().add(const Duration(days: 5)),
-          duration: const Duration(minutes: 60),
-        ),
-        uuid: const Uuid().v4(),
-      ),
-      Event(
-        name: "Another test",
-        color: Colors.lightBlue,
-        date: EventDate(
-          date: DateTime.now().add(const Duration(days: 5)),
-          duration: const Duration(minutes: 180),
-        ),
-        uuid: const Uuid().v4(),
-      ),
-      Event(
-        name: "Test",
-        color: Colors.red,
-        date: EventDate(
-          date: DateTime.now().add(const Duration(days: 5)),
-          duration: const Duration(minutes: 60),
-        ),
-        uuid: const Uuid().v4(),
-      ),
-      Event(
-        name: "Another test",
-        color: Colors.lightBlue,
-        date: EventDate(
-          date: DateTime.now().add(const Duration(days: 5)),
-          duration: const Duration(minutes: 180),
-        ),
-        uuid: const Uuid().v4(),
-      ),
-      Event(
-        name: "Test",
-        color: Colors.red,
-        date: EventDate(
-          date: DateTime.now().add(const Duration(days: 5)),
-          duration: const Duration(minutes: 60),
-        ),
-        uuid: const Uuid().v4(),
-      ),
-      Event(
-        name: "Another test",
-        color: Colors.lightBlue,
-        date: EventDate(
-          date: DateTime.now().add(const Duration(days: 5)),
-          duration: const Duration(minutes: 180),
-        ),
-        uuid: const Uuid().v4(),
-      ),
-      Event(
-        name: "Test",
-        color: Colors.red,
-        date: EventDate(
-          date: DateTime.now().add(const Duration(days: 5)),
+          date: DateTime.now().add(const Duration(days: 17)),
           duration: const Duration(minutes: 60),
         ),
         uuid: const Uuid().v4(),
@@ -126,7 +93,7 @@ class CalendarPage extends HookWidget {
 
     final eventsOfDay = getEventsForDay(
       selectedDate.value,
-      events: events,
+      events: testEvents,
     );
 
     return GradientScaffold(
@@ -149,7 +116,7 @@ class CalendarPage extends HookWidget {
                 onDaySelected: (date) {
                   selectedDate.value = date;
                 },
-                events: events,
+                events: testEvents,
               ),
             ),
             const SizedBox(width: Spacing.medium),

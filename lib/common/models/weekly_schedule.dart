@@ -33,13 +33,20 @@ class Lesson extends Equatable {
 
 /// Represents a subject
 class Subject {
-  final String subject;
+  /// The name of the subject. E. g. Math, English etc.
+  final String name;
+
+  /// The teacher of the subject
   final Teacher teacher;
+
+  /// The color of the subject
   final Color color;
+
+  /// A unique identifier
   final String uuid;
 
   const Subject({
-    required this.subject,
+    required this.name,
     required this.teacher,
     required this.color,
     required this.uuid,

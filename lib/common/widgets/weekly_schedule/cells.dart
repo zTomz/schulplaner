@@ -126,7 +126,7 @@ class SchoolCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    lesson.subject.subject,
+                    lesson.subject.name,
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                           color: textColor,
                         ),

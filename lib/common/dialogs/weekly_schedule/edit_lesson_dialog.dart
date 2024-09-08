@@ -75,7 +75,7 @@ class EditLessonDialog extends HookWidget {
               errorText: "Ein Fach ist erforderlich.",
               value: subject.value,
               child: CustomButton.selection(
-                selection: subject.value?.subject,
+                selection: subject.value?.name,
                 onPressed: () async {
                   final result = await showDialog<Subject>(
                     context: context,

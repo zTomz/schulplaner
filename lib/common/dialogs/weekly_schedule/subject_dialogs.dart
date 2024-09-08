@@ -59,7 +59,7 @@ class EditSubjectDialog extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final subjectController = useTextEditingController(
-      text: subject?.subject,
+      text: subject?.name,
     );
     final teacher = useState<Teacher?>(subject?.teacher);
     final teacherError = useState<String?>(null);
@@ -127,7 +127,7 @@ class EditSubjectDialog extends HookWidget {
 
             Navigator.of(context).pop(
               Subject(
-                subject: subjectController.text,
+                name: subjectController.text,
                 teacher: teacher.value!,
                 color: color.value,
                 uuid: subject?.uuid ?? const Uuid().v4(),

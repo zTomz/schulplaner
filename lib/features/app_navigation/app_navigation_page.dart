@@ -28,6 +28,10 @@ class AppNavigationPage extends HookWidget {
         final tabsRouter = AutoTabsRouter.of(context);
 
         return Scaffold(
+          floatingActionButton: FloatingActionButton.large(
+            onPressed: () {},
+            child: const Icon(LucideIcons.plus),
+          ),
           body: Row(
             children: [
               CustomNavigationRail(

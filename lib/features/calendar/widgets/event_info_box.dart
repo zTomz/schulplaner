@@ -13,7 +13,7 @@ class EventInfoBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(Spacing.small),
+      padding: const EdgeInsets.only(bottom: Spacing.small),
       child: MaterialButton(
         onPressed: () {
           // TODO: Edit an event
@@ -42,7 +42,7 @@ class EventInfoBox extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   if (event.description != null) ...[
-                    const SizedBox(height: Spacing.small),
+                    const SizedBox(height: Spacing.extraSmall),
                     Text(
                       event.description!,
                       style: Theme.of(context).textTheme.bodySmall,

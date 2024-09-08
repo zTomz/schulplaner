@@ -122,7 +122,7 @@ class EditTeacherDialog extends HookWidget {
             ),
             const SizedBox(height: Spacing.small),
             CustomButton.selection(
-              selection: subject.value?.subject,
+              selection: subject.value?.name,
               onPressed: () async {
                 // TODO: Add a subject to a teacher
               },
