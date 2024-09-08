@@ -5,6 +5,7 @@ abstract class AppTheme {
   static final ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
     colorScheme: darkScheme(),
+    visualDensity: VisualDensity.standard,
     textTheme: GoogleFonts.interTextTheme(
       ThemeData(brightness: Brightness.dark).textTheme,
     ).copyWith(

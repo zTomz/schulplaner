@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/common/constants/numbers.dart';
 import 'package:schulplaner/common/extensions/date_time_extension.dart';
+import 'package:schulplaner/common/functions/get_events_for_day.dart';
 import 'package:schulplaner/common/models/event.dart';
 import 'package:schulplaner/common/models/time.dart';
 
@@ -114,14 +115,7 @@ class CalendarView extends HookWidget {
               itemBuilder: (context, index) {
                 final day = monthDays[index];
                 final dayIsSelected = day.compareWithoutTime(selectedDate);
-                final eventsOfDay = events
-                    .where(
-                      (event) => day.compareWithoutTime(
-                        event.date.date,
-                        repeatingType: event.repeatingEventType,
-                      ),
-                    )
-                    .toList(growable: false);
+                final eventsOfDay = getEventsForDay(day, events: events);
 
                 return MaterialButton(
                   onPressed: () {
