@@ -28,7 +28,7 @@ class ConfigureHobbyPage extends HookWidget {
         AccountCreationLayout(
           title: "Hast du ein Hobby?",
           description:
-              "Wenn Sie uns Ihre Hobby mitteilen, kann Ihnen die App Ereignisse und Termine so legen, dass sie in Ihr Zeitfenster passen.",
+              "Wenn Sie uns Ihre Hobbies mitteilen, kann Ihnen die App Ereignisse und Termine so legen, dass sie in Ihr Zeitfenster passen.",
           buttonText: "Fügen Sie Ihre Hobbies hinzu",
           buttonIcon: const Icon(LucideIcons.arrow_right),
           onPressed: () {

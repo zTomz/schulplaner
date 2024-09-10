@@ -21,6 +21,9 @@ class CustomDialog extends StatelessWidget {
   /// Optional. An error widget wich is displayed under the title and above the content
   final Widget? error;
 
+  /// If the dialog should close on outside tap. Default to [true]
+  final bool closeOnOutsideTap;
+
   /// The type of the dialog
   final _CustomDialogType _type;
 
@@ -31,6 +34,7 @@ class CustomDialog extends StatelessWidget {
     required this.content,
     this.actions,
     this.error,
+    this.closeOnOutsideTap = true,
   }) : _type = _CustomDialogType.normal;
 
   /// Returns true or false.
@@ -38,6 +42,7 @@ class CustomDialog extends StatelessWidget {
     super.key,
     String? title,
     required String description,
+    this.closeOnOutsideTap = true,
     this.error,
   })  : _type = _CustomDialogType.normal,
         icon = const Icon(LucideIcons.badge_alert),
@@ -76,82 +81,110 @@ class CustomDialog extends StatelessWidget {
     required this.content,
     this.actions,
     this.error,
+    this.closeOnOutsideTap = true,
   }) : _type = _CustomDialogType.expanded;
+
+  const CustomDialog.emptyExpanded({
+    super.key,
+    required Widget body,
+    this.closeOnOutsideTap = true,
+  })  : _type = _CustomDialogType.emptyExpanded,
+        icon = const SizedBox.shrink(),
+        title = body,
+        content = const SizedBox.shrink(),
+        actions = null,
+        error = null;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: Spacing.medium),
-      child: Align(
-        alignment: Alignment.center,
-        child: Material(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: const BorderRadius.all(Radii.medium),
-          child: Padding(
-            padding: const EdgeInsets.all(Spacing.extraLarge),
-            child: SizedBox(
-              width: _type == _CustomDialogType.normal
-                  ? 275
-                  : min(MediaQuery.sizeOf(context).width * 0.7, 500),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (_type == _CustomDialogType.normal) ...[
-                      IconTheme(
-                        data: Theme.of(context).iconTheme.copyWith(
-                              size: 60,
-                            ),
-                        child: icon,
-                      ),
-                      const SizedBox(height: Spacing.large),
-                      DefaultTextStyle(
-                        style: Theme.of(context).textTheme.displaySmall!,
-                        textAlign: TextAlign.center,
-                        child: title,
-                      ),
-                    ] else
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          IconTheme(
-                            data: Theme.of(context).iconTheme.copyWith(
-                                  size: 40,
+    return GestureDetector(
+      onTap: closeOnOutsideTap ? () => Navigator.of(context).pop() : null,
+      child: Container(
+        color: Theme.of(context).colorScheme.surface.withOpacity(0.025),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: Spacing.medium),
+          child: Align(
+            alignment: Alignment.center,
+            child: Material(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: const BorderRadius.all(Radii.medium),
+              child: Padding(
+                padding: const EdgeInsets.all(Spacing.extraLarge),
+                child: _type == _CustomDialogType.emptyExpanded
+                    ? title
+                    : SizedBox(
+                        width: _type == _CustomDialogType.normal
+                            ? 275
+                            : min(MediaQuery.sizeOf(context).width * 0.7, 500),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (_type == _CustomDialogType.normal) ...[
+                                IconTheme(
+                                  data: Theme.of(context).iconTheme.copyWith(
+                                        size: 60,
+                                      ),
+                                  child: icon,
                                 ),
-                            child: icon,
+                                const SizedBox(height: Spacing.large),
+                                DefaultTextStyle(
+                                  style:
+                                      Theme.of(context).textTheme.displaySmall!,
+                                  textAlign: TextAlign.center,
+                                  child: title,
+                                ),
+                              ] else
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    IconTheme(
+                                      data:
+                                          Theme.of(context).iconTheme.copyWith(
+                                                size: 40,
+                                              ),
+                                      child: icon,
+                                    ),
+                                    const SizedBox(width: Spacing.large),
+                                    Expanded(
+                                      child: DefaultTextStyle(
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .displaySmall!,
+                                        child: title,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              if (error != null) ...[
+                                const SizedBox(height: Spacing.medium),
+                                DefaultTextStyle(
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                        color:
+                                            Theme.of(context).colorScheme.error,
+                                      ),
+                                  textAlign: TextAlign.center,
+                                  child: error!,
+                                ),
+                              ],
+                              const SizedBox(height: Spacing.medium),
+                              DefaultTextStyle(
+                                style: Theme.of(context).textTheme.bodyLarge!,
+                                textAlign: TextAlign.center,
+                                child: content,
+                              ),
+                              const SizedBox(height: Spacing.large),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: actions ?? [],
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: Spacing.large),
-                          Expanded(
-                            child: DefaultTextStyle(
-                              style: Theme.of(context).textTheme.displaySmall!,
-                              child: title,
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
-                    if (error != null) ...[
-                      const SizedBox(height: Spacing.medium),
-                      DefaultTextStyle(
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: Theme.of(context).colorScheme.error,
-                            ),
-                        textAlign: TextAlign.center,
-                        child: error!,
-                      ),
-                    ],
-                    const SizedBox(height: Spacing.medium),
-                    DefaultTextStyle(
-                      style: Theme.of(context).textTheme.bodyLarge!,
-                      textAlign: TextAlign.center,
-                      child: content,
-                    ),
-                    const SizedBox(height: Spacing.extraLarge),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: actions ?? [],
-                    ),
-                  ],
-                ),
               ),
             ),
           ),
@@ -163,5 +196,6 @@ class CustomDialog extends StatelessWidget {
 
 enum _CustomDialogType {
   normal,
-  expanded;
+  expanded,
+  emptyExpanded;
 }

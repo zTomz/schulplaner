@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:schulplaner/common/services/exeption_handler_service.dart';
 import 'package:schulplaner/common/services/snack_bar_service.dart';
 
 abstract class AuthService {
@@ -21,7 +22,7 @@ abstract class AuthService {
       );
     } on FirebaseAuthException catch (e) {
       if (context.mounted) {
-        _handleFirebaseAuthException(context, e);
+        ExeptionHandlerService.handleFirebaseAuthException(context, e);
       }
 
       return null;
@@ -57,7 +58,7 @@ abstract class AuthService {
       );
     } on FirebaseAuthException catch (e) {
       if (context.mounted) {
-        _handleFirebaseAuthException(context, e);
+        ExeptionHandlerService.handleFirebaseAuthException(context, e);
       }
 
       return null;
@@ -74,63 +75,5 @@ abstract class AuthService {
     }
 
     return userCredential;
-  }
-
-  /// Handle firebase auth exceptions
-  static void _handleFirebaseAuthException(
-    BuildContext context,
-    FirebaseAuthException exeption,
-  ) {
-    if (exeption.code == 'email-already-in-use') {
-      if (context.mounted) {
-        SnackBarService.show(
-          context: context,
-          content: const Text("Die E-Mail Adresse ist bereits vergeben."),
-          type: CustomSnackbarType.error,
-        );
-      }
-    } else if (exeption.code == 'weak-password') {
-      if (context.mounted) {
-        SnackBarService.show(
-          context: context,
-          content: const Text(
-              "Das Passwort ist zu schwach. Bitte geben Sie ein stärkeres Passwort ein."),
-          type: CustomSnackbarType.error,
-        );
-      }
-    } else if (exeption.code == 'invalid-email') {
-      if (context.mounted) {
-        SnackBarService.show(
-          context: context,
-          content: const Text(
-              "Die E-Mail Adresse ist ungültig. Bitte geben Sie eine gültige E-Mail Adresse ein."),
-          type: CustomSnackbarType.error,
-        );
-      }
-    } else if (exeption.code == 'user-not-found') {
-      if (context.mounted) {
-        SnackBarService.show(
-          context: context,
-          content: const Text(
-            "Es wurde kein Nutzer mit diesen Anmeldedaten gefunden.",
-          ),
-          type: CustomSnackbarType.error,
-        );
-      }
-    } else if (exeption.code == 'wrong-password') {
-      if (context.mounted) {
-        SnackBarService.show(
-          context: context,
-          content: const Text("Das Passwort ist ungültig."),
-          type: CustomSnackbarType.error,
-        );
-      }
-    } else if (context.mounted) {
-      SnackBarService.show(
-        context: context,
-        content: const Text("Ein unbekannter Fehler ist aufgetreten."),
-        type: CustomSnackbarType.error,
-      );
-    }
   }
 }

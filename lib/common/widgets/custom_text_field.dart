@@ -5,24 +5,30 @@ import 'package:schulplaner/common/constants/numbers.dart';
 
 class CustomTextField extends HookWidget {
   final TextEditingController? controller;
+  final void Function(String value)? onChanged;
   final String? labelText;
+  final String? hintText;
   final Widget? prefixIcon;
   final TextInputType? keyboardType;
   final int maxLines;
   final bool validate;
   final String? Function(String? value)? validator;
+  final AutovalidateMode? autovalidateMode;
 
   final _CustomTextFieldType _type;
 
   const CustomTextField({
     super.key,
     this.controller,
+    this.onChanged,
     this.labelText,
+    this.hintText,
     this.prefixIcon,
     this.keyboardType,
     this.maxLines = 1,
     this.validate = false,
     this.validator,
+    this.autovalidateMode,
   })  : assert(
           validator == null || validate,
           'If a validator is given, than validate has to be true.',
@@ -32,12 +38,15 @@ class CustomTextField extends HookWidget {
   const CustomTextField.password({
     super.key,
     this.controller,
+    this.onChanged,
     this.labelText,
+    this.hintText,
     this.prefixIcon,
     this.keyboardType,
     this.maxLines = 1,
     this.validate = false,
     this.validator,
+    this.autovalidateMode,
   })  : assert(
           validator == null || validate,
           'If a validator is given, than validate has to be true.',
@@ -50,6 +59,7 @@ class CustomTextField extends HookWidget {
 
     return TextFormField(
       controller: controller,
+      onChanged: onChanged,
       keyboardType: keyboardType,
       // Check if validate is enabled. If it is check if the validator is not null
       // if it is not null, than use it, else use the preconfigured validator
@@ -62,12 +72,14 @@ class CustomTextField extends HookWidget {
                 }
                 return null;
               },
+      autovalidateMode: autovalidateMode,
       minLines: 1,
       maxLines: maxLines,
       obscureText:
           !showPassword.value && _type == _CustomTextFieldType.password,
       decoration: InputDecoration(
         labelText: labelText,
+        hintText: hintText,
         prefixIcon: prefixIcon,
         suffix: _type == _CustomTextFieldType.password
             ? ConstrainedBox(

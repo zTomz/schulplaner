@@ -47,8 +47,7 @@ class EditLessonDialog extends HookWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             buildBodyPart(
-              context,
-              title: "Woche:",
+              title: const Text("Woche:"),
               child: SegmentedButton(
                 onSelectionChanged: (value) {
                   week.value = value.first;

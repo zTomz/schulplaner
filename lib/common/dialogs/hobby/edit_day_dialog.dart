@@ -36,8 +36,7 @@ class EditDayDialog extends HookWidget {
               errorText: "Ein Wochentag ist erforderlich.",
               value: weekday.value,
               child: buildBodyPart(
-                context,
-                title: "Wochentag",
+                title: const Text("Wochentag"),
                 child: SegmentedButton<Weekday?>(
                   segments: Weekday.values
                       .map(

@@ -3,8 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:schulplaner/common/constants/svg_pictures.dart';
 import 'package:schulplaner/common/models/hobby.dart';
 import 'package:schulplaner/common/services/auth_service.dart';
 import 'package:schulplaner/common/widgets/custom_button.dart';
@@ -135,28 +133,6 @@ class SignUpSignInPage extends HookWidget {
                             : "Sie haben noch keinen Account?",
                       ),
                     ),
-                    const SizedBox(height: Spacing.small),
-                    SizedBox.square(
-                      dimension: 50,
-                      child: Material(
-                        color: Colors.white,
-                        type: MaterialType.button,
-                        shape: const CircleBorder(),
-                        child: InkWell(
-                          onTap: () {},
-                          borderRadius: BorderRadius.circular(360),
-                          child: Tooltip(
-                            message: "Anmelden mit Google",
-                            child: Padding(
-                              padding: const EdgeInsets.all(Spacing.small),
-                              child: SvgPicture.asset(
-                                SvgPictures.googleLogo,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               )
@@ -170,25 +146,27 @@ class SignUpSignInPage extends HookWidget {
   Widget _buildBox({
     required Widget child,
   }) =>
-      Builder(builder: (context) {
-        return Align(
-          alignment: Alignment.center,
-          child: Container(
-            padding: const EdgeInsets.all(Spacing.large),
-            width: MediaQuery.sizeOf(context).width * 0.7,
-            height: MediaQuery.sizeOf(context).height * 0.9,
-            decoration: BoxDecoration(
-              color: Theme.of(context)
-                  .colorScheme
-                  .surface
-                  .withOpacity(kDefaultOpacity),
-              borderRadius: const BorderRadius.all(Radii.medium),
-            ),
+      Builder(
+        builder: (context) {
+          return Align(
             alignment: Alignment.center,
-            child: SingleChildScrollView(
-              child: child,
+            child: Container(
+              padding: const EdgeInsets.all(Spacing.large),
+              width: MediaQuery.sizeOf(context).width * 0.7,
+              height: MediaQuery.sizeOf(context).height * 0.9,
+              decoration: BoxDecoration(
+                color: Theme.of(context)
+                    .colorScheme
+                    .surface
+                    .withOpacity(kDefaultOpacity),
+                borderRadius: const BorderRadius.all(Radii.medium),
+              ),
+              alignment: Alignment.center,
+              child: SingleChildScrollView(
+                child: child,
+              ),
             ),
-          ),
-        );
-      });
+          );
+        },
+      );
 }
