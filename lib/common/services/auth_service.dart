@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:schulplaner/common/functions/close_all_dialogs.dart';
 import 'package:schulplaner/common/services/exeption_handler_service.dart';
 import 'package:schulplaner/common/services/snack_bar_service.dart';
 
@@ -22,11 +23,17 @@ abstract class AuthService {
       );
     } on FirebaseAuthException catch (e) {
       if (context.mounted) {
+        await closeAllDialogs(context);
+      }
+      if (context.mounted) {
         ExeptionHandlerService.handleFirebaseAuthException(context, e);
       }
 
       return null;
     } catch (e) {
+      if (context.mounted) {
+        await closeAllDialogs(context);
+      }
       if (context.mounted) {
         SnackBarService.show(
           context: context,
@@ -58,11 +65,17 @@ abstract class AuthService {
       );
     } on FirebaseAuthException catch (e) {
       if (context.mounted) {
+        await closeAllDialogs(context);
+      }
+      if (context.mounted) {
         ExeptionHandlerService.handleFirebaseAuthException(context, e);
       }
 
       return null;
     } catch (e) {
+      if (context.mounted) {
+        await closeAllDialogs(context);
+      }
       if (context.mounted) {
         SnackBarService.show(
           context: context,
