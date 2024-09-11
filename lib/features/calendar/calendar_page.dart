@@ -1,5 +1,3 @@
-// TODO: Also show hobbies for the selected day
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -8,7 +6,6 @@ import 'package:schulplaner/common/functions/get_events_for_day.dart';
 import 'package:schulplaner/common/models/event.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
 import 'package:schulplaner/common/widgets/custom_app_bar.dart';
-import 'package:schulplaner/common/widgets/gradient_scaffold.dart';
 import 'package:schulplaner/common/widgets/weekly_schedule/models.dart';
 import 'package:schulplaner/features/calendar/widgets/calendar_view.dart';
 import 'package:schulplaner/features/calendar/widgets/event_info_box.dart';
@@ -96,7 +93,7 @@ class CalendarPage extends HookWidget {
       events: testEvents,
     );
 
-    return GradientScaffold(
+    return Scaffold(
       appBar: const CustomAppBar(
         title: Text("Kalender"),
       ),
@@ -125,9 +122,7 @@ class CalendarPage extends HookWidget {
                 padding: const EdgeInsets.all(Spacing.medium),
                 clipBehavior: Clip.hardEdge,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surface.withOpacity(
-                        kDefaultOpacity,
-                      ),
+                  color: Theme.of(context).colorScheme.surfaceContainerLow,
                   borderRadius: const BorderRadius.all(Radii.medium),
                 ),
                 child: eventsOfDay.isEmpty

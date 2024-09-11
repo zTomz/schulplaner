@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:schulplaner/config/theme/text_styles.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget title;
@@ -19,7 +18,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       toolbarHeight: 115,
       title: DefaultTextStyle(
-        style: TextStyles.title,
+        style: Theme.of(context).textTheme.displayLarge!,
         child: title,
       ),
       actions: actions,

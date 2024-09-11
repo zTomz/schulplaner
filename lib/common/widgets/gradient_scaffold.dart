@@ -11,15 +11,14 @@ class GradientScaffold extends StatelessWidget {
   /// Optional. The floating action button of the scaffold.
   final Widget? floatingActionButton;
 
-  /// Optional. The color of the gradient. Default is [AppColors.primaryColor].
-  final Color? color;
+  final bool withoutGradient;
 
   const GradientScaffold({
     super.key,
     required this.body,
     this.appBar,
     this.floatingActionButton,
-    this.color = AppColors.primaryColor,
+    this.withoutGradient = false,
   });
 
   @override
@@ -29,13 +28,13 @@ class GradientScaffold extends StatelessWidget {
       body: Stack(
         children: [
           Container(
-            decoration: BoxDecoration(
+            decoration: withoutGradient ? null : BoxDecoration(
               gradient: RadialGradient(
                 center: Alignment.bottomCenter,
                 radius: 0.75,
                 colors: [
-                  color!,
-                  AppColors.backgroundColor,
+                  Theme.of(context).colorScheme.primaryContainer,
+                  Theme.of(context).colorScheme.surface,
                 ],
               ),
             ),

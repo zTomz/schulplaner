@@ -9,9 +9,7 @@ import 'package:schulplaner/common/dialogs/weekly_schedule/edit_lesson_dialog.da
 import 'package:schulplaner/common/models/time.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
 import 'package:schulplaner/common/widgets/custom_app_bar.dart';
-import 'package:schulplaner/common/widgets/gradient_scaffold.dart';
 import 'package:schulplaner/common/widgets/weekly_schedule/weekly_schedule.dart';
-import 'package:schulplaner/config/theme/text_styles.dart';
 
 @RoutePage()
 class WeeklySchedulePage extends HookWidget {
@@ -31,11 +29,11 @@ class WeeklySchedulePage extends HookWidget {
     });
     final lessons = useState<List<Lesson>>([]);
 
-    return GradientScaffold(
+    return Scaffold(
       appBar: CustomAppBar(
-        title: const Text(
+        title: Text(
           "Stundenplan",
-          style: TextStyles.title,
+          style: Theme.of(context).textTheme.displayLarge,
         ),
         actions: [
           ElevatedButton.icon(

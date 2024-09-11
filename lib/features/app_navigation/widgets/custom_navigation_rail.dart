@@ -41,7 +41,7 @@ class CustomNavigationRail extends StatelessWidget {
       curve: Curves.decelerate,
       width: extended ? _kExtendedRailWidth : _kRailWidth,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: Theme.of(context).colorScheme.surfaceContainer,
       ),
       child: SafeArea(
         child: Column(
@@ -113,7 +113,7 @@ class CustomNavigationRail extends StatelessWidget {
                             color:
                                 selectedIndex == destinations.indexOf(destination)
                                     ? Theme.of(context).colorScheme.primary
-                                    : null,
+                                    : Theme.of(context).colorScheme.surfaceContainerHigh,
                             shape: const CircleBorder(),
                             child: InkWell(
                               onTap: () => onDestinationSelected(

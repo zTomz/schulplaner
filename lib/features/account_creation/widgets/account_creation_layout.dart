@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:schulplaner/common/widgets/gradient_scaffold.dart';
 import 'package:schulplaner/config/theme/app_colors.dart';
 import 'package:schulplaner/common/constants/numbers.dart';
-import 'package:schulplaner/config/theme/text_styles.dart';
 
 class AccountCreationLayout extends StatelessWidget {
   /// The title of the layout
@@ -40,7 +39,7 @@ class AccountCreationLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GradientScaffold(
-      color: buttonHasShadow ? Colors.transparent : AppColors.primaryColor,
+      withoutGradient: buttonHasShadow,
       body: Padding(
         padding: EdgeInsets.symmetric(
           vertical: MediaQuery.sizeOf(context).height * 0.2,
@@ -55,14 +54,14 @@ class AccountCreationLayout extends StatelessWidget {
                     FittedBox(
                       child: Text(
                         title,
-                        style: TextStyles.titleLarge,
+                        style: Theme.of(context).textTheme.displayLarge,
                         textAlign: TextAlign.center,
                       ),
                     ),
                     const SizedBox(height: Spacing.medium),
                     Text(
                       description,
-                      style: TextStyles.body,
+                      style: Theme.of(context).textTheme.headlineSmall,
                       textAlign: TextAlign.center,
                       softWrap: true,
                     ),
