@@ -11,9 +11,9 @@ class CustomButton extends StatelessWidget {
 
   const CustomButton({
     super.key,
+    required this.onPressed,
     required this.child,
     this.selection,
-    required this.onPressed,
   }) : _type = _CustomButtonType.normal;
 
   const CustomButton.tonal({

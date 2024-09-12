@@ -44,15 +44,15 @@ class SignUpSignInPage extends HookWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                isSigningUp.value ? "Account erstellen" : "Anmelden",
+                isSigningUp.value ? "Konto erstellen" : "Anmelden",
                 style: Theme.of(context).textTheme.displayLarge,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: Spacing.small),
               Text(
                 isSigningUp.value
-                    ? "Zuletzt müssen Sie einen Account erstellen, dann kann es losgehen!"
-                    : "Melden Sie sich nun noch bei Ihrem Account an, um loszulegen.",
+                    ? "Zuletzt müssen Sie ein Konto erstellen, dann kann es losgehen!"
+                    : "Melden Sie sich nun noch bei Ihrem Konto an, um loszulegen.",
                 style: Theme.of(context).textTheme.headlineSmall,
                 textAlign: TextAlign.center,
                 softWrap: true,
@@ -72,19 +72,15 @@ class SignUpSignInPage extends HookWidget {
                       ),
                       const SizedBox(height: Spacing.small),
                     ],
-                    CustomTextField(
+                    CustomTextField.email(
                       controller: emailController,
                       labelText: "E-Mail",
-                      keyboardType: TextInputType.emailAddress,
-                      prefixIcon: const Icon(LucideIcons.mail),
                       validate: true,
                     ),
                     const SizedBox(height: Spacing.small),
                     CustomTextField.password(
                       controller: passwordController,
                       labelText: "Password",
-                      keyboardType: TextInputType.visiblePassword,
-                      prefixIcon: const Icon(LucideIcons.key_round),
                       validate: true,
                     ),
                     const SizedBox(height: Spacing.medium),
@@ -98,15 +94,15 @@ class SignUpSignInPage extends HookWidget {
                         if (isSigningUp.value) {
                           result = await AuthService.createAccount(
                             context,
-                            name: usernameController.text.trim(),
-                            email: emailController.text.trim(),
-                            password: passwordController.text.trim(),
+                            name: usernameController.text,
+                            email: emailController.text,
+                            password: passwordController.text,
                           );
                         } else {
                           result = await AuthService.signIn(
                             context,
-                            email: emailController.text.trim(),
-                            password: passwordController.text.trim(),
+                            email: emailController.text,
+                            password: passwordController.text,
                           );
                         }
 
@@ -118,18 +114,19 @@ class SignUpSignInPage extends HookWidget {
                         }
                       },
                       child: Text(
-                        isSigningUp.value ? "Account erstellen" : "Anmelden",
+                        isSigningUp.value ? "Konto erstellen" : "Anmelden",
                       ),
                     ),
                     const SizedBox(height: Spacing.small),
                     TextButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        formKey.currentState!.reset();
                         isSigningUp.value = !isSigningUp.value;
                       },
                       child: Text(
                         isSigningUp.value
-                            ? "Sie haben bereits einen Account?"
-                            : "Sie haben noch keinen Account?",
+                            ? "Sie haben bereits ein Konto?"
+                            : "Sie haben noch kein Konto?",
                       ),
                     ),
                   ],

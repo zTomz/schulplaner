@@ -1,3 +1,4 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
@@ -53,6 +54,24 @@ class CustomTextField extends HookWidget {
         ),
         _type = _CustomTextFieldType.password;
 
+  const CustomTextField.email({
+    super.key,
+    this.controller,
+    this.onChanged,
+    this.labelText,
+    this.hintText,
+    this.prefixIcon,
+    this.keyboardType,
+    this.maxLines = 1,
+    this.validate = false,
+    this.validator,
+    this.autovalidateMode,
+  })  : assert(
+          validator == null || validate,
+          'If a validator is given, than validate has to be true.',
+        ),
+        _type = _CustomTextFieldType.email;
+
   @override
   Widget build(BuildContext context) {
     final showPassword = useState<bool>(false);
@@ -60,18 +79,10 @@ class CustomTextField extends HookWidget {
     return TextFormField(
       controller: controller,
       onChanged: onChanged,
-      keyboardType: keyboardType,
+      keyboardType: _getKeyboardType(),
       // Check if validate is enabled. If it is check if the validator is not null
       // if it is not null, than use it, else use the preconfigured validator
-      validator: validate == false
-          ? null
-          : validator ??
-              (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return "Dieses Feld ist erforderlich.";
-                }
-                return null;
-              },
+      validator: _getValidator(),
       autovalidateMode: autovalidateMode,
       minLines: 1,
       maxLines: maxLines,
@@ -80,7 +91,7 @@ class CustomTextField extends HookWidget {
       decoration: InputDecoration(
         labelText: labelText,
         hintText: hintText,
-        prefixIcon: prefixIcon,
+        prefixIcon: _getPrefixIcon(),
         suffix: _type == _CustomTextFieldType.password
             ? ConstrainedBox(
                 constraints: const BoxConstraints(maxHeight: 28, maxWidth: 28),
@@ -88,12 +99,13 @@ class CustomTextField extends HookWidget {
                   onPressed: () {
                     showPassword.value = !showPassword.value;
                   },
+                  tooltip:
+                      "Passwort ${showPassword.value ? "verbergen" : "anzeigen"}",
                   padding: EdgeInsets.zero,
                   icon: Icon(
-                      showPassword.value
-                          ? LucideIcons.eye_off
-                          : LucideIcons.eye,
-                      size: 18.0),
+                    showPassword.value ? LucideIcons.eye_off : LucideIcons.eye,
+                    size: 18.0,
+                  ),
                 ),
               )
             : null,
@@ -105,6 +117,75 @@ class CustomTextField extends HookWidget {
       ),
     );
   }
+
+  TextInputType? _getKeyboardType() {
+    if (keyboardType != null) {
+      return keyboardType;
+    }
+
+    switch (_type) {
+      case _CustomTextFieldType.email:
+        return TextInputType.emailAddress;
+      case _CustomTextFieldType.password:
+        return TextInputType.visiblePassword;
+      case _CustomTextFieldType.text:
+        return TextInputType.text;
+    }
+  }
+
+  String? Function(String? value)? _getValidator() {
+    if (validate == false) {
+      return null;
+    }
+
+    if (validator != null) {
+      return validator;
+    }
+
+    switch (_type) {
+      case _CustomTextFieldType.email:
+        return (value) {
+          if (value == null || !EmailValidator.validate(value)) {
+            return "Bitte geben Sie eine gültige E-Mail-Adresse ein.";
+          }
+
+          return null;
+        };
+      case _CustomTextFieldType.password:
+        return (value) {
+          if (value == null ||
+              value.trim().isEmpty ||
+              value.trim().length < 8) {
+            return "Das Passwort muss mindestens 8 Zeichen lang sein.";
+          }
+
+          return null;
+        };
+      case _CustomTextFieldType.text:
+        return (value) {
+          if (value == null || value.trim().isEmpty) {
+            return "Dieses Feld ist erforderlich.";
+          }
+
+          return null;
+        };
+    }
+  }
+
+  Widget? _getPrefixIcon() {
+    if (prefixIcon != null) {
+      return prefixIcon;
+    }
+
+    switch (_type) {
+      case _CustomTextFieldType.email:
+        return const Icon(LucideIcons.mail);
+      case _CustomTextFieldType.password:
+        return const Icon(LucideIcons.key_round);
+      case _CustomTextFieldType.text:
+        return null;
+    }
+  }
 }
 
-enum _CustomTextFieldType { password, text }
+enum _CustomTextFieldType { text, email, password }

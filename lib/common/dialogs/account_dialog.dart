@@ -4,8 +4,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/common/constants/numbers.dart';
 import 'package:schulplaner/common/dialogs/custom_dialog.dart';
-import 'package:schulplaner/common/functions/build_body_part.dart';
 import 'package:schulplaner/common/services/user_service.dart';
+import 'package:schulplaner/common/widgets/custom_button.dart';
 import 'package:schulplaner/common/widgets/custom_text_field.dart';
 
 /// Shows the [AccountDialog].
@@ -31,7 +31,7 @@ class AccountDialog extends HookWidget {
         icon: const Icon(LucideIcons.user),
         title: CustomTextField(
           controller: usernameController,
-          labelText: "Username",
+          labelText: "Name",
           autovalidateMode: AutovalidateMode.always,
           validate: true,
           validator: (value) {
@@ -45,26 +45,25 @@ class AccountDialog extends HookWidget {
         ),
         content: Column(
           children: [
-            buildBodyPart(
-              title: const Text("Email"),
-              child: CustomTextField(
-                controller: emailController,
-                hintText: "Email",
-                autovalidateMode: AutovalidateMode.always,
-                validate: true,
-                validator: (value) {
-                  if (value == null ||
-                      !value.contains("@") ||
-                      !value.contains(".") ||
-                      value.endsWith(".")) {
-                    return "Bitte gib eine gültige Email Adresse ein.";
-                  }
-
-                  return null;
-                },
-              ),
+            CustomTextField.email(
+              controller: emailController,
+              labelText: "Email",
+              autovalidateMode: AutovalidateMode.always,
+              validate: true,
             ),
-            // TODO: Edit password
+            const SizedBox(height: Spacing.small),
+            CustomButton(
+              onPressed: () async {
+                await showDialog(
+                  context: context,
+                  builder: (context) {
+                    return const ChangePasswordDialog();
+                  },
+                );
+              },
+              child: const Text("Passwort ändern"),
+            ),
+            const SizedBox(height: Spacing.medium),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -73,9 +72,9 @@ class AccountDialog extends HookWidget {
                     final result = await showDialog<bool>(
                       context: context,
                       builder: (context) => CustomDialog.confirmation(
-                        title: "Account löschen",
+                        title: "Konto löschen",
                         description:
-                            "Sind Sie sich sicher, dass Sie Ihren Account löschen möchten?",
+                            "Sind Sie sich sicher, dass Sie Ihr Konto löschen möchten?",
                       ),
                     );
 
@@ -88,7 +87,7 @@ class AccountDialog extends HookWidget {
                     foregroundColor: Theme.of(context).colorScheme.onError,
                   ),
                   icon: const Icon(LucideIcons.user_round_x),
-                  label: const Text("Account löschen"),
+                  label: const Text("Konto löschen"),
                 ),
                 const SizedBox(width: Spacing.small),
                 ElevatedButton.icon(
@@ -134,6 +133,56 @@ class AccountDialog extends HookWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class ChangePasswordDialog extends HookWidget {
+  const ChangePasswordDialog({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final passwordController = useTextEditingController();
+    final formKey = useMemoized(() => GlobalKey<FormState>());
+
+    return CustomDialog.expanded(
+      icon: const Icon(LucideIcons.key),
+      title: const Text("Passwort ändern"),
+      content: Form(
+        key: formKey,
+        child: CustomTextField.password(
+          controller: passwordController,
+          labelText: "Password",
+          validate: true,
+        ),
+      ),
+      actions: [
+        Tooltip(
+          message: "Schließen",
+          child: ElevatedButton(
+            onPressed: () async {
+              Navigator.of(context).pop();
+            },
+            child: const Icon(LucideIcons.circle_x),
+          ),
+        ),
+        const SizedBox(width: Spacing.small),
+        ElevatedButton(
+          onPressed: () async {
+            if (formKey.currentState!.validate()) {
+              await UserService.updatePassword(
+                context,
+                newPassword: passwordController.text,
+              );
+
+              if (context.mounted) {
+                Navigator.of(context).pop();
+              }
+            }
+          },
+          child: const Text("Speichern"),
+        ),
+      ],
     );
   }
 }

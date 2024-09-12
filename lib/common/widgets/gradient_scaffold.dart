@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:schulplaner/config/theme/app_colors.dart';
 
 class GradientScaffold extends StatelessWidget {
   /// The body of the scaffold.
@@ -11,6 +10,8 @@ class GradientScaffold extends StatelessWidget {
   /// Optional. The floating action button of the scaffold.
   final Widget? floatingActionButton;
 
+  /// If the gradient should be shown or not. Used when in a page view and the button has a shadow.
+  /// Defaults to [false].
   final bool withoutGradient;
 
   const GradientScaffold({
@@ -28,16 +29,18 @@ class GradientScaffold extends StatelessWidget {
       body: Stack(
         children: [
           Container(
-            decoration: withoutGradient ? null : BoxDecoration(
-              gradient: RadialGradient(
-                center: Alignment.bottomCenter,
-                radius: 0.75,
-                colors: [
-                  Theme.of(context).colorScheme.primaryContainer,
-                  Theme.of(context).colorScheme.surface,
-                ],
-              ),
-            ),
+            decoration: withoutGradient
+                ? null
+                : BoxDecoration(
+                    gradient: RadialGradient(
+                      center: Alignment.bottomCenter,
+                      radius: 0.75,
+                      colors: [
+                        Theme.of(context).colorScheme.primaryContainer,
+                        Theme.of(context).colorScheme.surface,
+                      ],
+                    ),
+                  ),
           ),
           Positioned.fill(
             child: Column(

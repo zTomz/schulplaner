@@ -18,8 +18,8 @@ abstract class AuthService {
       // Create the account
       userCredential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
+        email: email.trim(),
+        password: password.trim(),
       );
     } on FirebaseAuthException catch (e) {
       if (context.mounted) {
@@ -46,7 +46,7 @@ abstract class AuthService {
     }
 
     // Update the name
-    await FirebaseAuth.instance.currentUser!.updateDisplayName(name);
+    await FirebaseAuth.instance.currentUser!.updateDisplayName(name.trim());
 
     return userCredential;
   }
@@ -60,8 +60,8 @@ abstract class AuthService {
 
     try {
       userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
+        email: email.trim(),
+        password: password.trim(),
       );
     } on FirebaseAuthException catch (e) {
       if (context.mounted) {

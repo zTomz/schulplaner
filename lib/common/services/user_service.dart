@@ -5,6 +5,8 @@ import 'package:schulplaner/common/services/exeption_handler_service.dart';
 import 'package:schulplaner/common/services/snack_bar_service.dart';
 
 abstract class UserService {
+  /// Update the stats of the user. Currently only the name and the email can be updated.
+  /// If not possible show an error
   static Future<void> updateStats(
     BuildContext context, {
     String? name,
@@ -65,6 +67,39 @@ abstract class UserService {
     }
   }
 
+  /// Update the password if possible. Else show an error
+  static Future<void> updatePassword(
+    BuildContext context, {
+    required String newPassword,
+  }) async {
+    // Show an error if no user is logged in.
+    if (!_checkUserIsSignedIn(context)) {
+      return;
+    }
+
+    try {
+      await FirebaseAuth.instance.currentUser!.updatePassword(newPassword);
+    } on FirebaseAuthException catch (e) {
+      if (context.mounted) {
+        await closeAllDialogs(context);
+      }
+      if (context.mounted) {
+        ExeptionHandlerService.handleFirebaseAuthException(context, e);
+      }
+    } catch (e) {
+      if (context.mounted) {
+        await closeAllDialogs(context);
+      }
+      if (context.mounted) {
+        SnackBarService.show(
+          context: context,
+          content: const Text("Ein unbekannter Fehler ist aufgetreten."),
+          type: CustomSnackbarType.error,
+        );
+      }
+    }
+  }
+
   /// Delete the user and handle the errors
   static Future<void> deleteAccount(BuildContext context) async {
     if (!_checkUserIsSignedIn(context)) {
@@ -103,7 +138,7 @@ abstract class UserService {
       SnackBarService.show(
         context: context,
         content: const Text(
-          "Sie benötigen einen Account um diese Action auszuführen.",
+          "Sie benötigen ein Konto um diese Action auszuführen.",
         ),
         type: CustomSnackbarType.error,
       );
