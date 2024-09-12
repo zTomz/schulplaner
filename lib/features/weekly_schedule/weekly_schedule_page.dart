@@ -6,8 +6,10 @@ import 'package:schulplaner/common/constants/numbers.dart';
 import 'package:schulplaner/common/dialogs/custom_dialog.dart';
 import 'package:schulplaner/common/dialogs/edit_time_span_dialog.dart';
 import 'package:schulplaner/common/dialogs/weekly_schedule/edit_lesson_dialog.dart';
+import 'package:schulplaner/common/functions/close_all_dialogs.dart';
 import 'package:schulplaner/common/models/time.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
+import 'package:schulplaner/common/services/snack_bar_service.dart';
 import 'package:schulplaner/common/widgets/custom_app_bar.dart';
 import 'package:schulplaner/common/widgets/weekly_schedule/weekly_schedule.dart';
 
@@ -63,6 +65,7 @@ class WeeklySchedulePage extends HookWidget {
                       builder: (context) => EditLessonDialog(
                         timeSpan: selectedSchoolTimeCell.value!.timeSpan,
                         weekday: selectedSchoolTimeCell.value!.weekday,
+                        onLessonDeleted: null,
                       ),
                     );
 
@@ -91,6 +94,26 @@ class WeeklySchedulePage extends HookWidget {
                 timeSpan: selectedSchoolTimeCell.value!.timeSpan,
                 weekday: selectedSchoolTimeCell.value!.weekday,
                 lesson: lesson,
+                onLessonDeleted: (lesson) async {
+                  // TODO: Update the database
+
+                  List<Lesson> oldLessons = List.from(lessons.value);
+                  oldLessons
+                      .removeWhere((lesson) => lesson.uuid == lesson.uuid);
+                  lessons.value = [...oldLessons];
+
+                  await closeAllDialogs(context);
+
+                  if (context.mounted) {
+                    SnackBarService.show(
+                      context: context,
+                      content: Text(
+                        "Die Schulstunde ${lesson.subject.name} wurde gelöscht.",
+                      ),
+                      type: CustomSnackbarType.info,
+                    );
+                  }
+                },
               ),
             );
 

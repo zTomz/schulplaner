@@ -5,8 +5,10 @@ import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/common/dialogs/custom_dialog.dart';
 import 'package:schulplaner/common/dialogs/weekly_schedule/edit_lesson_dialog.dart';
 import 'package:schulplaner/common/dialogs/edit_time_span_dialog.dart';
+import 'package:schulplaner/common/functions/close_all_dialogs.dart';
 import 'package:schulplaner/common/models/time.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
+import 'package:schulplaner/common/services/snack_bar_service.dart';
 import 'package:schulplaner/common/widgets/custom_app_bar.dart';
 import 'package:schulplaner/common/widgets/gradient_scaffold.dart';
 import 'package:schulplaner/common/widgets/weekly_schedule/weekly_schedule.dart';
@@ -31,7 +33,7 @@ class CreateWeeklySchedulePage extends HookWidget {
 
     return GradientScaffold(
       appBar: CustomAppBar(
-        title:  Text(
+        title: Text(
           "Stundenplan erstellen",
           style: Theme.of(context).textTheme.displayLarge,
         ),
@@ -66,6 +68,7 @@ class CreateWeeklySchedulePage extends HookWidget {
                           builder: (context) => EditLessonDialog(
                             timeSpan: selectedSchoolTimeCell.value!.timeSpan,
                             weekday: selectedSchoolTimeCell.value!.weekday,
+                            onLessonDeleted: null,
                           ),
                         );
 
@@ -106,6 +109,23 @@ class CreateWeeklySchedulePage extends HookWidget {
                 timeSpan: selectedSchoolTimeCell.value!.timeSpan,
                 weekday: selectedSchoolTimeCell.value!.weekday,
                 lesson: lesson,
+                onLessonDeleted: (lesson) async {
+                  List<Lesson> oldLessons = List.from(lessons.value);
+                  oldLessons.removeWhere((oldLesson) => oldLesson == lesson);
+                  lessons.value = [...oldLessons];
+
+                  await closeAllDialogs(context);
+
+                  if (context.mounted) {
+                    SnackBarService.show(
+                      context: context,
+                      content: Text(
+                        "Die Schulstunde ${lesson.subject.name} wurde gelöscht.",
+                      ),
+                      type: CustomSnackbarType.info,
+                    );
+                  }
+                },
               ),
             );
 

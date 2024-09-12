@@ -12,9 +12,6 @@ export 'days_header.dart';
 export 'models.dart';
 
 class WeeklySchedule extends StatelessWidget {
-  /// A function that is called when the user clicks on a lesson
-  final void Function(Lesson lesson) onLessonEdit;
-
   /// Called when the week (A, B or All) is tapped.
   final void Function() onWeekTapped;
 
@@ -26,6 +23,9 @@ class WeeklySchedule extends StatelessWidget {
 
   /// The time cell if any is selected
   final SchoolTimeCell? selectedSchoolTimeCell;
+
+  /// A function that is called when the user clicks on a lesson
+  final void Function(Lesson lesson) onLessonEdit;
 
   /// The time spans of the table
   final Set<TimeSpan> timeSpans;
@@ -41,11 +41,11 @@ class WeeklySchedule extends StatelessWidget {
 
   const WeeklySchedule({
     super.key,
-    required this.onLessonEdit,
     required this.onWeekTapped,
     required this.onDeleteTimeSpan,
     required this.onSchoolTimeCellSelected,
     required this.selectedSchoolTimeCell,
+    required this.onLessonEdit,
     required this.timeSpans,
     required this.lessons,
     required this.week,
@@ -108,7 +108,9 @@ class WeeklySchedule extends StatelessWidget {
           // Check if the time span is the same and if the week is the same ( A or B week )
           (lesson) =>
               lesson.timeSpan == timeSpan &&
-              (lesson.week == week || lesson.week == Week.all || week == Week.all),
+              (lesson.week == week ||
+                  lesson.week == Week.all ||
+                  week == Week.all),
         )
         .toList();
 

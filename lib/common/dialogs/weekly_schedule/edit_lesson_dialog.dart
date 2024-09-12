@@ -17,13 +17,20 @@ class EditLessonDialog extends HookWidget {
   final TimeSpan timeSpan;
   final Weekday weekday;
 
+  /// If null, a new Lesson will be created. Else the provided lesson will be
+  /// edited.
   final Lesson? lesson;
+
+  /// If not null, this function is called, when the user tries to delete the
+  /// lesson.
+  final void Function(Lesson lesson)? onLessonDeleted;
 
   const EditLessonDialog({
     super.key,
     required this.timeSpan,
     required this.weekday,
     this.lesson,
+    required this.onLessonDeleted,
   });
 
   @override
@@ -92,6 +99,30 @@ class EditLessonDialog extends HookWidget {
         ),
       ),
       actions: [
+        if (onLessonDeleted != null) ...[
+          ElevatedButton.icon(
+            onPressed: () async {
+              final result = await showDialog<bool>(
+                context: context,
+                builder: (context) => CustomDialog.confirmation(
+                  title: "Schulstunde löschen",
+                  description:
+                      "Sind Sie sich sicher, dass Sie diese Schulstunde löschen möchten?",
+                ),
+              );
+
+              if (result == true && context.mounted && lesson != null) {
+                onLessonDeleted!.call(lesson!);
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
+            ),
+            icon: const Icon(LucideIcons.book_marked),
+            label: const Text("Schulstunde löschen"),
+          ),
+          const Spacer(),
+        ],
         TextButton(
           onPressed: () {
             Navigator.of(context).pop();

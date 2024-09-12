@@ -78,8 +78,6 @@ class CustomDialog extends StatelessWidget {
     this.error,
   }) : _type = _CustomDialogType.expanded;
 
- 
-
   @override
   Widget build(BuildContext context) {
     return Padding(
