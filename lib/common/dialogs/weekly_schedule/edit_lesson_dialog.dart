@@ -116,7 +116,7 @@ class EditLessonDialog extends HookWidget {
               ),
             );
           },
-          child: const Text("Hinzufügen"),
+          child: Text(lesson == null ? "Hinzufügen" : "Speichern"),
         ),
       ],
     );

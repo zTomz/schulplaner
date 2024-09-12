@@ -4,7 +4,6 @@ import 'package:schulplaner/common/models/time.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
 import 'package:schulplaner/common/constants/numbers.dart';
 
-
 class WeeklyScheduleTimeCell extends StatelessWidget {
   final void Function(TimeSpan timeSpan) onDeleteTimeSpan;
   final TimeSpan timeSpan;
@@ -85,6 +84,7 @@ class WeeklyScheduleLessonCell extends StatelessWidget {
   }
 }
 
+// TODO: Delete a lesson
 class SchoolCard extends StatelessWidget {
   final Lesson lesson;
   final void Function(Lesson lesson) onEdit;
@@ -97,7 +97,7 @@ class SchoolCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textColor = lesson.subject.color.computeLuminance() > 0.5
+    final foregroundColor = lesson.subject.color.computeLuminance() < 0.5
         ? Theme.of(context).colorScheme.surface
         : Theme.of(context).colorScheme.onSurface;
 
@@ -118,9 +118,7 @@ class SchoolCard extends StatelessWidget {
             child: IconTheme(
               data: Theme.of(context).iconTheme.copyWith(
                     size: 20,
-                    color: lesson.subject.color.computeLuminance() > 0.5
-                        ? Theme.of(context).colorScheme.surface
-                        : Theme.of(context).colorScheme.onSurface,
+                    color: foregroundColor,
                   ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -128,42 +126,65 @@ class SchoolCard extends StatelessWidget {
                   Text(
                     lesson.subject.name,
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          color: textColor,
+                          color: foregroundColor,
                         ),
                   ),
-                  const SizedBox(height: Spacing.small),
-                  Wrap(
-                    children: [
-                      const Icon(LucideIcons.map_pin_house),
-                      const SizedBox(width: Spacing.small),
-                      Text(
-                        lesson.room,
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: textColor,
-                            ),
-                      ),
-                    ],
-                  ),
-                  Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      const Icon(LucideIcons.graduation_cap),
-                      const SizedBox(width: Spacing.small),
-                      // Doesn't use the lesson.subject.teacher.salutation because, with 
-                      // the current solution, the line could be wrapped.
-                      Text(
-                        "${lesson.subject.teacher.gender.salutation} ",
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: textColor,
-                            ),
-                      ),
-                      Text(
-                        lesson.subject.teacher.lastName,
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: textColor,
-                            ),
-                      ),
-                    ],
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      if (constraints.maxWidth < 70) {
+                        return const SizedBox.shrink();
+                      }
+
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: Spacing.small),
+                          Wrap(
+                            children: [
+                              const Icon(LucideIcons.map_pin_house),
+                              const SizedBox(width: Spacing.small),
+                              Text(
+                                lesson.room,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                      color: foregroundColor,
+                                    ),
+                              ),
+                            ],
+                          ),
+                          Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: [
+                              const Icon(LucideIcons.graduation_cap),
+                              const SizedBox(width: Spacing.small),
+                              // Doesn't use the lesson.subject.teacher.salutation because, with
+                              // the current solution, the line could be wrapped.
+                              Text(
+                                "${lesson.subject.teacher.gender.salutation} ",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                      color: foregroundColor,
+                                    ),
+                              ),
+                              Text(
+                                lesson.subject.teacher.lastName,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                      color: foregroundColor,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ],
               ),

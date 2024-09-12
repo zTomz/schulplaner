@@ -108,7 +108,7 @@ class WeeklySchedule extends StatelessWidget {
           // Check if the time span is the same and if the week is the same ( A or B week )
           (lesson) =>
               lesson.timeSpan == timeSpan &&
-              (lesson.week == week || week == Week.all),
+              (lesson.week == week || lesson.week == Week.all || week == Week.all),
         )
         .toList();
 

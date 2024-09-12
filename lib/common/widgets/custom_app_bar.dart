@@ -19,6 +19,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       toolbarHeight: 115,
       title: DefaultTextStyle(
         style: Theme.of(context).textTheme.displayLarge!,
+        overflow: TextOverflow.fade,
+        textAlign: TextAlign.start,
+        softWrap: false,
         child: title,
       ),
       actions: actions,
