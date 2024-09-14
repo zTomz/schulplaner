@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:schulplaner/common/constants/numbers.dart';
+import 'package:schulplaner/common/constants/svg_pictures.dart';
 import 'package:schulplaner/common/extensions/date_time_extension.dart';
 
 class NoEventsInfo extends StatelessWidget {
@@ -15,10 +17,24 @@ class NoEventsInfo extends StatelessWidget {
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: Spacing.large),
-        child: Text(
-          "Keine Ereignisse am ${selectedDate.day}. ${selectedDate.monthString} ${selectedDate.year}",
-          style: Theme.of(context).textTheme.headlineSmall,
-          textAlign: TextAlign.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox.square(
+              dimension: MediaQuery.sizeOf(context).width * 0.15,
+              child: SvgPicture.asset(
+                Theme.of(context).brightness == Brightness.dark
+                    ? SvgPictures.no_data_dark
+                    : SvgPictures.no_data_light,
+              ),
+            ),
+            const SizedBox(height: Spacing.medium),
+            Text(
+              "Keine Ereignisse am ${selectedDate.day}. ${selectedDate.monthString} ${selectedDate.year}",
+              style: Theme.of(context).textTheme.headlineSmall,
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );
