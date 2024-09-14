@@ -23,6 +23,7 @@ class CreateWeeklySchedulePage extends HookWidget {
   Widget build(BuildContext context) {
     final selectedSchoolTimeCell = useState<SchoolTimeCell?>(null);
     final week = useState<Week>(Week.a);
+
     final timeSpans = useState<Set<TimeSpan>>({
       const TimeSpan(
         from: TimeOfDay(hour: 7, minute: 30),
@@ -30,6 +31,9 @@ class CreateWeeklySchedulePage extends HookWidget {
       ),
     });
     final lessons = useState<List<Lesson>>([]);
+
+    final subjects = useState<List<Subject>>([]);
+    final teachers = useState<List<Teacher>>([]);
 
     return GradientScaffold(
       appBar: CustomAppBar(
@@ -68,12 +72,30 @@ class CreateWeeklySchedulePage extends HookWidget {
                           builder: (context) => EditLessonDialog(
                             schoolTimeCell: selectedSchoolTimeCell.value!,
                             onLessonDeleted: null,
-                            subjects: const [], // TODO: Save the subjects somewhere
-                            teachers: const [], // TODO: Save the teachers somewhere
-                            onSubjectChanged:
-                                (subject) {}, // TODO: Implement on subject created
-                            onTeacherChanged:
-                                (teacher) {}, // TODO: Implement on teacher created
+                            subjects: subjects.value,
+                            teachers: teachers.value,
+                            onSubjectChanged: (subject) {
+                              final index = subjects.value
+                                  .indexWhere((s) => s.uuid == subject.uuid);
+                              if (index == -1) {
+                                subjects.value = [...subjects.value, subject];
+                              } else {
+                                subjects.value = [
+                                  ...subjects.value..[index] = subject,
+                                ];
+                              }
+                            },
+                            onTeacherChanged: (teacher) {
+                              final index = teachers.value
+                                  .indexWhere((t) => t.uuid == teacher.uuid);
+                              if (index == -1) {
+                                teachers.value = [...teachers.value, teacher];
+                              } else {
+                                teachers.value = [
+                                  ...teachers.value..[index] = teacher,
+                                ];
+                              }
+                            },
                           ),
                         );
 
@@ -113,8 +135,6 @@ class CreateWeeklySchedulePage extends HookWidget {
               builder: (context) => EditLessonDialog(
                 schoolTimeCell: selectedSchoolTimeCell.value,
                 lesson: lesson,
-                subjects: const [], // TODO: Save the subjects somewhere
-                teachers: const [], // TODO: Save the teachers somewhere
                 onLessonDeleted: (lesson) async {
                   List<Lesson> oldLessons = List.from(lessons.value);
                   oldLessons.removeWhere((oldLesson) => oldLesson == lesson);
@@ -132,11 +152,29 @@ class CreateWeeklySchedulePage extends HookWidget {
                     );
                   }
                 },
+                subjects: subjects.value,
+                teachers: teachers.value,
                 onSubjectChanged: (subject) {
-                  // TODO: Implement on subject created
+                  final index =
+                      subjects.value.indexWhere((s) => s.uuid == subject.uuid);
+                  if (index == -1) {
+                    subjects.value = [...subjects.value, subject];
+                  } else {
+                    subjects.value = [
+                      ...subjects.value..[index] = subject,
+                    ];
+                  }
                 },
                 onTeacherChanged: (teacher) {
-                  // TODO: Implement on teacher created
+                  final index =
+                      teachers.value.indexWhere((t) => t.uuid == teacher.uuid);
+                  if (index == -1) {
+                    teachers.value = [...teachers.value, teacher];
+                  } else {
+                    teachers.value = [
+                      ...teachers.value..[index] = teacher,
+                    ];
+                  }
                 },
               ),
             );
