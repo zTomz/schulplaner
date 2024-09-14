@@ -90,6 +90,8 @@ class CustomNavigationRail extends StatelessWidget {
   Widget _buildDestinations() => Expanded(
         child: LayoutBuilder(
           builder: (context, constraints) {
+            final isExpanded = constraints.maxWidth != _kRailWidth;
+
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -100,67 +102,81 @@ class CustomNavigationRail extends StatelessWidget {
                       bottom: Spacing.small,
                       left: extended ? Spacing.medium : 0,
                     ),
-                    child: Row(
-                      mainAxisAlignment: extended
-                          ? MainAxisAlignment.start
-                          : MainAxisAlignment.center,
-                      children: [
-                        if (constraints.maxWidth != _kRailWidth)
-                          const SizedBox(width: Spacing.medium),
-                        Tooltip(
-                          message: destination.label,
-                          child: Material(
-                            color:
-                                selectedIndex == destinations.indexOf(destination)
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Theme.of(context).colorScheme.surfaceContainerHigh,
-                            shape: const CircleBorder(),
-                            child: InkWell(
-                              onTap: () => onDestinationSelected(
+                    child: InkWell(
+                      onTap: isExpanded
+                          ? () => onDestinationSelected(
                                 destinations.indexOf(destination),
-                              ),
-                              borderRadius: BorderRadius.circular(360),
-                              child: Padding(
-                                padding: const EdgeInsets.all(Spacing.small),
-                                child: IconTheme(
-                                  data: IconThemeData(
-                                    color: selectedIndex ==
-                                            destinations.indexOf(destination)
-                                        ? Theme.of(context).colorScheme.onPrimary
-                                        : Theme.of(context).colorScheme.onSurface,
-                                  ),
-                                  child: destination.icon,
+                              )
+                          : null,
+                      child: Row(
+                        mainAxisAlignment: extended
+                            ? MainAxisAlignment.start
+                            : MainAxisAlignment.center,
+                        children: [
+                          if (constraints.maxWidth != _kRailWidth)
+                            const SizedBox(width: Spacing.medium),
+                          Tooltip(
+                            message: destination.label,
+                            child: Material(
+                              color: selectedIndex ==
+                                      destinations.indexOf(destination)
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Theme.of(context)
+                                      .colorScheme
+                                      .surfaceContainerHigh,
+                              shape: const CircleBorder(),
+                              child: InkWell(
+                                onTap: () => onDestinationSelected(
+                                  destinations.indexOf(destination),
                                 ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        if (constraints.maxWidth != _kRailWidth) ...[
-                          const SizedBox(width: Spacing.small),
-                          Expanded(
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                destination.label,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge!
-                                    .copyWith(
+                                borderRadius: BorderRadius.circular(360),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(Spacing.small),
+                                  child: IconTheme(
+                                    data: IconThemeData(
                                       color: selectedIndex ==
                                               destinations.indexOf(destination)
                                           ? Theme.of(context)
                                               .colorScheme
-                                              .primary
+                                              .onPrimary
                                           : Theme.of(context)
                                               .colorScheme
                                               .onSurface,
                                     ),
+                                    child: destination.icon,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
+                          if (isExpanded) ...[
+                            const SizedBox(width: Spacing.small),
+                            Expanded(
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  destination.label,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge!
+                                      .copyWith(
+                                        color: selectedIndex ==
+                                                destinations
+                                                    .indexOf(destination)
+                                            ? Theme.of(context)
+                                                .colorScheme
+                                                .primary
+                                            : Theme.of(context)
+                                                .colorScheme
+                                                .onSurface,
+                                      ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
                   ),
                 ),
