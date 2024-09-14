@@ -1,8 +1,10 @@
 // Models used for the weekly schedule
 
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:equatable/equatable.dart';
+
 import 'package:schulplaner/common/models/time.dart';
 import 'package:schulplaner/common/widgets/weekly_schedule/models.dart';
 
@@ -29,6 +31,34 @@ class Lesson extends Equatable {
 
   @override
   bool get stringify => true;
+
+  Map<String, dynamic> toMap() {
+    return {
+      'timeSpan': timeSpan.toMap(),
+      'weekday': weekday.toMap(),
+      'week': week.toMap(),
+      'subject': subject.toMap(),
+      'room': room,
+      'uuid': uuid,
+    };
+  }
+
+  factory Lesson.fromMap(
+    Map<String, dynamic> map, {
+    List<Teacher>? teachers,
+  }) {
+    return Lesson(
+      timeSpan: TimeSpan.fromMap(map['timeSpan']),
+      weekday: Weekday.fromMap(map['weekday']),
+      week: Week.fromMap(map['week']),
+      subject: Subject.fromMap(
+        map['subject'],
+        teachers: teachers,
+      ),
+      room: map['room'] ?? '',
+      uuid: map['uuid'] ?? '',
+    );
+  }
 }
 
 /// Represents a subject
@@ -51,6 +81,35 @@ class Subject {
     required this.color,
     required this.uuid,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'teacher': teacher.toMap(),
+      'color': color.value,
+      'uuid': uuid,
+    };
+  }
+
+  factory Subject.fromMap(
+    Map<String, dynamic> map, {
+    List<Teacher>? teachers,
+  }) {
+    final teacher = Teacher.fromMap(map['teacher']);
+
+    return Subject(
+      name: map['name'] ?? '',
+      // Checks if the teacher exists in the database, if it does, it uses the current data of
+      // the teacher, which is from another doc in firebase.
+      teacher:
+          teachers?.where((t) => t.uuid == teacher.uuid).firstOrNull ?? teacher,
+      color: Color(map['color']),
+      uuid: map['uuid'] ?? '',
+    );
+  }
+
+  factory Subject.fromJson(String source) =>
+      Subject.fromMap(json.decode(source));
 }
 
 /// Represents a teacher
@@ -75,4 +134,30 @@ class Teacher {
 
   /// Get the salutation of the teacher. E. g. "Herr Schulze"
   String get salutation => "${gender.salutation} $lastName";
+
+  Map<String, dynamic> toMap() {
+    return {
+      'firstName': firstName,
+      'lastName': lastName,
+      'gender': gender.toMap(),
+      'email': email,
+      'subject': subject?.toMap(),
+      'favorite': favorite,
+      'uuid': uuid,
+    };
+  }
+
+  factory Teacher.fromMap(Map<String, dynamic> map) {
+    return Teacher(
+      firstName: map['firstName'],
+      lastName: map['lastName'] ?? '',
+      gender: Gender.fromMap(map['gender']),
+      email: map['email'],
+      subject: map['subject'] != null
+          ? Subject.fromMap(map['subject'], teachers: null)
+          : null,
+      favorite: map['favorite'] ?? false,
+      uuid: map['uuid'] ?? '',
+    );
+  }
 }

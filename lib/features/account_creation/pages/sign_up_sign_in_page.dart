@@ -10,19 +10,19 @@ import 'package:schulplaner/common/widgets/custom_text_field.dart';
 import 'package:schulplaner/common/widgets/gradient_scaffold.dart';
 import 'package:schulplaner/common/constants/numbers.dart';
 import 'package:schulplaner/config/routes/router.gr.dart';
-import 'package:schulplaner/features/account_creation/models/create_weekly_schedule_data.dart';
+import 'package:schulplaner/common/models/weekly_schedule_data.dart';
 
 @RoutePage()
 class SignUpSignInPage extends HookWidget {
   /// The data from the create weekly schedule page
-  final CreateWeeklyScheduleData? createWeeklyScheduleData;
+  final WeeklyScheduleData? weeklyScheduleData;
 
   /// The hobbies from the create hobbies page
   final List<Hobby>? hobbies;
 
   const SignUpSignInPage({
     super.key,
-    this.createWeeklyScheduleData,
+    this.weeklyScheduleData,
     this.hobbies,
   });
 
@@ -108,9 +108,19 @@ class SignUpSignInPage extends HookWidget {
 
                         // When the result is not null, the user is signed in or has created an account
                         if (result != null && context.mounted) {
-                          context.router.replaceAll([
-                            const AppNavigationRoute(),
-                          ]);
+                          // TODO: Upload the weekly schedule data and the hobbies
+                          // if (weeklyScheduleData != null) {
+                          //   await DatabaseService.uploadWeeklySchedule(
+                          //     context,
+                          //     weeklyScheduleData: weeklyScheduleData!,
+                          //   );
+                          // }
+
+                          if (context.mounted) {
+                            context.router.replaceAll([
+                              const AppNavigationRoute(),
+                            ]);
+                          }
                         }
                       },
                       child: Text(

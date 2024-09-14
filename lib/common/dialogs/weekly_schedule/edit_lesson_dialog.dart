@@ -14,23 +14,38 @@ import 'package:schulplaner/common/constants/numbers.dart';
 import 'package:uuid/uuid.dart';
 
 class EditLessonDialog extends HookWidget {
-  final TimeSpan timeSpan;
-  final Weekday weekday;
+  /// The school time cell the lesson will be created in if no lesson is provided
+  final SchoolTimeCell? schoolTimeCell;
 
   /// If null, a new Lesson will be created. Else the provided lesson will be
   /// edited.
   final Lesson? lesson;
 
+  /// A list of already created subjects
+  final List<Subject> subjects;
+
+  /// A list of already created teachers
+  final List<Teacher> teachers;
+
   /// If not null, this function is called, when the user tries to delete the
   /// lesson.
   final void Function(Lesson lesson)? onLessonDeleted;
 
+  /// A function that is called, when a subject gets created
+  final void Function(Subject subject) onSubjectCreated;
+
+  /// A function that is called, when a teacher gets created
+  final void Function(Teacher teacher) onTeacherCreated;
+
   const EditLessonDialog({
     super.key,
-    required this.timeSpan,
-    required this.weekday,
+    this.schoolTimeCell,
     this.lesson,
+    required this.subjects,
+    required this.teachers,
     required this.onLessonDeleted,
+    required this.onSubjectCreated,
+    required this.onTeacherCreated,
   });
 
   @override
@@ -85,7 +100,12 @@ class EditLessonDialog extends HookWidget {
                 onPressed: () async {
                   final result = await showDialog<Subject>(
                     context: context,
-                    builder: (context) => const SubjectDialog(),
+                    builder: (context) => SubjectDialog(
+                      subjects: subjects,
+                      teachers: teachers,
+                      onSubjectCreated: onSubjectCreated,
+                      onTeacherCreated: onTeacherCreated,
+                    ),
                   );
 
                   if (result != null) {
@@ -138,8 +158,8 @@ class EditLessonDialog extends HookWidget {
 
             Navigator.of(context).pop(
               Lesson(
-                timeSpan: timeSpan,
-                weekday: weekday,
+                timeSpan: lesson?.timeSpan ?? schoolTimeCell!.timeSpan,
+                weekday: lesson?.weekday ?? schoolTimeCell!.weekday,
                 week: week.value,
                 room: roomController.text,
                 subject: subject.value!,

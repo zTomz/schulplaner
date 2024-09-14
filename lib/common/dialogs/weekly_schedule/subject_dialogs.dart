@@ -17,26 +17,60 @@ import 'package:schulplaner/common/constants/numbers.dart';
 import 'package:uuid/uuid.dart';
 
 class SubjectDialog extends StatelessWidget {
-  const SubjectDialog({super.key});
+  /// A list of already created subjects
+  final List<Subject> subjects;
+
+  /// A list of already created teachers
+  final List<Teacher> teachers;
+
+  /// A function that is called when a subject is created
+  final void Function(Subject subject) onSubjectCreated;
+
+  /// A function that is called when a teacher is created
+  final void Function(Teacher teacher) onTeacherCreated;
+
+  const SubjectDialog({
+    super.key,
+    required this.subjects,
+    required this.teachers,
+    required this.onSubjectCreated,
+    required this.onTeacherCreated,
+  });
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Load subjects from firebase and display here
-
     return CustomDialog.expanded(
       title: const Text("Wähle ein Fach aus"),
       icon: const Icon(LucideIcons.album),
       content: Column(
         children: [
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: subjects.length,
+            itemBuilder: (context, index) {
+              final currentSubject = subjects[index];
+              
+              return ListTile(
+                title: Text(currentSubject.name),
+                onTap: () {
+                  Navigator.of(context).pop(subjects[index]);
+                },
+              );
+            },
+          ),
           const SizedBox(height: Spacing.medium),
           CustomButton(
             onPressed: () async {
               final result = await showDialog<Subject>(
                 context: context,
-                builder: (context) => const EditSubjectDialog(),
+                builder: (context) => EditSubjectDialog(
+                  teachers: teachers,
+                  onTeacherCreated: onTeacherCreated,
+                ),
               );
 
               if (result != null && context.mounted) {
+                onSubjectCreated(result);
                 Navigator.of(context).pop(result);
               }
             },
@@ -49,11 +83,20 @@ class SubjectDialog extends StatelessWidget {
 }
 
 class EditSubjectDialog extends HookWidget {
+  /// The subject to edit. If not provided, the dialog will guide the user to create one
   final Subject? subject;
+
+  /// A list of already created teachers
+  final List<Teacher> teachers;
+
+  /// A function that is called when a teacher is created
+  final void Function(Teacher teacher) onTeacherCreated;
 
   const EditSubjectDialog({
     super.key,
     this.subject,
+    required this.teachers,
+    required this.onTeacherCreated,
   });
 
   @override
@@ -90,10 +133,13 @@ class EditSubjectDialog extends HookWidget {
                 onPressed: () async {
                   final result = await showDialog<Teacher>(
                     context: context,
-                    builder: (context) => const TeacherDialog(),
+                    builder: (context) => TeacherDialog(
+                      teachers: teachers,
+                    ),
                   );
 
                   if (result != null) {
+                    onTeacherCreated(result);
                     teacher.value = result;
                     teacherError.value = null;
                   }

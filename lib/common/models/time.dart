@@ -1,7 +1,10 @@
 // Models containing time information. E. g. a time span, a week or a weekday
 
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:schulplaner/common/extensions/time_of_day_extension.dart';
 
 /// A time span. Used to represent the time of a lesson
 class TimeSpan extends Equatable {
@@ -20,15 +23,23 @@ class TimeSpan extends Equatable {
     return "${from.hour.toString().padLeft(2, "0")}:${from.minute.toString().padLeft(2, "0")} - ${to.hour.toString().padLeft(2, "0")}:${to.minute.toString().padLeft(2, "0")} Uhr";
   }
 
-  TimeSpan copyWith({
-    TimeOfDay? from,
-    TimeOfDay? to,
-  }) {
+  Map<String, dynamic> toMap() {
+    return {
+      'from': from.toMap(),
+      'to': to.toMap(),
+    };
+  }
+
+  factory TimeSpan.fromMap(Map<String, dynamic> map) {
     return TimeSpan(
-      from: from ?? this.from,
-      to: to ?? this.to,
+      from: timeOfDayFromMap(map['from']),
+      to: timeOfDayFromMap(map['to']),
     );
   }
+
+
+  factory TimeSpan.fromJson(String source) =>
+      TimeSpan.fromMap(json.decode(source));
 }
 
 /// A class holding a day and a timespan of that day. Used for [Hobby] class
@@ -98,5 +109,17 @@ enum Weekday {
       case Weekday.sunday:
         return "Sonntag";
     }
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'weekdayIndex': index,
+    };
+  }
+
+  factory Weekday.fromMap(
+    Map<String, dynamic> map,
+  ) {
+    return Weekday.values[int.tryParse(map['weekdayIndex'].toString()) ?? 0];
   }
 }

@@ -35,7 +35,7 @@ class ConfigureWeeklySchedulePage extends HookWidget {
             onPressed: () async {
               await context.router.push(
                 ConfigureHobbyRoute(
-                  createWeeklyScheduleData: null,
+                  weeklyScheduleData: null,
                 ),
               );
             },

@@ -14,7 +14,7 @@ import 'package:schulplaner/common/widgets/gradient_scaffold.dart';
 import 'package:schulplaner/common/widgets/weekly_schedule/weekly_schedule.dart';
 import 'package:schulplaner/config/routes/router.gr.dart';
 import 'package:schulplaner/common/constants/numbers.dart';
-import 'package:schulplaner/features/account_creation/models/create_weekly_schedule_data.dart';
+import 'package:schulplaner/common/models/weekly_schedule_data.dart';
 
 class CreateWeeklySchedulePage extends HookWidget {
   const CreateWeeklySchedulePage({super.key});
@@ -66,9 +66,16 @@ class CreateWeeklySchedulePage extends HookWidget {
                         final result = await showDialog<Lesson>(
                           context: context,
                           builder: (context) => EditLessonDialog(
-                            timeSpan: selectedSchoolTimeCell.value!.timeSpan,
-                            weekday: selectedSchoolTimeCell.value!.weekday,
+                            schoolTimeCell: selectedSchoolTimeCell.value!,
                             onLessonDeleted: null,
+                            subjects: [], // TODO: Save the subjects somewhere
+                            teachers: [], // TODO: Save the teachers somewhere
+                            onSubjectCreated: (subject) {
+                              
+                            },
+                            onTeacherCreated: (teacher) {
+                              // TODO: Implement on teacher created
+                            },
                           ),
                         );
 
@@ -90,7 +97,7 @@ class CreateWeeklySchedulePage extends HookWidget {
       floatingActionButton: FloatingActionButton.large(
         onPressed: () {
           context.pushRoute(ConfigureHobbyRoute(
-            createWeeklyScheduleData: CreateWeeklyScheduleData(
+            weeklyScheduleData: WeeklyScheduleData(
               timeSpans: timeSpans.value,
               lessons: lessons.value,
             ),
@@ -106,9 +113,10 @@ class CreateWeeklySchedulePage extends HookWidget {
             final result = await showDialog<Lesson>(
               context: context,
               builder: (context) => EditLessonDialog(
-                timeSpan: selectedSchoolTimeCell.value!.timeSpan,
-                weekday: selectedSchoolTimeCell.value!.weekday,
+                schoolTimeCell: selectedSchoolTimeCell.value,
                 lesson: lesson,
+                subjects: [], // TODO: Save the subjects somewhere
+                teachers: [], // TODO: Save the teachers somewhere
                 onLessonDeleted: (lesson) async {
                   List<Lesson> oldLessons = List.from(lessons.value);
                   oldLessons.removeWhere((oldLesson) => oldLesson == lesson);
@@ -125,6 +133,12 @@ class CreateWeeklySchedulePage extends HookWidget {
                       type: CustomSnackbarType.info,
                     );
                   }
+                },
+                onSubjectCreated: (subject) {
+                  // TODO: Implement on subject created
+                },
+                onTeacherCreated: (teacher) {
+                  // TODO: Implement on teacher created
                 },
               ),
             );

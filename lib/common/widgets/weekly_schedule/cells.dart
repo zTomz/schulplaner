@@ -84,7 +84,6 @@ class WeeklyScheduleLessonCell extends StatelessWidget {
   }
 }
 
-// TODO: Delete a lesson
 class SchoolCard extends StatelessWidget {
   final Lesson lesson;
   final void Function(Lesson lesson) onEdit;

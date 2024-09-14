@@ -10,9 +10,9 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i9;
 import 'package:flutter/material.dart' as _i10;
-import 'package:schulplaner/common/models/hobby.dart' as _i12;
-import 'package:schulplaner/features/account_creation/models/create_weekly_schedule_data.dart'
+import 'package:schulplaner/common/models/weekly_schedule_data.dart'
     as _i11;
+import 'package:schulplaner/common/models/hobby.dart' as _i12;
 import 'package:schulplaner/features/account_creation/pages/configure_hobbies_page.dart'
     as _i3;
 import 'package:schulplaner/features/account_creation/pages/configure_weekly_schedule_page.dart'
@@ -71,13 +71,13 @@ class CalendarRoute extends _i9.PageRouteInfo<void> {
 class ConfigureHobbyRoute extends _i9.PageRouteInfo<ConfigureHobbyRouteArgs> {
   ConfigureHobbyRoute({
     _i10.Key? key,
-    _i11.CreateWeeklyScheduleData? createWeeklyScheduleData,
+    _i11.WeeklyScheduleData? weeklyScheduleData,
     List<_i9.PageRouteInfo>? children,
   }) : super(
           ConfigureHobbyRoute.name,
           args: ConfigureHobbyRouteArgs(
             key: key,
-            createWeeklyScheduleData: createWeeklyScheduleData,
+            weeklyScheduleData: weeklyScheduleData,
           ),
           initialChildren: children,
         );
@@ -91,7 +91,7 @@ class ConfigureHobbyRoute extends _i9.PageRouteInfo<ConfigureHobbyRouteArgs> {
           orElse: () => const ConfigureHobbyRouteArgs());
       return _i3.ConfigureHobbyPage(
         key: args.key,
-        createWeeklyScheduleData: args.createWeeklyScheduleData,
+        weeklyScheduleData: args.weeklyScheduleData,
       );
     },
   );
@@ -100,16 +100,16 @@ class ConfigureHobbyRoute extends _i9.PageRouteInfo<ConfigureHobbyRouteArgs> {
 class ConfigureHobbyRouteArgs {
   const ConfigureHobbyRouteArgs({
     this.key,
-    this.createWeeklyScheduleData,
+    this.weeklyScheduleData,
   });
 
   final _i10.Key? key;
 
-  final _i11.CreateWeeklyScheduleData? createWeeklyScheduleData;
+  final _i11.WeeklyScheduleData? weeklyScheduleData;
 
   @override
   String toString() {
-    return 'ConfigureHobbyRouteArgs{key: $key, createWeeklyScheduleData: $createWeeklyScheduleData}';
+    return 'ConfigureHobbyRouteArgs{key: $key, weeklyScheduleData: $weeklyScheduleData}';
   }
 }
 
@@ -175,14 +175,14 @@ class OverviewRoute extends _i9.PageRouteInfo<void> {
 class SignUpSignInRoute extends _i9.PageRouteInfo<SignUpSignInRouteArgs> {
   SignUpSignInRoute({
     _i10.Key? key,
-    _i11.CreateWeeklyScheduleData? createWeeklyScheduleData,
+    _i11.WeeklyScheduleData? weeklyScheduleData,
     List<_i12.Hobby>? hobbies,
     List<_i9.PageRouteInfo>? children,
   }) : super(
           SignUpSignInRoute.name,
           args: SignUpSignInRouteArgs(
             key: key,
-            createWeeklyScheduleData: createWeeklyScheduleData,
+            weeklyScheduleData: weeklyScheduleData,
             hobbies: hobbies,
           ),
           initialChildren: children,
@@ -197,7 +197,7 @@ class SignUpSignInRoute extends _i9.PageRouteInfo<SignUpSignInRouteArgs> {
           orElse: () => const SignUpSignInRouteArgs());
       return _i7.SignUpSignInPage(
         key: args.key,
-        createWeeklyScheduleData: args.createWeeklyScheduleData,
+        weeklyScheduleData: args.weeklyScheduleData,
         hobbies: args.hobbies,
       );
     },
@@ -207,19 +207,19 @@ class SignUpSignInRoute extends _i9.PageRouteInfo<SignUpSignInRouteArgs> {
 class SignUpSignInRouteArgs {
   const SignUpSignInRouteArgs({
     this.key,
-    this.createWeeklyScheduleData,
+    this.weeklyScheduleData,
     this.hobbies,
   });
 
   final _i10.Key? key;
 
-  final _i11.CreateWeeklyScheduleData? createWeeklyScheduleData;
+  final _i11.WeeklyScheduleData? weeklyScheduleData;
 
   final List<_i12.Hobby>? hobbies;
 
   @override
   String toString() {
-    return 'SignUpSignInRouteArgs{key: $key, createWeeklyScheduleData: $createWeeklyScheduleData, hobbies: $hobbies}';
+    return 'SignUpSignInRouteArgs{key: $key, weeklyScheduleData: $weeklyScheduleData, hobbies: $hobbies}';
   }
 }
 

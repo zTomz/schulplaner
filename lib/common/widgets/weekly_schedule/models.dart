@@ -58,6 +58,16 @@ enum Gender {
         return Gender.divers;
     }
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'genderIndex': index,
+    };
+  }
+
+  factory Gender.fromMap(Map<String, dynamic> map) {
+    return Gender.values[int.tryParse(map['genderIndex'].toString()) ?? 0];
+  }
 }
 
 /// An enum to represent the week. Either A or B or All
@@ -82,5 +92,15 @@ enum Week {
       case Week.all:
         return Week.a;
     }
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'nameIndex': index,
+    };
+  }
+
+  factory Week.fromMap(Map<String, dynamic> map) {
+    return Week.values[int.tryParse(map['nameIndex'].toString()) ?? 0];
   }
 }

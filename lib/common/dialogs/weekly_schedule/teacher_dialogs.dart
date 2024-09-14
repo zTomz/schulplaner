@@ -16,7 +16,13 @@ import 'package:schulplaner/common/widgets/custom_button.dart';
 import 'package:uuid/uuid.dart';
 
 class TeacherDialog extends StatelessWidget {
-  const TeacherDialog({super.key});
+  /// A list of already created teachers
+  final List<Teacher> teachers;
+
+  const TeacherDialog({
+    super.key,
+    required this.teachers,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +33,22 @@ class TeacherDialog extends StatelessWidget {
       icon: const Icon(LucideIcons.user_round),
       content: Column(
         children: [
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: teachers.length,
+            itemBuilder: (context, index) {
+              final currentTeacher = teachers[index];
+
+              return ListTile(
+                title: Text(
+                  "${currentTeacher.firstName} ${currentTeacher.lastName}",
+                ),
+                onTap: () {
+                  Navigator.of(context).pop(teachers[index]);
+                },
+              );
+            },
+          ),
           const SizedBox(height: Spacing.medium),
           CustomButton(
             onPressed: () async {

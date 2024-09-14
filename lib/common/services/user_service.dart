@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:schulplaner/common/functions/check_user_is_signed_in.dart';
 import 'package:schulplaner/common/functions/close_all_dialogs.dart';
 import 'package:schulplaner/common/services/exeption_handler_service.dart';
 import 'package:schulplaner/common/services/snack_bar_service.dart';
@@ -13,7 +14,7 @@ abstract class UserService {
     String? email,
   }) async {
     // Show an error if no user is logged in.
-    if (!_checkUserIsSignedIn(context)) {
+    if (!checkUserIsSignedIn(context)) {
       return;
     }
 
@@ -73,7 +74,7 @@ abstract class UserService {
     required String newPassword,
   }) async {
     // Show an error if no user is logged in.
-    if (!_checkUserIsSignedIn(context)) {
+    if (!checkUserIsSignedIn(context)) {
       return;
     }
 
@@ -102,7 +103,7 @@ abstract class UserService {
 
   /// Delete the user and handle the errors
   static Future<void> deleteAccount(BuildContext context) async {
-    if (!_checkUserIsSignedIn(context)) {
+    if (!checkUserIsSignedIn(context)) {
       return;
     }
 
@@ -130,22 +131,5 @@ abstract class UserService {
         );
       }
     }
-  }
-
-  /// Checkes if the user is signed in. If not it will show an error and return [false]
-  static bool _checkUserIsSignedIn(BuildContext context) {
-    if (FirebaseAuth.instance.currentUser == null) {
-      SnackBarService.show(
-        context: context,
-        content: const Text(
-          "Sie benötigen ein Konto um diese Action auszuführen.",
-        ),
-        type: CustomSnackbarType.error,
-      );
-
-      return false;
-    }
-
-    return true;
   }
 }
