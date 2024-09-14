@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/common/constants/numbers.dart';
 
@@ -90,93 +91,19 @@ class CustomNavigationRail extends StatelessWidget {
   Widget _buildDestinations() => Expanded(
         child: LayoutBuilder(
           builder: (context, constraints) {
-            final isExpanded = constraints.maxWidth != _kRailWidth;
-
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ...destinations.map(
-                  (destination) => Padding(
-                    padding: EdgeInsets.only(
-                      top: Spacing.small,
-                      bottom: Spacing.small,
-                      left: extended ? Spacing.medium : 0,
-                    ),
-                    child: InkWell(
-                      onTap: isExpanded
-                          ? () => onDestinationSelected(
-                                destinations.indexOf(destination),
-                              )
-                          : null,
-                      child: Row(
-                        mainAxisAlignment: extended
-                            ? MainAxisAlignment.start
-                            : MainAxisAlignment.center,
-                        children: [
-                          if (constraints.maxWidth != _kRailWidth)
-                            const SizedBox(width: Spacing.medium),
-                          Tooltip(
-                            message: destination.label,
-                            child: Material(
-                              color: selectedIndex ==
-                                      destinations.indexOf(destination)
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Theme.of(context)
-                                      .colorScheme
-                                      .surfaceContainerHigh,
-                              shape: const CircleBorder(),
-                              child: InkWell(
-                                onTap: () => onDestinationSelected(
-                                  destinations.indexOf(destination),
-                                ),
-                                borderRadius: BorderRadius.circular(360),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(Spacing.small),
-                                  child: IconTheme(
-                                    data: IconThemeData(
-                                      color: selectedIndex ==
-                                              destinations.indexOf(destination)
-                                          ? Theme.of(context)
-                                              .colorScheme
-                                              .onPrimary
-                                          : Theme.of(context)
-                                              .colorScheme
-                                              .onSurface,
-                                    ),
-                                    child: destination.icon,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          if (isExpanded) ...[
-                            const SizedBox(width: Spacing.small),
-                            Expanded(
-                              child: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  destination.label,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyLarge!
-                                      .copyWith(
-                                        color: selectedIndex ==
-                                                destinations
-                                                    .indexOf(destination)
-                                            ? Theme.of(context)
-                                                .colorScheme
-                                                .primary
-                                            : Theme.of(context)
-                                                .colorScheme
-                                                .onSurface,
-                                      ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
+                  (destination) => _CustomNavigaitonRailDestination(
+                    destination: destination,
+                    isSelected: selectedIndex ==
+                        destinations.indexOf(
+                          destination,
+                        ),
+                    isExpanded: constraints.maxWidth != _kRailWidth,
+                    onDestinationSelected: () => onDestinationSelected(
+                      destinations.indexOf(destination),
                     ),
                   ),
                 ),
@@ -185,6 +112,99 @@ class CustomNavigationRail extends StatelessWidget {
           },
         ),
       );
+}
+
+/// The destination for the [CustomNavigationRail].
+class _CustomNavigaitonRailDestination extends HookWidget {
+  /// The destination
+  final CustomNavigationDestination destination;
+
+  /// A bool that indicates if the [CustomNavigationDestination] is selected
+  final bool isSelected;
+
+  /// A bool that indicates if the [CustomNavigationRail] is expanded
+  final bool isExpanded;
+
+  /// A function that is called, when a destination is selected
+  final void Function() onDestinationSelected;
+
+  const _CustomNavigaitonRailDestination({
+    required this.destination,
+    required this.isSelected,
+    required this.isExpanded,
+    required this.onDestinationSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isHovering = useState<bool>(false);
+
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        vertical: Spacing.small,
+        horizontal: isExpanded ? Spacing.medium : 0,
+      ),
+      child: MouseRegion(
+        onEnter: (_) {
+          isHovering.value = true;
+        },
+        onExit: (_) {
+          isHovering.value = false;
+        },
+        child: InkWell(
+          onTap: isExpanded ? () => onDestinationSelected() : null,
+          child: Row(
+            mainAxisAlignment:
+                isExpanded ? MainAxisAlignment.start : MainAxisAlignment.center,
+            children: [
+              Tooltip(
+                message: destination.label,
+                child: Material(
+                  color: isSelected 
+                      ? Theme.of(context).colorScheme.primary
+                      : isHovering.value ? Theme.of(context).colorScheme.primary.withOpacity(0.7) :
+                       Theme.of(context).colorScheme.surfaceContainerHigh,
+                  shape: const CircleBorder(),
+                  child: InkWell(
+                    onTap: () => onDestinationSelected(),
+                    borderRadius: BorderRadius.circular(360),
+                    child: Padding(
+                      padding: const EdgeInsets.all(Spacing.small),
+                      child: IconTheme(
+                        data: IconThemeData(
+                          color: isSelected || isHovering.value
+                              ? Theme.of(context).colorScheme.onPrimary
+                              : Theme.of(context).colorScheme.onSurface,
+                        ),
+                        child: destination.icon,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              if (isExpanded) ...[
+                const SizedBox(width: Spacing.small),
+                Expanded(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      destination.label,
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            color: isSelected || isHovering.value
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context).colorScheme.onSurface,
+                          ),
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class CustomNavigationDestination {
