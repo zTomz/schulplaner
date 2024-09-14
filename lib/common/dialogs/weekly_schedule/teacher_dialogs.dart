@@ -19,9 +19,13 @@ class TeacherDialog extends StatelessWidget {
   /// A list of already created teachers
   final List<Teacher> teachers;
 
+  /// A function is called, whe a teacher is created or edited
+  final void Function(Teacher teacher) onTeacherChanged;
+
   const TeacherDialog({
     super.key,
     required this.teachers,
+    required this.onTeacherChanged,
   });
 
   @override
@@ -43,6 +47,25 @@ class TeacherDialog extends StatelessWidget {
                 title: Text(
                   "${currentTeacher.firstName} ${currentTeacher.lastName}",
                 ),
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radii.small),
+                ),
+                trailing: IconButton(
+                  onPressed: () async {
+                    final result = await showDialog<Teacher>(
+                      context: context,
+                      builder: (context) => EditTeacherDialog(
+                        teacher: currentTeacher,
+                      ),
+                    );
+
+                    if (result != null && context.mounted) {
+                      onTeacherChanged(result);
+                      Navigator.of(context).pop(result);
+                    }
+                  },
+                  icon: const Icon(LucideIcons.ellipsis_vertical),
+                ),
                 onTap: () {
                   Navigator.of(context).pop(teachers[index]);
                 },
@@ -58,6 +81,7 @@ class TeacherDialog extends StatelessWidget {
               );
 
               if (result != null && context.mounted) {
+                onTeacherChanged(result);
                 Navigator.of(context).pop(result);
               }
             },
@@ -189,7 +213,7 @@ class EditTeacherDialog extends HookWidget {
               ),
             );
           },
-          child: const Text("Erstellen"),
+          child: Text(teacher == null ? "Erstellen" : "Bearbeiten"),
         ),
       ],
     );

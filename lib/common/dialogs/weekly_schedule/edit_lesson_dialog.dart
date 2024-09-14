@@ -4,7 +4,6 @@ import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/common/dialogs/custom_dialog.dart';
 import 'package:schulplaner/common/dialogs/weekly_schedule/subject_dialogs.dart';
 import 'package:schulplaner/common/functions/build_body_part.dart';
-import 'package:schulplaner/common/models/time.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
 import 'package:schulplaner/common/widgets/custom_text_field.dart';
 import 'package:schulplaner/common/widgets/required_field.dart';
@@ -31,11 +30,11 @@ class EditLessonDialog extends HookWidget {
   /// lesson.
   final void Function(Lesson lesson)? onLessonDeleted;
 
-  /// A function that is called, when a subject gets created
-  final void Function(Subject subject) onSubjectCreated;
+  /// A function that is called, when a subject gets created or edited
+  final void Function(Subject subject) onSubjectChanged;
 
-  /// A function that is called, when a teacher gets created
-  final void Function(Teacher teacher) onTeacherCreated;
+  /// A function that is called, when a teacher gets created or edited
+  final void Function(Teacher teacher) onTeacherChanged;
 
   const EditLessonDialog({
     super.key,
@@ -44,8 +43,8 @@ class EditLessonDialog extends HookWidget {
     required this.subjects,
     required this.teachers,
     required this.onLessonDeleted,
-    required this.onSubjectCreated,
-    required this.onTeacherCreated,
+    required this.onSubjectChanged,
+    required this.onTeacherChanged,
   });
 
   @override
@@ -103,8 +102,8 @@ class EditLessonDialog extends HookWidget {
                     builder: (context) => SubjectDialog(
                       subjects: subjects,
                       teachers: teachers,
-                      onSubjectCreated: onSubjectCreated,
-                      onTeacherCreated: onTeacherCreated,
+                      onSubjectChanged: onSubjectChanged,
+                      onTeacherChanged: onTeacherChanged,
                     ),
                   );
 

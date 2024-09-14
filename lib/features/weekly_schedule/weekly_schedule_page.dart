@@ -236,16 +236,37 @@ class WeeklySchedulePage extends HookWidget {
                 }
               }
             : null,
-        onSubjectCreated: (subject) async {
+        onSubjectChanged: (subject) async {
+          final index = subjects.indexWhere((s) => s.uuid == subject.uuid);
+
+          List<Subject> updatedSubjects = [];
+
+          if (index == -1) {
+            updatedSubjects = [...subjects, subject];
+          } else {
+            updatedSubjects = subjects;
+            updatedSubjects[index] = subject;
+          }
+
           await DatabaseService.uploadSubjects(
             context,
-            subjects: [...subjects, subject],
+            subjects: updatedSubjects,
           );
         },
-        onTeacherCreated: (teacher) async {
+        onTeacherChanged: (teacher) async {
+          final index = teachers.indexWhere((t) => t.uuid == teacher.uuid);
+          List<Teacher> updatedTeachers = [];
+
+          if (index == -1) {
+            updatedTeachers = [...teachers, teacher];
+          } else {
+            updatedTeachers = teachers;
+            updatedTeachers[index] = teacher;
+          }
+
           await DatabaseService.uploadTeachers(
             context,
-            teachers: [...teachers, teacher],
+            teachers: updatedTeachers,
           );
         },
       ),

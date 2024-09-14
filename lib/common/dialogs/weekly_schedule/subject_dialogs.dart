@@ -23,18 +23,18 @@ class SubjectDialog extends StatelessWidget {
   /// A list of already created teachers
   final List<Teacher> teachers;
 
-  /// A function that is called when a subject is created
-  final void Function(Subject subject) onSubjectCreated;
+  /// A function that is called when a subject is created or edited
+  final void Function(Subject subject) onSubjectChanged;
 
-  /// A function that is called when a teacher is created
-  final void Function(Teacher teacher) onTeacherCreated;
+  /// A function that is called when a teacher is created or edited
+  final void Function(Teacher teacher) onTeacherChanged;
 
   const SubjectDialog({
     super.key,
     required this.subjects,
     required this.teachers,
-    required this.onSubjectCreated,
-    required this.onTeacherCreated,
+    required this.onSubjectChanged,
+    required this.onTeacherChanged,
   });
 
   @override
@@ -49,9 +49,30 @@ class SubjectDialog extends StatelessWidget {
             itemCount: subjects.length,
             itemBuilder: (context, index) {
               final currentSubject = subjects[index];
-              
+
               return ListTile(
                 title: Text(currentSubject.name),
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radii.small),
+                ),
+                trailing: IconButton(
+                  onPressed: () async {
+                    final result = await showDialog<Subject>(
+                      context: context,
+                      builder: (context) => EditSubjectDialog(
+                        subject: currentSubject,
+                        teachers: teachers,
+                        onTeacherChanged: onTeacherChanged,
+                      ),
+                    );
+
+                    if (result != null && context.mounted) {
+                      onSubjectChanged(result);
+                      Navigator.of(context).pop(result);
+                    }
+                  },
+                  icon: const Icon(LucideIcons.ellipsis_vertical),
+                ),
                 onTap: () {
                   Navigator.of(context).pop(subjects[index]);
                 },
@@ -65,12 +86,12 @@ class SubjectDialog extends StatelessWidget {
                 context: context,
                 builder: (context) => EditSubjectDialog(
                   teachers: teachers,
-                  onTeacherCreated: onTeacherCreated,
+                  onTeacherChanged: onTeacherChanged,
                 ),
               );
 
               if (result != null && context.mounted) {
-                onSubjectCreated(result);
+                onSubjectChanged(result);
                 Navigator.of(context).pop(result);
               }
             },
@@ -89,14 +110,14 @@ class EditSubjectDialog extends HookWidget {
   /// A list of already created teachers
   final List<Teacher> teachers;
 
-  /// A function that is called when a teacher is created
-  final void Function(Teacher teacher) onTeacherCreated;
+  /// A function that is called when a teacher is created or edited
+  final void Function(Teacher teacher) onTeacherChanged;
 
   const EditSubjectDialog({
     super.key,
     this.subject,
     required this.teachers,
-    required this.onTeacherCreated,
+    required this.onTeacherChanged,
   });
 
   @override
@@ -135,11 +156,11 @@ class EditSubjectDialog extends HookWidget {
                     context: context,
                     builder: (context) => TeacherDialog(
                       teachers: teachers,
+                      onTeacherChanged: onTeacherChanged,
                     ),
                   );
 
                   if (result != null) {
-                    onTeacherCreated(result);
                     teacher.value = result;
                     teacherError.value = null;
                   }
@@ -180,7 +201,7 @@ class EditSubjectDialog extends HookWidget {
               ),
             );
           },
-          child: const Text("Erstellen"),
+          child: Text(subject == null ? "Erstellen" : "Bearbeiten"),
         ),
       ],
     );

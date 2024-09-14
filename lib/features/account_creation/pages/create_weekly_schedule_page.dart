@@ -68,14 +68,12 @@ class CreateWeeklySchedulePage extends HookWidget {
                           builder: (context) => EditLessonDialog(
                             schoolTimeCell: selectedSchoolTimeCell.value!,
                             onLessonDeleted: null,
-                            subjects: [], // TODO: Save the subjects somewhere
-                            teachers: [], // TODO: Save the teachers somewhere
-                            onSubjectCreated: (subject) {
-                              
-                            },
-                            onTeacherCreated: (teacher) {
-                              // TODO: Implement on teacher created
-                            },
+                            subjects: const [], // TODO: Save the subjects somewhere
+                            teachers: const [], // TODO: Save the teachers somewhere
+                            onSubjectChanged:
+                                (subject) {}, // TODO: Implement on subject created
+                            onTeacherChanged:
+                                (teacher) {}, // TODO: Implement on teacher created
                           ),
                         );
 
@@ -115,8 +113,8 @@ class CreateWeeklySchedulePage extends HookWidget {
               builder: (context) => EditLessonDialog(
                 schoolTimeCell: selectedSchoolTimeCell.value,
                 lesson: lesson,
-                subjects: [], // TODO: Save the subjects somewhere
-                teachers: [], // TODO: Save the teachers somewhere
+                subjects: const [], // TODO: Save the subjects somewhere
+                teachers: const [], // TODO: Save the teachers somewhere
                 onLessonDeleted: (lesson) async {
                   List<Lesson> oldLessons = List.from(lessons.value);
                   oldLessons.removeWhere((oldLesson) => oldLesson == lesson);
@@ -134,10 +132,10 @@ class CreateWeeklySchedulePage extends HookWidget {
                     );
                   }
                 },
-                onSubjectCreated: (subject) {
+                onSubjectChanged: (subject) {
                   // TODO: Implement on subject created
                 },
-                onTeacherCreated: (teacher) {
+                onTeacherChanged: (teacher) {
                   // TODO: Implement on teacher created
                 },
               ),
