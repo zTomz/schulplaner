@@ -4,6 +4,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/common/dialogs/custom_dialog.dart';
 import 'package:schulplaner/common/dialogs/hobby/edit_hobby_dialog.dart';
+import 'package:schulplaner/common/functions/get_value_or_null.dart';
+import 'package:schulplaner/common/models/weekly_schedule.dart';
 import 'package:schulplaner/common/models/weekly_schedule_data.dart';
 import 'package:schulplaner/common/models/hobby.dart';
 import 'package:schulplaner/common/widgets/custom_app_bar.dart';
@@ -12,11 +14,20 @@ import 'package:schulplaner/config/routes/router.gr.dart';
 import 'package:schulplaner/common/constants/numbers.dart';
 
 class CreateHobbiesPage extends HookWidget {
+  /// The weekly schedule if created from the [create_weekly_schedule_page.dart]
   final WeeklyScheduleData? weeklyScheduleData;
+
+  /// The teachers if created from the [create_weekly_schedule_page.dart]
+  final List<Teacher>? teachers;
+
+  /// The subjects if created from the [create_weekly_schedule_page.dart]
+  final List<Subject>? subjects;
 
   const CreateHobbiesPage({
     super.key,
     this.weeklyScheduleData,
+    this.teachers,
+    this.subjects,
   });
 
   @override
@@ -44,7 +55,9 @@ class CreateHobbiesPage extends HookWidget {
           await context.router.push(
             SignUpSignInRoute(
               weeklyScheduleData: weeklyScheduleData,
-              hobbies: hobbies.value,
+              hobbies: hobbies.value.getListOrNull() as List<Hobby>?,
+              teachers: teachers,
+              subjects: subjects,
             ),
           );
         },

@@ -118,7 +118,7 @@ class EditLessonDialog extends HookWidget {
         ),
       ),
       actions: [
-        if (onLessonDeleted != null) ...[
+        if (lesson != null && onLessonDeleted != null) ...[
           ElevatedButton.icon(
             onPressed: () async {
               final result = await showDialog<bool>(
@@ -130,8 +130,8 @@ class EditLessonDialog extends HookWidget {
                 ),
               );
 
-              if (result == true && context.mounted && lesson != null) {
-                onLessonDeleted!.call(lesson!);
+              if (result == true && context.mounted) {
+                onLessonDeleted!(lesson!);
               }
             },
             style: ElevatedButton.styleFrom(

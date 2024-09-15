@@ -1,3 +1,5 @@
+// TODO: Show something, when no data is provided
+
 import 'package:flutter/material.dart';
 import 'package:schulplaner/common/models/time.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';

@@ -29,12 +29,17 @@ class SubjectDialog extends StatelessWidget {
   /// A function that is called when a teacher is created or edited
   final void Function(Teacher teacher) onTeacherChanged;
 
+  /// If the subjects are onyl selectable. This means, there is no option to edit them or to add new subjects.
+  /// Default is `false`
+  final bool onlySelectable;
+
   const SubjectDialog({
     super.key,
     required this.subjects,
     required this.teachers,
     required this.onSubjectChanged,
     required this.onTeacherChanged,
+    this.onlySelectable = false,
   });
 
   @override

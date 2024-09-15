@@ -43,6 +43,7 @@ abstract class UserService {
     // If the email is not null, we will update it
     if (email != null) {
       try {
+        // FIXME
         await FirebaseAuth.instance.currentUser!.updateEmail(
           email.trim(),
         );

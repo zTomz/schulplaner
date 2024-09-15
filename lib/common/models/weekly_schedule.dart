@@ -82,6 +82,9 @@ class Subject {
     required this.uuid,
   });
 
+  @override
+  String toString() => 'Subject(name: $name, teacher: $teacher, color: $color, uuid: $uuid)';
+
   Map<String, dynamic> toMap() {
     return {
       'name': name,
@@ -118,7 +121,6 @@ class Teacher {
   final String lastName;
   final Gender gender;
   final String? email;
-  final Subject? subject;
   final bool favorite;
   final String uuid;
 
@@ -127,10 +129,12 @@ class Teacher {
     required this.lastName,
     required this.gender,
     this.email,
-    this.subject,
     this.favorite = false,
     required this.uuid,
   });
+
+  @override
+  String toString() => 'Teacher(firstName: $firstName, lastName: $lastName, gender: $gender, email: $email, favorite: $favorite, uuid: $uuid)';
 
   /// Get the salutation of the teacher. E. g. "Herr Schulze"
   String get salutation => "${gender.salutation} $lastName";
@@ -141,7 +145,6 @@ class Teacher {
       'lastName': lastName,
       'gender': gender.toMap(),
       'email': email,
-      'subject': subject?.toMap(),
       'favorite': favorite,
       'uuid': uuid,
     };
@@ -153,9 +156,6 @@ class Teacher {
       lastName: map['lastName'] ?? '',
       gender: Gender.fromMap(map['gender']),
       email: map['email'],
-      subject: map['subject'] != null
-          ? Subject.fromMap(map['subject'], teachers: null)
-          : null,
       favorite: map['favorite'] ?? false,
       uuid: map['uuid'] ?? '',
     );

@@ -8,6 +8,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/common/dialogs/custom_dialog.dart';
 import 'package:schulplaner/common/functions/build_body_part.dart';
+import 'package:schulplaner/common/functions/get_value_or_null.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
 import 'package:schulplaner/common/widgets/custom_text_field.dart';
 import 'package:schulplaner/common/widgets/weekly_schedule/models.dart';
@@ -30,8 +31,6 @@ class TeacherDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Show the teachers, loaded from firebase
-
     return CustomDialog.expanded(
       title: const Text("Wähle einen Lehrer aus"),
       icon: const Icon(LucideIcons.user_round),
@@ -45,7 +44,7 @@ class TeacherDialog extends StatelessWidget {
 
               return ListTile(
                 title: Text(
-                  "${currentTeacher.firstName} ${currentTeacher.lastName}",
+                  "${currentTeacher.firstName ?? currentTeacher.gender.salutation} ${currentTeacher.lastName}",
                 ),
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radii.small),
@@ -96,6 +95,8 @@ class TeacherDialog extends StatelessWidget {
 /// A dialog to create a new teacher. When it pop's it will return the newly created
 /// teacher.
 class EditTeacherDialog extends HookWidget {
+  /// A [Teacher]. If null, a new teacher will be created, otherwise the provided teacher
+  /// will be edited
   final Teacher? teacher;
 
   const EditTeacherDialog({
@@ -116,7 +117,6 @@ class EditTeacherDialog extends HookWidget {
     final emailController = useTextEditingController(
       text: teacher?.email,
     );
-    final subject = useState<Subject?>(teacher?.subject);
     final favorite = useState<bool>(teacher?.favorite ?? false);
 
     final formKey = useMemoized(() => GlobalKey<FormState>());
@@ -159,19 +159,10 @@ class EditTeacherDialog extends HookWidget {
               keyboardType: TextInputType.name,
               validate: true,
             ),
-            const SizedBox(height: Spacing.medium),
-            CustomTextField(
-              controller: emailController,
-              labelText: "Email",
-              keyboardType: TextInputType.emailAddress,
-            ),
             const SizedBox(height: Spacing.small),
-            CustomButton.selection(
-              selection: subject.value?.name,
-              onPressed: () async {
-                // TODO: Add a subject to a teacher
-              },
-              child: const Text("Fach"),
+            CustomTextField.email(
+              controller: emailController,
+              labelText: "E-Mail",
             ),
             const SizedBox(height: Spacing.medium),
             CheckboxListTile(
@@ -203,12 +194,11 @@ class EditTeacherDialog extends HookWidget {
 
             Navigator.of(context).pop(
               Teacher(
-                firstName: firstNameController.text,
+                firstName: firstNameController.text.getStringOrNull(),
                 lastName: lastNameController.text,
-                email: emailController.text,
+                email: emailController.text.getStringOrNull(),
                 gender: gender.value,
                 favorite: favorite.value,
-                subject: subject.value,
                 uuid: teacher?.uuid ?? const Uuid().v4(),
               ),
             );

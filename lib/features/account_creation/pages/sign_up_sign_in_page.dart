@@ -1,10 +1,11 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/common/models/hobby.dart';
+import 'package:schulplaner/common/models/weekly_schedule.dart';
 import 'package:schulplaner/common/services/auth_service.dart';
+import 'package:schulplaner/common/services/database_service.dart';
 import 'package:schulplaner/common/widgets/custom_button.dart';
 import 'package:schulplaner/common/widgets/custom_text_field.dart';
 import 'package:schulplaner/common/widgets/gradient_scaffold.dart';
@@ -14,8 +15,14 @@ import 'package:schulplaner/common/models/weekly_schedule_data.dart';
 
 @RoutePage()
 class SignUpSignInPage extends HookWidget {
-  /// The data from the create weekly schedule page
+  /// The weekly schedule if created from the [create_weekly_schedule_page.dart]
   final WeeklyScheduleData? weeklyScheduleData;
+
+  /// The teachers if created from the [create_weekly_schedule_page.dart]
+  final List<Teacher>? teachers;
+
+  /// The subjects if created from the [create_weekly_schedule_page.dart]
+  final List<Subject>? subjects;
 
   /// The hobbies from the create hobbies page
   final List<Hobby>? hobbies;
@@ -23,6 +30,8 @@ class SignUpSignInPage extends HookWidget {
   const SignUpSignInPage({
     super.key,
     this.weeklyScheduleData,
+    this.teachers,
+    this.subjects,
     this.hobbies,
   });
 
@@ -90,33 +99,33 @@ class SignUpSignInPage extends HookWidget {
                           return;
                         }
 
-                        UserCredential? result;
                         if (isSigningUp.value) {
-                          result = await AuthService.createAccount(
+                          final result = await AuthService.createAccount(
                             context,
                             name: usernameController.text,
                             email: emailController.text,
                             password: passwordController.text,
                           );
+
+                          if (result != null && context.mounted) {
+                            // Upload the weekly schedule data, teachers, subjects and the hobbies
+                            await _createUserData(context);
+
+                            if (context.mounted) {
+                              context.router.replaceAll([
+                                const AppNavigationRoute(),
+                              ]);
+                            }
+                          }
                         } else {
-                          result = await AuthService.signIn(
+                          // If the users signes in, we do not want to override the current weekly schedule and hobby data
+                          final result = await AuthService.signIn(
                             context,
                             email: emailController.text,
                             password: passwordController.text,
                           );
-                        }
 
-                        // When the result is not null, the user is signed in or has created an account
-                        if (result != null && context.mounted) {
-                          // TODO: Upload the weekly schedule data and the hobbies
-                          // if (weeklyScheduleData != null) {
-                          //   await DatabaseService.uploadWeeklySchedule(
-                          //     context,
-                          //     weeklyScheduleData: weeklyScheduleData!,
-                          //   );
-                          // }
-
-                          if (context.mounted) {
+                          if (result != null && context.mounted) {
                             context.router.replaceAll([
                               const AppNavigationRoute(),
                             ]);
@@ -147,6 +156,35 @@ class SignUpSignInPage extends HookWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _createUserData(BuildContext context) async {
+    if (weeklyScheduleData != null) {
+      await DatabaseService.uploadWeeklySchedule(
+        context,
+        weeklyScheduleData: weeklyScheduleData!,
+      );
+    }
+    if (teachers != null && context.mounted) {
+      await DatabaseService.uploadTeachers(
+        context,
+        teachers: teachers!,
+      );
+    }
+    if (subjects != null && context.mounted) {
+      await DatabaseService.uploadSubjects(
+        context,
+        subjects: subjects!,
+      );
+    }
+    // TODO: Implement hobbies
+
+    // if (hobbies != null) {
+    //   await DatabaseService.uploadHobbies(
+    //     context,
+    //     hobbies: hobbies!,
+    //   );
+    // }
   }
 
   Widget _buildBox({

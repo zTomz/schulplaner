@@ -31,7 +31,6 @@ class AppRouter extends RootStackRouter {
           transitionsBuilder: TransitionsBuilders.fadeIn,
           durationInMilliseconds: 400,
           keepHistory: false,
-          guards: [SignedInCheckGuard()],
         ),
 
         // App pages
