@@ -39,6 +39,7 @@ class WeeklyScheduleLessonCell extends StatelessWidget {
   final void Function(List<Lesson> lessons) onTap;
   final void Function(Lesson lesson) onLessonEdit;
   final List<Teacher> teachers;
+  final List<Subject> subjects;
   final List<Lesson> lessons;
   final bool isSelected;
 
@@ -47,6 +48,7 @@ class WeeklyScheduleLessonCell extends StatelessWidget {
     required this.onTap,
     required this.onLessonEdit,
     required this.teachers,
+    required this.subjects,
     required this.lessons,
     required this.isSelected,
   });
@@ -77,6 +79,7 @@ class WeeklyScheduleLessonCell extends StatelessWidget {
                     lesson: lesson,
                     onEdit: onLessonEdit,
                     teachers: teachers,
+                    subjects: subjects,
                   ),
                 )
                 .toList(),
@@ -89,21 +92,29 @@ class WeeklyScheduleLessonCell extends StatelessWidget {
 
 class SchoolCard extends StatelessWidget {
   final Lesson lesson;
+  final List<Subject> subjects;
   final List<Teacher> teachers;
   final void Function(Lesson lesson) onEdit;
 
   const SchoolCard({
     super.key,
     required this.lesson,
+    required this.subjects,
     required this.teachers,
     required this.onEdit,
   });
 
   @override
   Widget build(BuildContext context) {
-    final foregroundColor = lesson.subject.color.computeLuminance() < 0.5
-        ? Theme.of(context).colorScheme.surface
-        : Theme.of(context).colorScheme.onSurface;
+    final foregroundColor =
+        (lesson.getSubject(subjects)?.color.computeLuminance() ??
+                    Theme.of(context)
+                        .colorScheme
+                        .primaryContainer
+                        .computeLuminance()) <
+                0.5
+            ? Theme.of(context).colorScheme.surface
+            : Theme.of(context).colorScheme.onSurface;
 
     return Expanded(
       child: Padding(
@@ -113,7 +124,8 @@ class SchoolCard extends StatelessWidget {
             onEdit(lesson);
           },
           padding: const EdgeInsets.all(Spacing.small),
-          color: lesson.subject.color,
+          color: lesson.getSubject(subjects)?.color ??
+              Theme.of(context).colorScheme.primaryContainer,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radii.small),
           ),
@@ -128,7 +140,7 @@ class SchoolCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    lesson.subject.name,
+                    lesson.getSubject(subjects)!.name,
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                           color: foregroundColor,
                         ),
@@ -167,7 +179,7 @@ class SchoolCard extends StatelessWidget {
                               // Doesn't use the lesson.subject.teacher.salutation because, with
                               // the current solution, the line could be wrapped.
                               Text(
-                                "${lesson.subject.getTeacher(teachers)?.gender.salutation} ",
+                                "${lesson.getSubject(subjects)?.getTeacher(teachers)?.gender.salutation} ",
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium!
@@ -176,7 +188,10 @@ class SchoolCard extends StatelessWidget {
                                     ),
                               ),
                               Text(
-                                lesson.subject.getTeacher(teachers)?.lastName ??
+                                lesson
+                                        .getSubject(subjects)
+                                        ?.getTeacher(teachers)
+                                        ?.lastName ??
                                     "Problem beim finden des Lehrers",
                                 style: Theme.of(context)
                                     .textTheme

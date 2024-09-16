@@ -169,6 +169,7 @@ class _CreateWeeklySchedulePageState extends State<CreateWeeklySchedulePage> {
           selectedSchoolTimeCell: selectedSchoolTimeCell,
           timeSpans: timeSpans,
           teachers: teachers,
+          subjects: subjects,
           lessons: lessons,
           week: week,
         ),
@@ -192,7 +193,7 @@ class _CreateWeeklySchedulePageState extends State<CreateWeeklySchedulePage> {
           SnackBarService.show(
             context: context,
             content: Text(
-              "Schulstunde ${lesson.subject.name} gelöscht",
+              "Schulstunde ${lesson.getSubject(subjects)!.name} gelöscht",
             ),
             type: CustomSnackbarType.info,
           );

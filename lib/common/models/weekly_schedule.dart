@@ -13,7 +13,7 @@ class Lesson extends Equatable {
   final TimeSpan timeSpan;
   final Weekday weekday;
   final Week week;
-  final Subject subject;
+  final String subjectUuid;
   final String room;
   final String uuid;
 
@@ -21,13 +21,13 @@ class Lesson extends Equatable {
     required this.timeSpan,
     required this.weekday,
     required this.week,
-    required this.subject,
+    required this.subjectUuid,
     required this.room,
     required this.uuid,
   });
 
   @override
-  List<Object?> get props => [timeSpan, weekday, week, subject, room, uuid];
+  List<Object?> get props => [timeSpan, weekday, week, subjectUuid, room, uuid];
 
   @override
   bool get stringify => true;
@@ -37,7 +37,7 @@ class Lesson extends Equatable {
       'timeSpan': timeSpan.toMap(),
       'weekday': weekday.toMap(),
       'week': week.toMap(),
-      'subject': subject.toMap(),
+      'subjectUuid': subjectUuid,
       'room': room,
       'uuid': uuid,
     };
@@ -48,11 +48,16 @@ class Lesson extends Equatable {
       timeSpan: TimeSpan.fromMap(map['timeSpan']),
       weekday: Weekday.fromMap(map['weekday']),
       week: Week.fromMap(map['week']),
-      subject: Subject.fromMap(
-        map['subject'],
-      ),
+      subjectUuid: map['subjectUuid'] ?? '',
       room: map['room'] ?? '',
       uuid: map['uuid'] ?? '',
+    );
+  }
+
+  Subject? getSubject(List<Subject> subjects) {
+    return firstWhereOrNull(
+      subjects,
+      (subject) => subject.uuid == subjectUuid,
     );
   }
 }

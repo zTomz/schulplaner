@@ -4,6 +4,7 @@ import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/common/dialogs/custom_dialog.dart';
 import 'package:schulplaner/common/dialogs/weekly_schedule/subject_dialogs.dart';
 import 'package:schulplaner/common/functions/build_body_part.dart';
+import 'package:schulplaner/common/functions/first_where_or_null.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
 import 'package:schulplaner/common/widgets/custom_text_field.dart';
 import 'package:schulplaner/common/widgets/required_field.dart';
@@ -53,7 +54,12 @@ class EditLessonDialog extends HookWidget {
     final roomController = useTextEditingController(
       text: lesson?.room,
     );
-    final subject = useState<Subject?>(lesson?.subject);
+    final subject = useState<Subject?>(
+      firstWhereOrNull(
+        subjects,
+        (subject) => subject.uuid == lesson?.subjectUuid,
+      ),
+    );
 
     final formKey = useMemoized(() => GlobalKey<FormState>());
 
@@ -161,7 +167,7 @@ class EditLessonDialog extends HookWidget {
                 weekday: lesson?.weekday ?? schoolTimeCell!.weekday,
                 week: week.value,
                 room: roomController.text,
-                subject: subject.value!,
+                subjectUuid: subject.value!.uuid,
                 uuid: lesson?.uuid ?? const Uuid().v4(),
               ),
             );

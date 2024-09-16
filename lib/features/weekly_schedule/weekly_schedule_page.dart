@@ -184,6 +184,7 @@ class WeeklySchedulePage extends HookWidget {
               selectedSchoolTimeCell: selectedSchoolTimeCell.value,
               timeSpans: timeSpans,
               teachers: teachers,
+              subjects: subjects,
               lessons: lessons,
               week: week.value,
             ),
@@ -230,7 +231,7 @@ class WeeklySchedulePage extends HookWidget {
                   SnackBarService.show(
                     context: context,
                     content: Text(
-                      "Die Schulstunde ${lesson.subject.name} wurde gelöscht.",
+                      "Die Schulstunde ${lesson.getSubject(subjects)?.name ?? ""} wurde gelöscht.",
                     ),
                     type: CustomSnackbarType.info,
                   );
