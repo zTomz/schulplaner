@@ -168,6 +168,7 @@ class _CreateWeeklySchedulePageState extends State<CreateWeeklySchedulePage> {
           },
           selectedSchoolTimeCell: selectedSchoolTimeCell,
           timeSpans: timeSpans,
+          teachers: teachers,
           lessons: lessons,
           week: week,
         ),

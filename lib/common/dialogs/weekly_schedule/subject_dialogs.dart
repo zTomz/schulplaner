@@ -8,6 +8,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/common/dialogs/custom_dialog.dart';
 import 'package:schulplaner/common/dialogs/weekly_schedule/teacher_dialogs.dart';
+import 'package:schulplaner/common/functions/first_where_or_null.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
 import 'package:schulplaner/common/widgets/color_choose_list_tile.dart';
 import 'package:schulplaner/common/widgets/custom_text_field.dart';
@@ -130,7 +131,10 @@ class EditSubjectDialog extends HookWidget {
     final subjectController = useTextEditingController(
       text: subject?.name,
     );
-    final teacher = useState<Teacher?>(subject?.teacher);
+    final teacher = useState<Teacher?>(firstWhereOrNull(
+      teachers,
+      (teacher) => teacher.uuid == subject?.teacherUuid,
+    ));
     final teacherError = useState<String?>(null);
     final color = useState<Color>(subject?.color ?? Colors.blue);
 
@@ -200,7 +204,7 @@ class EditSubjectDialog extends HookWidget {
             Navigator.of(context).pop(
               Subject(
                 name: subjectController.text,
-                teacher: teacher.value!,
+                teacherUuid: teacher.value!.uuid,
                 color: color.value,
                 uuid: subject?.uuid ?? const Uuid().v4(),
               ),

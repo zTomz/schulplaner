@@ -1,9 +1,9 @@
 // Models used for the weekly schedule
 
-import 'dart:convert';
 import 'dart:ui';
 
 import 'package:equatable/equatable.dart';
+import 'package:schulplaner/common/functions/first_where_or_null.dart';
 
 import 'package:schulplaner/common/models/time.dart';
 import 'package:schulplaner/common/widgets/weekly_schedule/models.dart';
@@ -43,17 +43,13 @@ class Lesson extends Equatable {
     };
   }
 
-  factory Lesson.fromMap(
-    Map<String, dynamic> map, {
-    List<Teacher>? teachers,
-  }) {
+  factory Lesson.fromMap(Map<String, dynamic> map) {
     return Lesson(
       timeSpan: TimeSpan.fromMap(map['timeSpan']),
       weekday: Weekday.fromMap(map['weekday']),
       week: Week.fromMap(map['week']),
       subject: Subject.fromMap(
         map['subject'],
-        teachers: teachers,
       ),
       room: map['room'] ?? '',
       uuid: map['uuid'] ?? '',
@@ -66,8 +62,8 @@ class Subject {
   /// The name of the subject. E. g. Math, English etc.
   final String name;
 
-  /// The teacher of the subject
-  final Teacher teacher;
+  /// The uuid of the teacher of the subject
+  final String teacherUuid;
 
   /// The color of the subject
   final Color color;
@@ -77,42 +73,41 @@ class Subject {
 
   const Subject({
     required this.name,
-    required this.teacher,
+    required this.teacherUuid,
     required this.color,
     required this.uuid,
   });
 
   @override
-  String toString() => 'Subject(name: $name, teacher: $teacher, color: $color, uuid: $uuid)';
+  String toString() =>
+      'Subject(name: $name, teacherUuid: $teacherUuid, color: $color, uuid: $uuid)';
 
   Map<String, dynamic> toMap() {
     return {
       'name': name,
-      'teacher': teacher.toMap(),
+      'teacherUuid': teacherUuid,
       'color': color.value,
       'uuid': uuid,
     };
   }
 
-  factory Subject.fromMap(
-    Map<String, dynamic> map, {
-    List<Teacher>? teachers,
-  }) {
-    final teacher = Teacher.fromMap(map['teacher']);
-
+  factory Subject.fromMap(Map<String, dynamic> map) {
     return Subject(
       name: map['name'] ?? '',
       // Checks if the teacher exists in the database, if it does, it uses the current data of
       // the teacher, which is from another doc in firebase.
-      teacher:
-          teachers?.where((t) => t.uuid == teacher.uuid).firstOrNull ?? teacher,
+      teacherUuid: map['teacherUuid'],
       color: Color(map['color']),
       uuid: map['uuid'] ?? '',
     );
   }
 
-  factory Subject.fromJson(String source) =>
-      Subject.fromMap(json.decode(source));
+  Teacher? getTeacher(List<Teacher> teachers) {
+    return firstWhereOrNull(
+      teachers,
+      (teacher) => teacher.uuid == teacherUuid,
+    );
+  }
 }
 
 /// Represents a teacher
@@ -134,7 +129,8 @@ class Teacher {
   });
 
   @override
-  String toString() => 'Teacher(firstName: $firstName, lastName: $lastName, gender: $gender, email: $email, favorite: $favorite, uuid: $uuid)';
+  String toString() =>
+      'Teacher(firstName: $firstName, lastName: $lastName, gender: $gender, email: $email, favorite: $favorite, uuid: $uuid)';
 
   /// Get the salutation of the teacher. E. g. "Herr Schulze"
   String get salutation => "${gender.salutation} $lastName";

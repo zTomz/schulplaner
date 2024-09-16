@@ -27,7 +27,7 @@ class CalendarPage extends HookWidget {
     );
     final testSubject = Subject(
       name: "Deutsch",
-      teacher: testTeacher,
+      teacherUuid: testTeacher.uuid,
       color: Colors.blue,
       uuid: const Uuid().v4(),
     );

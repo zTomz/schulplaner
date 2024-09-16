@@ -38,6 +38,7 @@ class WeeklyScheduleTimeCell extends StatelessWidget {
 class WeeklyScheduleLessonCell extends StatelessWidget {
   final void Function(List<Lesson> lessons) onTap;
   final void Function(Lesson lesson) onLessonEdit;
+  final List<Teacher> teachers;
   final List<Lesson> lessons;
   final bool isSelected;
 
@@ -45,6 +46,7 @@ class WeeklyScheduleLessonCell extends StatelessWidget {
     super.key,
     required this.onTap,
     required this.onLessonEdit,
+    required this.teachers,
     required this.lessons,
     required this.isSelected,
   });
@@ -74,6 +76,7 @@ class WeeklyScheduleLessonCell extends StatelessWidget {
                   (lesson) => SchoolCard(
                     lesson: lesson,
                     onEdit: onLessonEdit,
+                    teachers: teachers,
                   ),
                 )
                 .toList(),
@@ -86,11 +89,13 @@ class WeeklyScheduleLessonCell extends StatelessWidget {
 
 class SchoolCard extends StatelessWidget {
   final Lesson lesson;
+  final List<Teacher> teachers;
   final void Function(Lesson lesson) onEdit;
 
   const SchoolCard({
     super.key,
     required this.lesson,
+    required this.teachers,
     required this.onEdit,
   });
 
@@ -162,7 +167,7 @@ class SchoolCard extends StatelessWidget {
                               // Doesn't use the lesson.subject.teacher.salutation because, with
                               // the current solution, the line could be wrapped.
                               Text(
-                                "${lesson.subject.teacher.gender.salutation} ",
+                                "${lesson.subject.getTeacher(teachers)?.gender.salutation} ",
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium!
@@ -171,7 +176,8 @@ class SchoolCard extends StatelessWidget {
                                     ),
                               ),
                               Text(
-                                lesson.subject.teacher.lastName,
+                                lesson.subject.getTeacher(teachers)?.lastName ??
+                                    "Problem beim finden des Lehrers",
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium!

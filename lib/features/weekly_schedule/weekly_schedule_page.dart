@@ -183,6 +183,7 @@ class WeeklySchedulePage extends HookWidget {
               },
               selectedSchoolTimeCell: selectedSchoolTimeCell.value,
               timeSpans: timeSpans,
+              teachers: teachers,
               lessons: lessons,
               week: week.value,
             ),
@@ -305,7 +306,6 @@ class WeeklySchedulePage extends HookWidget {
       for (final entry in lessonData["lessons"].entries) {
         lessons.add(Lesson.fromMap(
           lessonData["lessons"][entry.key] as Map<String, dynamic>,
-          teachers: teachers,
         ));
       }
     }

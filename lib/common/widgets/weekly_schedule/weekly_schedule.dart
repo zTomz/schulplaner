@@ -32,6 +32,9 @@ class WeeklySchedule extends StatelessWidget {
   /// The time spans of the table
   final Set<TimeSpan> timeSpans;
 
+  /// A list of all teachers that exist
+  final List<Teacher> teachers;
+
   /// The lessons in the table
   final List<Lesson> lessons;
 
@@ -49,6 +52,7 @@ class WeeklySchedule extends StatelessWidget {
     required this.selectedSchoolTimeCell,
     required this.onLessonEdit,
     required this.timeSpans,
+    required this.teachers,
     required this.lessons,
     required this.week,
     this.scrollController,
@@ -148,6 +152,7 @@ class WeeklySchedule extends StatelessWidget {
             onSchoolTimeCellSelected(newCell);
           },
           onLessonEdit: onLessonEdit,
+          teachers: teachers,
           lessons: lessonsForWeekday,
           isSelected: selectedSchoolTimeCell != null &&
               selectedSchoolTimeCell!.weekday == weekday &&

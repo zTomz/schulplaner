@@ -44,7 +44,7 @@ class TeacherDialog extends StatelessWidget {
 
               return ListTile(
                 title: Text(
-                  "${currentTeacher.firstName ?? currentTeacher.gender.salutation} ${currentTeacher.lastName}",
+                  "${currentTeacher.gender.salutation} ${currentTeacher.lastName}",
                 ),
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radii.small),
