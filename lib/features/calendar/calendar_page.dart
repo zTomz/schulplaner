@@ -106,7 +106,7 @@ class CalendarPage extends HookWidget {
         child: Row(
           children: [
             SizedBox(
-              width: 450,
+              width: MediaQuery.sizeOf(context).width * 0.4,
               child: CalendarView(
                 startDate: DateTime.now(),
                 selectedDate: selectedDate.value,

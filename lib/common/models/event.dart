@@ -26,6 +26,8 @@ abstract class Event {
   });
 }
 
+// TODO: Add homework and other classes here. These should be subclasses of [Event]
+
 /// A homework event
 class HomeworkEvent extends Event {
   /// The date, when the homework event is due
@@ -41,8 +43,8 @@ class HomeworkEvent extends Event {
     required this.date,
     required this.subject,
   }) : super(
-    name: "Hausaufgabe ${subject.name}",
-  );
+          name: "Hausaufgabe ${subject.name}",
+        );
 }
 
 /// A test event.
@@ -64,8 +66,8 @@ class TestEvent extends Event {
     required this.praticeDates,
     required this.subject,
   }) : super(
-    name: "Leistungskontrolle ${subject.name}",
-  );
+          name: "Leistungskontrolle ${subject.name}",
+        );
 }
 
 class FixedEvent extends Event {
@@ -101,8 +103,6 @@ class RepeatingEvent extends Event {
     required this.repeatingEventType,
   });
 }
-
-// TODO: Add homework and other classes here. These should be subclasses of [Event]
 
 /// A date with a duration
 class EventDate {

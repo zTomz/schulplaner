@@ -105,92 +105,99 @@ class CalendarView extends HookWidget {
             behavior: ScrollConfiguration.of(context).copyWith(
               scrollbars: false,
             ),
-            child: GridView.builder(
-              padding: EdgeInsets.zero,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 7,
-                childAspectRatio: 9 / 10,
-              ),
-              itemBuilder: (context, index) {
-                final day = monthDays[index];
-                final dayIsSelected = day.compareWithoutTime(selectedDate);
-                final eventsOfDay = getEventsForDay(day, events: events);
+            child: LayoutBuilder(builder: (context, constraints) {
+              return GridView.builder(
+                padding: EdgeInsets.zero,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 7,
+                  // Devide the width by 7 because of 7 days in a week and the height by 6 because of max. 6 weeks per month
+                  childAspectRatio:
+                      (constraints.maxWidth / 7) / (constraints.maxHeight / 6),
+                ),
+                itemBuilder: (context, index) {
+                  final day = monthDays[index];
+                  final dayIsSelected = day.compareWithoutTime(selectedDate);
+                  final eventsOfDay = getEventsForDay(day, events: events);
 
-                return MaterialButton(
-                  onPressed: () {
-                    onDaySelected(day);
-                  },
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(Spacing.small),
-                  ),
-                  padding: const EdgeInsets.all(Spacing.extraSmall),
-                  child: Column(
-                    children: [
-                      Container(
-                        width: 25,
-                        height: 25,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: day.compareWithoutTime(DateTime.now())
-                              ? Border.all(
-                                  color: Theme.of(context).colorScheme.primary,
-                                )
-                              : null,
-                          color: dayIsSelected
-                              ? Theme.of(context).colorScheme.primary
-                              : null,
+                  return MaterialButton(
+                    onPressed: () {
+                      onDaySelected(day);
+                    },
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(Spacing.small),
+                    ),
+                    padding: const EdgeInsets.all(Spacing.extraSmall),
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 25,
+                          height: 25,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: day.compareWithoutTime(DateTime.now())
+                                ? Border.all(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  )
+                                : null,
+                            color: dayIsSelected
+                                ? Theme.of(context).colorScheme.primary
+                                : null,
+                          ),
+                          child: Text(
+                            day.day.toString(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                  color: dayIsSelected
+                                      ? Theme.of(context).colorScheme.onPrimary
+                                      : day.month != currentMonth.value.month
+                                          ? Theme.of(context)
+                                              .colorScheme
+                                              .outline
+                                          : null,
+                                ),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                        child: Text(
-                          day.day.toString(),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(
-                                color: dayIsSelected
-                                    ? Theme.of(context).colorScheme.onPrimary
-                                    : day.month != currentMonth.value.month
-                                        ? Theme.of(context).colorScheme.outline
-                                        : null,
+                        const SizedBox(height: Spacing.small),
+                        Wrap(
+                          alignment: WrapAlignment.center,
+                          direction: Axis.horizontal,
+                          spacing: 4,
+                          runSpacing: 8,
+                          children: [
+                            for (int i = 0; i < min(8, eventsOfDay.length); i++)
+                              Container(
+                                width: 8,
+                                height: 8,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: eventsOfDay[i].color,
+                                ),
                               ),
-                          textAlign: TextAlign.center,
+                            if (eventsOfDay.length - 8 > 0)
+                              Text(
+                                "+${eventsOfDay.length - 8}",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall!
+                                    .copyWith(
+                                      height: 1,
+                                    ),
+                              ),
+                          ],
                         ),
-                      ),
-                      const SizedBox(height: Spacing.small),
-                      Wrap(
-                        alignment: WrapAlignment.center,
-                        direction: Axis.horizontal,
-                        spacing: 4,
-                        runSpacing: 8,
-                        children: [
-                          for (int i = 0; i < min(8, eventsOfDay.length); i++)
-                            Container(
-                              width: 8,
-                              height: 8,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: eventsOfDay[i].color,
-                              ),
-                            ),
-                          if (eventsOfDay.length - 8 > 0)
-                            Text(
-                              "+${eventsOfDay.length - 8}",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(
-                                    height: 1,
-                                  ),
-                            ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              },
-              itemCount: monthDays.length,
-            ),
+                      ],
+                    ),
+                  );
+                },
+                itemCount: monthDays.length,
+              );
+            }),
           ),
         ),
       ],
