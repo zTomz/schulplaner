@@ -1,7 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:schulplaner/common/constants/numbers.dart';
 import 'package:schulplaner/common/dialogs/account_dialog.dart';
 import 'package:schulplaner/config/routes/router.gr.dart';
 import 'package:schulplaner/features/app_navigation/widgets/custom_navigation_rail.dart';
@@ -29,11 +31,45 @@ class AppNavigationPage extends HookWidget {
         final tabsRouter = AutoTabsRouter.of(context);
 
         return Scaffold(
-          floatingActionButton: FloatingActionButton.large(
-            onPressed: () {
-              // TODO: Add events here
-            },
-            child: const Icon(LucideIcons.plus),
+          floatingActionButtonLocation: ExpandableFab.location,
+          floatingActionButton: ExpandableFab(
+            type: ExpandableFabType.up,
+            distance: 75,
+            overlayStyle: ExpandableFabOverlayStyle(
+              color: Theme.of(context).colorScheme.surface.withOpacity(0.7),
+              blur: 1,
+            ),
+            openButtonBuilder: RotateFloatingActionButtonBuilder(
+              child: const Icon(LucideIcons.plus),
+              fabSize: ExpandableFabSize.large,
+            ),
+            closeButtonBuilder: RotateFloatingActionButtonBuilder(
+              child: const Icon(LucideIcons.x),
+              fabSize: ExpandableFabSize.regular,
+            ),
+            children: [
+              _buildFabOption(
+                title: "Hausaufgabe",
+                icon: const Icon(LucideIcons.book_open_text),
+                onPressed: () {
+                  // TODO: Add a homework here
+                },
+              ),
+              _buildFabOption(
+                title: "Arbeit",
+                icon: const Icon(LucideIcons.briefcase_business),
+                onPressed: () {
+                  // TODO: Add a test here
+                },
+              ),
+              _buildFabOption(
+                title: "Erinnerung",
+                icon: const Icon(LucideIcons.bell),
+                onPressed: () {
+                  // TODO: Add a reminder here
+                },
+              ),
+            ],
           ),
           body: Row(
             children: [
@@ -68,6 +104,31 @@ class AppNavigationPage extends HookWidget {
               Expanded(child: child),
             ],
           ),
+        );
+      },
+    );
+  }
+
+  Widget _buildFabOption({
+    required String title,
+    required Icon icon,
+    required void Function()? onPressed,
+  }) {
+    return Builder(
+      builder: (context) {
+        return Row(
+          children: [
+            Text(
+              title,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            const SizedBox(width: Spacing.medium),
+            FloatingActionButton.small(
+              heroTag: null,
+              onPressed: onPressed,
+              child: icon,
+            ),
+          ],
         );
       },
     );
