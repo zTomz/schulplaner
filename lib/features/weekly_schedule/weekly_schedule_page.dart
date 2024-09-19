@@ -28,10 +28,39 @@ class WeeklySchedulePage extends HookWidget {
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       stream: DatabaseService.weeklyScheduleCollection.snapshots(),
       builder: (context, snapshot) {
-        print(snapshot.error);
-        // TODO: Better handle error or no data from snapshot
-        if (snapshot.hasError || !snapshot.hasData) {
-          return const Center(child: Text("Error"));
+        if (snapshot.hasError) {
+          return  Center(
+            child: SizedBox(
+              width: kInfoTextWidth,
+              child: Text(
+                "Leider ist ein Fehler aufgetreten und die Daten konnten nicht geladen werden.",
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  color: Theme.of(context).colorScheme.error,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
+        }
+
+        if (!snapshot.hasData) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const CircularProgressIndicator(),
+                const SizedBox(height: Spacing.large),
+                SizedBox(
+                  width: kInfoTextWidth,
+                  child: Text(
+                    "Daten werden geladen. Bitte haben Sie einem Moment Geduld.",
+                    style: Theme.of(context).textTheme.bodyLarge,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+          );
         }
 
         final data = _convertSnapshotToData(data: snapshot.data!);

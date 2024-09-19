@@ -1,6 +1,8 @@
 // TODO: Show something, when no data is provided
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:schulplaner/common/constants/svg_pictures.dart';
 import 'package:schulplaner/common/models/time.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
 import 'package:schulplaner/common/constants/numbers.dart';
@@ -66,6 +68,33 @@ class WeeklySchedule extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (timeSpans.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox.square(
+              dimension: kInfoImageSize,
+              child: SvgPicture.asset(
+                Theme.of(context).brightness == Brightness.dark
+                    ? SvgPictures.no_data_dark
+                    : SvgPictures.no_data_light,
+              ),
+            ),
+            const SizedBox(height: Spacing.medium),
+            SizedBox(
+              width: kInfoTextWidth,
+              child: Text(
+                "Sie haben noch keine Zeiten hinzugefügt. Beginnen Sie indem Sie eine \"Schulzeit hizufügen\".",
+                style: Theme.of(context).textTheme.bodyLarge,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Column(
       children: [
         WeeklyScheduleDaysHeader(

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 const double kDefaultOpacity = 0.4;
 
+const double kInfoTextWidth = 500;
+const double kInfoImageSize = 200;
+
 abstract class Spacing {
   static const double extraSmall = 4;
   static const double small = 8;

@@ -21,7 +21,7 @@ class NoEventsInfo extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox.square(
-              dimension: MediaQuery.sizeOf(context).width * 0.15,
+              dimension: kInfoImageSize,
               child: SvgPicture.asset(
                 Theme.of(context).brightness == Brightness.dark
                     ? SvgPictures.no_data_dark
@@ -31,7 +31,7 @@ class NoEventsInfo extends StatelessWidget {
             const SizedBox(height: Spacing.medium),
             Text(
               "Keine Ereignisse am ${selectedDate.day}. ${selectedDate.monthString} ${selectedDate.year}",
-              style: Theme.of(context).textTheme.headlineSmall,
+              style: Theme.of(context).textTheme.bodyLarge,
               textAlign: TextAlign.center,
             ),
           ],
