@@ -8,10 +8,14 @@ import 'package:schulplaner/common/models/weekly_schedule.dart';
 abstract class DatabaseService {
   /// Get the weekly schedule data collection from firestore for the current user
   static CollectionReference<Map<String, dynamic>>
-      get weeklyScheduleCollection => FirebaseFirestore.instance
-          .collection("users")
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .collection("weekly_schedule");
+      get weeklyScheduleCollection =>
+          currentUserDocument.collection("weekly_schedule");
+
+  static CollectionReference<Map<String, dynamic>> get userCollection =>
+      FirebaseFirestore.instance.collection("users");
+
+  static DocumentReference<Map<String, dynamic>> get currentUserDocument =>
+      userCollection.doc(FirebaseAuth.instance.currentUser!.uid);
 
   static Future<void> uploadWeeklySchedule(
     BuildContext context, {

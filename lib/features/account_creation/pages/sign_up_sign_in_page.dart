@@ -165,13 +165,13 @@ class SignUpSignInPage extends HookWidget {
         weeklyScheduleData: weeklyScheduleData!,
       );
     }
-    if (teachers != null && context.mounted) {
+    if (teachers != null && teachers!.isNotEmpty && context.mounted) {
       await DatabaseService.uploadTeachers(
         context,
         teachers: teachers!,
       );
     }
-    if (subjects != null && context.mounted) {
+    if (subjects != null && teachers!.isNotEmpty && context.mounted) {
       await DatabaseService.uploadSubjects(
         context,
         subjects: subjects!,

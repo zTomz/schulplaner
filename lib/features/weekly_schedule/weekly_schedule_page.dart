@@ -28,6 +28,7 @@ class WeeklySchedulePage extends HookWidget {
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       stream: DatabaseService.weeklyScheduleCollection.snapshots(),
       builder: (context, snapshot) {
+        print(snapshot.error);
         // TODO: Better handle error or no data from snapshot
         if (snapshot.hasError || !snapshot.hasData) {
           return const Center(child: Text("Error"));
@@ -295,7 +296,8 @@ class WeeklySchedulePage extends HookWidget {
       final teacherData = teacherDoc.data();
       for (final entry in teacherData.entries) {
         teachers.add(
-            Teacher.fromMap(teacherData[entry.key] as Map<String, dynamic>));
+          Teacher.fromMap(teacherData[entry.key] as Map<String, dynamic>),
+        );
       }
     }
 

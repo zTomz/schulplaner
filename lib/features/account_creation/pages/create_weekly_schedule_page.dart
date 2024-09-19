@@ -94,7 +94,7 @@ class _CreateWeeklySchedulePageState extends State<CreateWeeklySchedulePage> {
       floatingActionButton: FloatingActionButton.large(
         onPressed: () async {
           WeeklyScheduleData? data;
-          if (lessons.isNotEmpty && timeSpans.isNotEmpty) {
+          if (lessons.isNotEmpty || timeSpans.isNotEmpty) {
             data = WeeklyScheduleData(
               lessons: lessons,
               timeSpans: timeSpans,

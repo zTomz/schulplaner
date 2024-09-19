@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:schulplaner/common/functions/check_user_is_signed_in.dart';
 import 'package:schulplaner/common/functions/close_all_dialogs.dart';
+import 'package:schulplaner/common/services/database_service.dart';
 import 'package:schulplaner/common/services/exeption_handler_service.dart';
 import 'package:schulplaner/common/services/snack_bar_service.dart';
 
@@ -43,7 +44,6 @@ abstract class UserService {
     // If the email is not null, we will update it
     if (email != null) {
       try {
-        // FIXME
         await FirebaseAuth.instance.currentUser!.updateEmail(
           email.trim(),
         );
@@ -108,7 +108,8 @@ abstract class UserService {
       return;
     }
 
-    // TODO: Add things that need to be deleted with the account here
+    // We have to save this uid, because we cannot access it after account deletion, but we need it to delete the document
+    final oldUserUid = FirebaseAuth.instance.currentUser!.uid;
 
     // Delete the account
     try {
@@ -120,6 +121,7 @@ abstract class UserService {
       if (context.mounted) {
         ExeptionHandlerService.handleFirebaseAuthException(context, e);
       }
+      return;
     } catch (e) {
       if (context.mounted) {
         await closeAllDialogs(context);
@@ -131,6 +133,28 @@ abstract class UserService {
           type: CustomSnackbarType.error,
         );
       }
+      return;
     }
+
+    // TODO: Add things that need to be deleted along with the account here...
+
+    // Delete the user documents. Info, we have to delete all documents from the collection first and then delete the user doc
+    // TODO: Write a cloud function, that deletes the user document
+    final documents = await DatabaseService.userCollection
+        .doc(oldUserUid)
+        .collection("weekly_schedule")
+        .get()
+        .then((value) => value.docs);
+    for (final document in documents) {
+
+      await DatabaseService.userCollection
+          .doc(oldUserUid)
+          .collection("weekly_schedule")
+          .doc(document.id)
+          .delete();
+    }
+
+    // Delete the user doc
+    await DatabaseService.userCollection.doc(oldUserUid).delete();
   }
 }
