@@ -8,6 +8,7 @@ import 'package:schulplaner/common/dialogs/custom_dialog.dart';
 import 'package:schulplaner/common/dialogs/edit_time_span_dialog.dart';
 import 'package:schulplaner/common/dialogs/weekly_schedule/edit_lesson_dialog.dart';
 import 'package:schulplaner/common/functions/close_all_dialogs.dart';
+import 'package:schulplaner/common/functions/handle_snapshot_state.dart';
 import 'package:schulplaner/common/models/time.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
 import 'package:schulplaner/common/models/weekly_schedule_data.dart';
@@ -28,39 +29,13 @@ class WeeklySchedulePage extends HookWidget {
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       stream: DatabaseService.weeklyScheduleCollection.snapshots(),
       builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return  Center(
-            child: SizedBox(
-              width: kInfoTextWidth,
-              child: Text(
-                "Leider ist ein Fehler aufgetreten und die Daten konnten nicht geladen werden.",
-                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                  color: Theme.of(context).colorScheme.error,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          );
-        }
+        final snapshotState = handleSnapshotState(
+          context,
+          snapshot: snapshot,
+        );
 
-        if (!snapshot.hasData) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const CircularProgressIndicator(),
-                const SizedBox(height: Spacing.large),
-                SizedBox(
-                  width: kInfoTextWidth,
-                  child: Text(
-                    "Daten werden geladen. Bitte haben Sie einem Moment Geduld.",
-                    style: Theme.of(context).textTheme.bodyLarge,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
-            ),
-          );
+        if (snapshotState != null) {
+          return snapshotState;
         }
 
         final data = _convertSnapshotToData(data: snapshot.data!);

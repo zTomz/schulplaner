@@ -1,9 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:schulplaner/common/constants/numbers.dart';
+import 'package:schulplaner/common/constants/svg_pictures.dart';
 import 'package:schulplaner/common/dialogs/custom_dialog.dart';
 import 'package:schulplaner/common/dialogs/hobby/edit_hobby_dialog.dart';
+import 'package:schulplaner/common/functions/handle_snapshot_state.dart';
 import 'package:schulplaner/common/models/hobby.dart';
 import 'package:schulplaner/common/services/database_service.dart';
 import 'package:schulplaner/common/widgets/custom_app_bar.dart';
@@ -49,16 +52,45 @@ class HobbiesPage extends StatelessWidget {
       body: StreamBuilder(
         stream: DatabaseService.hobbiesCollection.snapshots(),
         builder: (context, snapshot) {
-          // TODO: Add error handling or when no data is available
-          if (snapshot.hasError || !snapshot.hasData) {
-            return const Center(
-              child: Text("Error"),
-            );
+          final snapshotState = handleSnapshotState(
+            context,
+            snapshot: snapshot,
+          );
+
+          if (snapshotState != null) {
+            return snapshotState;
           }
 
           final List<Hobby> hobbies = snapshot.data!.docs
               .map((doc) => Hobby.fromMap(doc.data()))
               .toList();
+
+          if (hobbies.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox.square(
+                    dimension: kInfoImageSize,
+                    child: SvgPicture.asset(
+                      Theme.of(context).brightness == Brightness.dark
+                          ? SvgPictures.no_data_dark
+                          : SvgPictures.no_data_light,
+                    ),
+                  ),
+                  const SizedBox(height: Spacing.medium),
+                  SizedBox(
+                    width: kInfoTextWidth,
+                    child: Text(
+                      "Sie haben noch keine Hobbies hinzugefügt. Beginnen Sie indem Sie ein \"Hobby hizufügen\".",
+                      style: Theme.of(context).textTheme.bodyLarge,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
 
           return ListView.builder(
             itemCount: hobbies.length,
@@ -68,7 +100,6 @@ class HobbiesPage extends StatelessWidget {
               return HobbyListTile(
                 hobby: currentHobby,
                 onEdit: () async {
-                  print("Edit");
                   final result = await showDialog<Hobby>(
                     context: context,
                     builder: (context) {

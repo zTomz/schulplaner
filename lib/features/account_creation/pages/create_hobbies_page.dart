@@ -2,6 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:schulplaner/common/constants/svg_pictures.dart';
 import 'package:schulplaner/common/dialogs/custom_dialog.dart';
 import 'package:schulplaner/common/dialogs/hobby/edit_hobby_dialog.dart';
 import 'package:schulplaner/common/functions/get_value_or_null.dart';
@@ -41,13 +43,25 @@ class CreateHobbiesPage extends HookWidget {
           "Hobbies hinzufügen",
         ),
         actions: [
-          if (hobbies.value.isNotEmpty)
-            _addHobbyButton(
-              context,
-              onHobbyAdded: (hobby) {
-                hobbies.value = [...hobbies.value, hobby];
-              },
+          ElevatedButton.icon(
+            onPressed: () async {
+              final result = await showDialog<Hobby>(
+                context: context,
+                builder: (context) {
+                  return const EditHobbyDialog();
+                },
+              );
+
+              if (result != null) {
+                hobbies.value = hobbies.value..add(result);
+              }
+            },
+            icon: const Icon(
+              LucideIcons.circle_plus,
+              size: 20,
             ),
+            label: const Text("Hobby hinzufügen"),
+          ),
           const SizedBox(width: Spacing.medium),
         ],
       ),
@@ -67,11 +81,27 @@ class CreateHobbiesPage extends HookWidget {
       ),
       body: hobbies.value.isEmpty
           ? Center(
-              child: _addHobbyButton(
-                context,
-                onHobbyAdded: (hobby) {
-                  hobbies.value = [...hobbies.value, hobby];
-                },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox.square(
+                    dimension: kInfoImageSize,
+                    child: SvgPicture.asset(
+                      Theme.of(context).brightness == Brightness.dark
+                          ? SvgPictures.no_data_dark
+                          : SvgPictures.no_data_light,
+                    ),
+                  ),
+                  const SizedBox(height: Spacing.medium),
+                  SizedBox(
+                    width: kInfoTextWidth,
+                    child: Text(
+                      "Sie haben noch keine Hobbies hinzugefügt. Beginnen Sie indem Sie ein  \"Hobby hizufügen\".",
+                      style: Theme.of(context).textTheme.bodyLarge,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
               ),
             )
           : ListView.builder(
@@ -120,31 +150,6 @@ class CreateHobbiesPage extends HookWidget {
                 );
               },
             ),
-    );
-  }
-
-  Widget _addHobbyButton(
-    BuildContext context, {
-    required void Function(Hobby hobby) onHobbyAdded,
-  }) {
-    return ElevatedButton.icon(
-      onPressed: () async {
-        final result = await showDialog<Hobby>(
-          context: context,
-          builder: (context) {
-            return const EditHobbyDialog();
-          },
-        );
-
-        if (result != null) {
-          onHobbyAdded(result);
-        }
-      },
-      icon: const Icon(
-        LucideIcons.circle_plus,
-        size: 20,
-      ),
-      label: const Text("Hobby hinzufügen"),
     );
   }
 }
