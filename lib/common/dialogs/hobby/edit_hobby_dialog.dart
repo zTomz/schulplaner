@@ -4,6 +4,7 @@ import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/common/constants/numbers.dart';
 import 'package:schulplaner/common/dialogs/custom_dialog.dart';
 import 'package:schulplaner/common/dialogs/hobby/edit_day_dialog.dart';
+import 'package:schulplaner/common/functions/get_value_or_null.dart';
 import 'package:schulplaner/common/models/hobby.dart';
 import 'package:schulplaner/common/models/time.dart';
 import 'package:schulplaner/common/widgets/color_choose_list_tile.dart';
@@ -36,7 +37,7 @@ class EditHobbyDialog extends HookWidget {
 
     return CustomDialog.expanded(
       title: Text("Hobby ${hobby == null ? "hinzufügen" : "bearbeiten"}"),
-      icon: const Icon(LucideIcons.tent_tree),
+      icon: const Icon(LucideIcons.tent),
       content: Form(
         key: formKey,
         child: Column(
@@ -158,12 +159,10 @@ class EditHobbyDialog extends HookWidget {
               return;
             }
 
-            final description = descriptionController.text.trim();
-
             Navigator.of(context).pop(
               Hobby(
                 name: nameController.text.trim(),
-                description: description.isEmpty ? null : description,
+                description: descriptionController.text.getStringOrNull(),
                 color: color.value,
                 moveable: moveable.value,
                 days: days.value,
@@ -201,7 +200,10 @@ class DisplayDayTile extends StatelessWidget {
           borderRadius: const BorderRadius.all(Radii.small),
         ),
         alignment: Alignment.center,
-        child: const Icon(LucideIcons.trash_2),
+        child: Icon(
+          LucideIcons.trash_2,
+          color: Theme.of(context).colorScheme.onError,
+        ),
       ),
       onDismissed: (_) => onDelete(),
       child: Padding(

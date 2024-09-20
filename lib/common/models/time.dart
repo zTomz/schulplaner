@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+
 import 'package:schulplaner/common/extensions/time_of_day_extension.dart';
 
 /// A time span. Used to represent the time of a lesson
@@ -37,20 +38,36 @@ class TimeSpan extends Equatable {
     );
   }
 
-
   factory TimeSpan.fromJson(String source) =>
       TimeSpan.fromMap(json.decode(source));
 }
 
 /// A class holding a day and a timespan of that day. Used for [Hobby] class
 class TimeInDay {
+  /// The day of the week
   final Weekday day;
+
+  /// The timespan in which the event takes place
   final TimeSpan timeSpan;
 
   const TimeInDay({
     required this.day,
     required this.timeSpan,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'day': day.toMap(),
+      'timeSpan': timeSpan.toMap(),
+    };
+  }
+
+  factory TimeInDay.fromMap(Map<String, dynamic> map) {
+    return TimeInDay(
+      day: Weekday.fromMap(map['day']),
+      timeSpan: TimeSpan.fromMap(map['timeSpan']),
+    );
+  }
 }
 
 /// The days of a week. From Monday to Friday

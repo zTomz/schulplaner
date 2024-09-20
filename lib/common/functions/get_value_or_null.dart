@@ -1,11 +1,11 @@
 T? getValueOrNull<T>(T? input) {
-  if (T is String && (input as String).isEmpty) {
+  if (input is String && input.isEmpty) {
     return null;
-  } else if (T is List && (input as List).isEmpty) {
+  } else if (input is List && input.isEmpty) {
     return null;
-  } else if (T is Map && (input as Map).isEmpty) {
+  } else if (input is Map && input.isEmpty) {
     return null;
-  } else if (T is Set && (input as Set).isEmpty) {
+  } else if (input is Set && input.isEmpty) {
     return null;
   }
 

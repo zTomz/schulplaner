@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:schulplaner/common/models/time.dart';
 
 class Hobby {
@@ -29,4 +30,26 @@ class Hobby {
     required this.days,
     required this.uuid,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'description': description,
+      'color': color.value,
+      'moveable': moveable,
+      'days': days.map((x) => x.toMap()).toList(),
+      'uuid': uuid,
+    };
+  }
+
+  factory Hobby.fromMap(Map<String, dynamic> map) {
+    return Hobby(
+      name: map['name'] ?? '',
+      description: map['description'],
+      color: Color(map['color']),
+      moveable: map['moveable'] ?? false,
+      days: List<TimeInDay>.from(map['days']?.map((x) => TimeInDay.fromMap(x))),
+      uuid: map['uuid'] ?? '',
+    );
+  }
 }

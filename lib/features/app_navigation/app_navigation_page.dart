@@ -21,6 +21,7 @@ class AppNavigationPage extends HookWidget {
         OverviewRoute(),
         WeeklyScheduleRoute(),
         CalendarRoute(),
+        HobbiesRoute(),
       ],
       transitionBuilder: (context, child, animation) => FadeTransition(
         opacity: animation,
@@ -98,6 +99,10 @@ class AppNavigationPage extends HookWidget {
                   CustomNavigationDestination(
                     label: "Kalender",
                     icon: Icon(LucideIcons.calendar),
+                  ),
+                  CustomNavigationDestination(
+                    label: "Hobbies",
+                    icon: Icon(LucideIcons.tent),
                   ),
                 ],
               ),

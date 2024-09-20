@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:schulplaner/common/functions/check_user_is_signed_in.dart';
+import 'package:schulplaner/common/models/hobby.dart';
 import 'package:schulplaner/common/models/weekly_schedule_data.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
 
@@ -10,6 +11,9 @@ abstract class DatabaseService {
   static CollectionReference<Map<String, dynamic>>
       get weeklyScheduleCollection =>
           currentUserDocument.collection("weekly_schedule");
+
+  static CollectionReference<Map<String, dynamic>> get hobbiesCollection =>
+      currentUserDocument.collection("hobbies");
 
   static CollectionReference<Map<String, dynamic>> get userCollection =>
       FirebaseFirestore.instance.collection("users");
@@ -70,5 +74,34 @@ abstract class DatabaseService {
     }
 
     await weeklyScheduleCollection.doc("subjects").set(data);
+  }
+
+  /// Upload a single or multiple hobbies to firestore. If a user edits an hobby we just overwrite it with this function.
+  static Future<void> uploadHobbies(
+    BuildContext context, {
+    required List<Hobby> hobbies,
+  }) async {
+    if (!checkUserIsSignedIn(context)) {
+      return;
+    }
+
+    for (final hobby in hobbies) {
+      // Create a seperate doc for each hobby. The doc id is the hobby uuid
+      await hobbiesCollection.doc(hobby.uuid).set(hobby.toMap());
+    }
+  }
+
+  /// Delete a single or multiple hobbies from firestore
+  static Future<void> deleteHobbies(
+    BuildContext context, {
+    required List<Hobby> hobbies,
+  }) async {
+    if (!checkUserIsSignedIn(context)) {
+      return;
+    }
+
+    for (final hobby in hobbies) {
+      await hobbiesCollection.doc(hobby.uuid).delete();
+    }
   }
 }

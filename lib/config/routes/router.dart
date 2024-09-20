@@ -52,6 +52,10 @@ class AppRouter extends RootStackRouter {
               page: WeeklyScheduleRoute.page,
               guards: [AuthGuard()],
             ),
+            AutoRoute(
+              page: HobbiesRoute.page,
+              guards: [AuthGuard()],
+            ),
           ],
         ),
       ];

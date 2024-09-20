@@ -10,6 +10,7 @@ import 'package:schulplaner/common/models/weekly_schedule_data.dart';
 import 'package:schulplaner/common/models/hobby.dart';
 import 'package:schulplaner/common/widgets/custom_app_bar.dart';
 import 'package:schulplaner/common/widgets/gradient_scaffold.dart';
+import 'package:schulplaner/common/widgets/hobby_list_tile.dart';
 import 'package:schulplaner/config/routes/router.gr.dart';
 import 'package:schulplaner/common/constants/numbers.dart';
 
@@ -78,7 +79,7 @@ class CreateHobbiesPage extends HookWidget {
               itemBuilder: (context, index) {
                 final hobby = hobbies.value[index];
 
-                return DisplayHobbyTile(
+                return HobbyListTile(
                   hobby: hobby,
                   onEdit: () async {
                     final result = await showDialog<Hobby>(
@@ -144,80 +145,6 @@ class CreateHobbiesPage extends HookWidget {
         size: 20,
       ),
       label: const Text("Hobby hinzufügen"),
-    );
-  }
-}
-
-class DisplayHobbyTile extends StatelessWidget {
-  final Hobby hobby;
-  final void Function() onEdit;
-  final void Function() onDelete;
-
-  const DisplayHobbyTile({
-    super.key,
-    required this.hobby,
-    required this.onEdit,
-    required this.onDelete,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: Spacing.small,
-        horizontal: Spacing.medium,
-      ),
-      child: Material(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: const BorderRadius.all(Radii.small),
-        clipBehavior: Clip.hardEdge,
-        child: SizedBox(
-          height: 80,
-          child: InkWell(
-            onTap: () => onEdit(),
-            child: Row(
-              children: [
-                Container(
-                  width: 15,
-                  color: hobby.color,
-                ),
-                const SizedBox(width: Spacing.large),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      hobby.name,
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                    if (hobby.description != null)
-                      Text(
-                        hobby.description!,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                  ],
-                ),
-                const Spacer(),
-                Tooltip(
-                  message: "Hobby bearbeiten",
-                  child: Icon(
-                    LucideIcons.pencil,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                ),
-                const SizedBox(width: Spacing.small),
-                IconButton(
-                  onPressed: () => onDelete(),
-                  tooltip: "Hobby löschen",
-                  color: Theme.of(context).colorScheme.onSurface,
-                  icon: const Icon(LucideIcons.trash_2),
-                ),
-                const SizedBox(width: Spacing.large),
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 }
