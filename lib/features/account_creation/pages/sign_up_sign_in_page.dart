@@ -177,14 +177,13 @@ class SignUpSignInPage extends HookWidget {
         subjects: subjects!,
       );
     }
-    // TODO: Implement hobbies
 
-    // if (hobbies != null) {
-    //   await DatabaseService.uploadHobbies(
-    //     context,
-    //     hobbies: hobbies!,
-    //   );
-    // }
+    if (hobbies != null && context.mounted) {
+      await DatabaseService.uploadHobbies(
+        context,
+        hobbies: hobbies!,
+      );
+    }
   }
 
   Widget _buildBox({
