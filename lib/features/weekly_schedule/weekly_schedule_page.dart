@@ -1,44 +1,40 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/common/constants/numbers.dart';
 import 'package:schulplaner/common/dialogs/custom_dialog.dart';
 import 'package:schulplaner/common/dialogs/edit_time_span_dialog.dart';
 import 'package:schulplaner/common/dialogs/weekly_schedule/edit_lesson_dialog.dart';
 import 'package:schulplaner/common/functions/close_all_dialogs.dart';
-import 'package:schulplaner/common/functions/handle_snapshot_state.dart';
+import 'package:schulplaner/common/functions/handle_state_change_database.dart';
 import 'package:schulplaner/common/models/time.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
 import 'package:schulplaner/common/models/weekly_schedule_data.dart';
+import 'package:schulplaner/common/provider/weekly_schedule_provider.dart';
 import 'package:schulplaner/common/services/database_service.dart';
 import 'package:schulplaner/common/services/snack_bar_service.dart';
 import 'package:schulplaner/common/widgets/custom_app_bar.dart';
+import 'package:schulplaner/common/widgets/data_state_widgets.dart';
 import 'package:schulplaner/common/widgets/weekly_schedule/weekly_schedule.dart';
 
 @RoutePage()
-class WeeklySchedulePage extends HookWidget {
+class WeeklySchedulePage extends HookConsumerWidget {
   const WeeklySchedulePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final weeklyScheduleStream = ref.watch(weeklyScheduleProvider);
+
     final selectedSchoolTimeCell = useState<SchoolTimeCell?>(null);
     final week = useState<Week>(Week.a);
 
-    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-      stream: DatabaseService.weeklyScheduleCollection.snapshots(),
-      builder: (context, snapshot) {
-        final snapshotState = handleSnapshotState(
-          context,
-          snapshot: snapshot,
-        );
-
-        if (snapshotState != null) {
-          return snapshotState;
+    return weeklyScheduleStream.when(
+      data: (data) {
+        if (data == null) {
+          return const DataErrorWidget();
         }
-
-        final data = _convertSnapshotToData(data: snapshot.data!);
 
         List<Lesson> lessons = data.$1;
         Set<TimeSpan> timeSpans = data.$2;
@@ -196,158 +192,62 @@ class WeeklySchedulePage extends HookWidget {
           ),
         );
       },
+      error: (_, __) {
+        return const DataErrorWidget();
+      },
+      loading: () => const DataLoadingWidget(),
     );
   }
+}
 
-  Future<T?> _showEditLessonDialog<T>(
-    BuildContext context, {
-    Lesson? lesson,
-    SchoolTimeCell? selectedSchoolTimeCell,
-    required List<Teacher> teachers,
-    required List<Subject> subjects,
-    required List<Lesson> lessons,
-    required Set<TimeSpan> timeSpans,
-  }) async {
-    return await showDialog<T?>(
-      context: context,
-      builder: (context) => EditLessonDialog(
-        lesson: lesson,
-        subjects: subjects,
-        teachers: teachers,
-        schoolTimeCell: selectedSchoolTimeCell,
-        onLessonDeleted: lesson != null
-            ? (lesson) async {
-                lessons.removeWhere(
-                  (l) => l.uuid == lesson.uuid,
-                );
+Future<T?> _showEditLessonDialog<T>(
+  BuildContext context, {
+  Lesson? lesson,
+  SchoolTimeCell? selectedSchoolTimeCell,
+  required List<Teacher> teachers,
+  required List<Subject> subjects,
+  required List<Lesson> lessons,
+  required Set<TimeSpan> timeSpans,
+}) async {
+  return await showDialog<T?>(
+    context: context,
+    builder: (context) => EditLessonDialog(
+      lesson: lesson,
+      subjects: subjects,
+      teachers: teachers,
+      schoolTimeCell: selectedSchoolTimeCell,
+      onLessonDeleted: lesson != null
+          ? (lesson) async {
+              lessons.removeWhere(
+                (l) => l.uuid == lesson.uuid,
+              );
 
-                await DatabaseService.uploadWeeklySchedule(
-                  context,
-                  weeklyScheduleData: WeeklyScheduleData(
-                    timeSpans: timeSpans,
-                    lessons: lessons,
-                  ),
-                );
+              await DatabaseService.uploadWeeklySchedule(
+                context,
+                weeklyScheduleData: WeeklyScheduleData(
+                  timeSpans: timeSpans,
+                  lessons: lessons,
+                ),
+              );
 
-                if (context.mounted) {
-                  await closeAllDialogs(context);
-                }
-                if (context.mounted) {
-                  SnackBarService.show(
-                    context: context,
-                    content: Text(
-                      "Die Schulstunde ${lesson.getSubject(subjects)?.name ?? ""} wurde gelöscht.",
-                    ),
-                    type: CustomSnackbarType.info,
-                  );
-                }
+              if (context.mounted) {
+                await closeAllDialogs(context);
               }
-            : null,
-        onSubjectChanged: (subject) async {
-          final index = subjects.indexWhere((s) => s.uuid == subject.uuid);
-
-          List<Subject> updatedSubjects = [];
-
-          if (index == -1) {
-            updatedSubjects = [...subjects, subject];
-          } else {
-            updatedSubjects = subjects;
-            updatedSubjects[index] = subject;
-          }
-
-          await DatabaseService.uploadSubjects(
-            context,
-            subjects: updatedSubjects,
-          );
-        },
-        onTeacherChanged: (teacher) async {
-          final index = teachers.indexWhere((t) => t.uuid == teacher.uuid);
-          List<Teacher> updatedTeachers = [];
-
-          if (index == -1) {
-            updatedTeachers = [...teachers, teacher];
-          } else {
-            updatedTeachers = teachers;
-            updatedTeachers[index] = teacher;
-          }
-
-          await DatabaseService.uploadTeachers(
-            context,
-            teachers: updatedTeachers,
-          );
-        },
-      ),
-    );
-  }
-
-  (
-    List<Lesson> lessons,
-    Set<TimeSpan> timeSpans,
-    List<Teacher> teachers,
-    List<Subject> subjects,
-  ) _convertSnapshotToData({
-    required QuerySnapshot<Map<String, dynamic>> data,
-  }) {
-    List<Lesson> lessons = [];
-    Set<TimeSpan> timeSpans = {};
-    List<Teacher> teachers = [];
-    List<Subject> subjects = [];
-
-    // Get the teachers
-    final teacherDoc =
-        data.docs.where((doc) => doc.id == "teachers").firstOrNull;
-    if (teacherDoc != null) {
-      final teacherData = teacherDoc.data();
-      for (final entry in teacherData.entries) {
-        teachers.add(
-          Teacher.fromMap(teacherData[entry.key] as Map<String, dynamic>),
-        );
-      }
-    }
-
-    // Get the lessons
-    final lessonDoc = data.docs.where((doc) => doc.id == "data").firstOrNull;
-    if (lessonDoc != null) {
-      final lessonData = lessonDoc.data();
-
-      for (final entry in lessonData["lessons"].entries) {
-        lessons.add(Lesson.fromMap(
-          lessonData["lessons"][entry.key] as Map<String, dynamic>,
-        ));
-      }
-    }
-
-    // Get the time spans
-    final timeSpanDoc = data.docs.where((doc) => doc.id == "data").firstOrNull;
-    if (timeSpanDoc != null) {
-      final timeSpanData = timeSpanDoc.data();
-
-      for (int i = 0;
-          i < (timeSpanData["timeSpans"] as List<dynamic>).length;
-          i++) {
-        timeSpans.add(TimeSpan.fromMap(
-          timeSpanData["timeSpans"][i] as Map<String, dynamic>,
-        ));
-      }
-    }
-
-    // Get the subjects
-    final subjectDoc =
-        data.docs.where((doc) => doc.id == "subjects").firstOrNull;
-    if (subjectDoc != null) {
-      final subjectData = subjectDoc.data();
-      for (final entry in subjectData.entries) {
-        subjects.add(
-          Subject.fromMap(subjectData[entry.key] as Map<String, dynamic>),
-        );
-      }
-    }
-
-    return (
-      lessons,
-      timeSpans,
-      teachers,
-      subjects,
-    );
-  }
+              if (context.mounted) {
+                SnackBarService.show(
+                  context: context,
+                  content: Text(
+                    "Die Schulstunde ${lesson.getSubject(subjects)?.name ?? ""} wurde gelöscht.",
+                  ),
+                  type: CustomSnackbarType.info,
+                );
+              }
+            }
+          : null,
+      onSubjectChanged: (subject) =>
+          onSubjectChanged(context, subject, subjects),
+      onTeacherChanged: (teacher) =>
+          onTeacherChanged(context, teacher, teachers),
+    ),
+  );
 }

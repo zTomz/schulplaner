@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 
 extension TimeOfDayExtension on TimeOfDay {
   operator >(TimeOfDay other) {
-    return _calculateMinutes() > other._calculateMinutes();
+    return calculateMinutes() > other.calculateMinutes();
   }
 
   operator <(TimeOfDay other) {
-    return _calculateMinutes() < other._calculateMinutes();
+    return calculateMinutes() < other.calculateMinutes();
   }
 
-  int _calculateMinutes() {
+  int calculateMinutes() {
     return hour * 60 + minute;
   }
 

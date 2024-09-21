@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:schulplaner/common/constants/numbers.dart';
+import 'package:schulplaner/common/widgets/selection_row.dart';
 
 class TimeSpanPicker extends StatelessWidget {
   final void Function(TimeOfDay? from, TimeOfDay? to) onChanged;
@@ -9,35 +10,51 @@ class TimeSpanPicker extends StatelessWidget {
   const TimeSpanPicker({
     super.key,
     required this.onChanged,
-    this.from,
-    this.to,
+    required this.from,
+    required this.to,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const Text("Von:"),
-        const SizedBox(width: Spacing.medium),
-        _buildPicker(
-          context,
-          from,
-          (value) => onChanged(value, to),
+        SelectionRow(
+          title: const Text("Von:"),
+          content: from != null ? Text("${from!.format(context)} Uhr") : null,
+          onPressed: () async {
+            final result = await showTimePicker(
+              context: context,
+              initialTime: from ?? TimeOfDay.now(),
+            );
+
+            if (result != null) {
+              onChanged(result, to);
+            }
+          },
         ),
-        const Spacer(),
-        const Text("Bis:"),
-        const SizedBox(width: Spacing.medium),
-        _buildPicker(
-          context,
-          to,
-          (value) => onChanged(from, value),
+        const SizedBox(
+          height: Spacing.small,
+        ),
+        SelectionRow(
+          title: const Text("Bis:"),
+          content: to != null ? Text("${to!.format(context)} Uhr") : null,
+          onPressed: () async {
+            final result = await showTimePicker(
+              context: context,
+              initialTime: to ?? TimeOfDay.now(),
+            );
+
+            if (result != null) {
+              onChanged(from, result);
+            }
+          },
         ),
       ],
     );
   }
 
-  static Widget _buildPicker(
+  Widget _buildPicker(
     BuildContext context,
     TimeOfDay? value,
     void Function(TimeOfDay? value) onValueChanged,
@@ -58,12 +75,12 @@ class TimeSpanPicker extends StatelessWidget {
           }
         },
         child: SizedBox(
-          width: 60,
+          width: 120,
           height: 35,
           child: value != null
               ? Center(
                   child: Text(
-                    "${value.hour.toString().padLeft(2, "0")}:${value.minute.toString().padLeft(2, "0")}",
+                    "${value.format(context)} Uhr",
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 )

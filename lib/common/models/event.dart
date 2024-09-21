@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
 
 /// An event in the calendar
@@ -116,6 +117,9 @@ class EventDate {
     required this.date,
     required this.duration,
   });
+
+  String get formattedDate =>
+      "${date.hour.toString().padLeft(2, "0")}:${date.minute.toString().padLeft(2, "0")} Uhr, ${date.day}.${date.month}.${date.year}";
 }
 
 /// The type of repeating event. E. g. daily, weekly, monthly, yearly

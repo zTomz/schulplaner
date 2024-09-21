@@ -55,33 +55,45 @@ class CustomButton extends StatelessWidget {
         ),
       );
 
-  Widget _buildChild() => SizedBox(
-        height: 50,
-        child: Row(
-          mainAxisAlignment: _type == _CustomButtonType.selection
-              ? MainAxisAlignment.start
-              : MainAxisAlignment.center,
-          children: [
-            Builder(builder: (context) {
-              return DefaultTextStyle(
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyLarge!
-                    .copyWith(color: Theme.of(context).colorScheme.surface),
-                child: child,
-              );
-            }),
-            if (_type == _CustomButtonType.selection) ...[
-              const Spacer(),
-              if (selection != null) ...[
-                Text(selection!),
-                const SizedBox(width: Spacing.medium),
-              ],
-              const Icon(LucideIcons.chevron_right),
-            ]
-          ],
-        ),
-      );
+  Widget _buildChild() => Builder(builder: (context) {
+        return SizedBox(
+          height: 50,
+          child: Row(
+            mainAxisAlignment: _type == _CustomButtonType.selection
+                ? MainAxisAlignment.start
+                : MainAxisAlignment.center,
+            children: [
+              Builder(builder: (context) {
+                return DefaultTextStyle(
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                  child: child,
+                );
+              }),
+              if (_type == _CustomButtonType.selection) ...[
+                if (selection == null) const Spacer(),
+                if (selection != null) ...[
+                  const SizedBox(width: Spacing.medium),
+                  Expanded(
+                    child: Text(
+                      selection!,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      textAlign: TextAlign.end,
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
+                    ),
+                  ),
+                  const SizedBox(width: Spacing.medium),
+                ],
+                const Icon(LucideIcons.chevron_right),
+              ]
+            ],
+          ),
+        );
+      });
 }
 
 enum _CustomButtonType { normal, tonal, selection }

@@ -5,6 +5,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/common/constants/numbers.dart';
 import 'package:schulplaner/common/dialogs/account_dialog.dart';
+import 'package:schulplaner/common/dialogs/events/edit_homework_dialog.dart';
+import 'package:schulplaner/common/models/event.dart';
 import 'package:schulplaner/config/routes/router.gr.dart';
 import 'package:schulplaner/features/app_navigation/widgets/custom_navigation_rail.dart';
 
@@ -15,6 +17,7 @@ class AppNavigationPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final navigationRailIsExtended = useState<bool>(false);
+    final expandebleFabKey = useMemoized(() => GlobalKey<ExpandableFabState>());
 
     return AutoTabsRouter(
       routes: const [
@@ -34,6 +37,7 @@ class AppNavigationPage extends HookWidget {
         return Scaffold(
           floatingActionButtonLocation: ExpandableFab.location,
           floatingActionButton: ExpandableFab(
+            key: expandebleFabKey,
             type: ExpandableFabType.up,
             distance: 75,
             overlayStyle: ExpandableFabOverlayStyle(
@@ -52,14 +56,22 @@ class AppNavigationPage extends HookWidget {
               _buildFabOption(
                 title: "Hausaufgabe",
                 icon: const Icon(LucideIcons.book_open_text),
-                onPressed: () {
-                  // TODO: Add a homework here
+                onPressed: () async {
+                  expandebleFabKey.currentState?.toggle();
+
+                  final result = await showDialog<HomeworkEvent>(
+                    context: context,
+                    builder: (context) => const EditHomeworkDialog(),
+                  );
+
+                  // TODO: Upload the homework
                 },
               ),
               _buildFabOption(
                 title: "Arbeit",
                 icon: const Icon(LucideIcons.briefcase_business),
                 onPressed: () {
+                  expandebleFabKey.currentState?.toggle();
                   // TODO: Add a test here
                 },
               ),
@@ -67,6 +79,7 @@ class AppNavigationPage extends HookWidget {
                 title: "Erinnerung",
                 icon: const Icon(LucideIcons.bell),
                 onPressed: () {
+                  expandebleFabKey.currentState?.toggle();
                   // TODO: Add a reminder here
                 },
               ),

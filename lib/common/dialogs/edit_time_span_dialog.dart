@@ -26,8 +26,9 @@ class EditTimeSpanDialog extends HookWidget {
 
     return CustomDialog(
       icon: const Icon(LucideIcons.timer),
-      title:
-          Text(timeSpan == null ? "Neue Zeitspanne" : "Zeitspanne bearbeiten"),
+      title: Text(
+        timeSpan == null ? "Neue Zeitspanne" : "Zeitspanne bearbeiten",
+      ),
       content: TimeSpanPicker(
         onChanged: (fromValue, toValue) {
           from.value = fromValue;
