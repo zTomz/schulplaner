@@ -1,7 +1,6 @@
-import 'dart:ui';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:schulplaner/common/models/weekly_schedule.dart';
+import 'package:schulplaner/common/extensions/duration_extension.dart';
 
 /// An event in the calendar
 abstract class Event {
@@ -11,8 +10,8 @@ abstract class Event {
   /// Optional. The description of the event
   final String? description;
 
-  /// The color of the event
-  final Color color;
+  /// The type of the event
+  final EventTypes type;
 
   /// A unique identifier
   final String uuid;
@@ -20,10 +19,8 @@ abstract class Event {
   Event({
     required this.name,
     this.description,
-    required this.color,
-    // required this.date,
-    // this.repeatingEventType,
     required this.uuid,
+    required this.type,
   });
 }
 
@@ -35,17 +32,35 @@ class HomeworkEvent extends Event {
   final EventDate date;
 
   /// The subject of the homework. E. g. Math, English etc.
-  final Subject subject;
+  final String subjectUuid;
 
   HomeworkEvent({
+    required super.name,
     required super.description,
-    required super.color,
     required super.uuid,
     required this.date,
-    required this.subject,
-  }) : super(
-          name: "Hausaufgabe ${subject.name}",
-        );
+    required this.subjectUuid,
+  }) : super(type: EventTypes.homework);
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'date': date.toMap(),
+      'subjectUuid': subjectUuid,
+      'description': description,
+      'uuid': uuid,
+    };
+  }
+
+  factory HomeworkEvent.fromMap(Map<String, dynamic> map) {
+    return HomeworkEvent(
+      name: map['name'],
+      date: EventDate.fromMap(map['date']),
+      subjectUuid: map['subjectUuid'],
+      description: map['description'],
+      uuid: map['uuid'],
+    );
+  }
 }
 
 /// A test event.
@@ -57,18 +72,16 @@ class TestEvent extends Event {
   final List<EventDate> praticeDates;
 
   /// The subject of the test. E. g. Math, English etc.
-  final Subject subject;
+  final String subjectUuid;
 
   TestEvent({
+    required super.name,
     required super.description,
-    required super.color,
     required super.uuid,
     required this.deadline,
     required this.praticeDates,
-    required this.subject,
-  }) : super(
-          name: "Leistungskontrolle ${subject.name}",
-        );
+    required this.subjectUuid,
+  }) : super(type: EventTypes.test);
 }
 
 class FixedEvent extends Event {
@@ -78,14 +91,17 @@ class FixedEvent extends Event {
   /// Optional. Where the event takes place
   final String? place;
 
+  /// The color of the event
+  final Color color;
+
   FixedEvent({
     required super.name,
     required super.description,
-    required super.color,
     required this.date,
+    required this.color,
     required super.uuid,
     this.place,
-  });
+  }) : super(type: EventTypes.fixed);
 }
 
 class RepeatingEvent extends Event {
@@ -95,14 +111,17 @@ class RepeatingEvent extends Event {
   /// The type of repeating event. E. g. daily, weekly, monthly, yearly
   final RepeatingEventType repeatingEventType;
 
+  /// The color of the event
+  final Color color;
+
   RepeatingEvent({
     required super.name,
     required super.description,
-    required super.color,
-    required super.uuid,
     required this.date,
     required this.repeatingEventType,
-  });
+    required this.color,
+    required super.uuid,
+  }) : super(type: EventTypes.repeating);
 }
 
 /// A date with a duration
@@ -120,6 +139,20 @@ class EventDate {
 
   String get formattedDate =>
       "${date.hour.toString().padLeft(2, "0")}:${date.minute.toString().padLeft(2, "0")} Uhr, ${date.day}.${date.month}.${date.year}";
+
+  Map<String, dynamic> toMap() {
+    return {
+      'date': Timestamp.fromDate(date),
+      'duration': duration.toMap(),
+    };
+  }
+
+  factory EventDate.fromMap(Map<String, dynamic> map) {
+    return EventDate(
+      date: (map['date'] as Timestamp).toDate(),
+      duration: durationFromMap(map['duration']),
+    );
+  }
 }
 
 /// The type of repeating event. E. g. daily, weekly, monthly, yearly
@@ -128,4 +161,11 @@ enum RepeatingEventType {
   weekly,
   monthly,
   yearly;
+}
+
+enum EventTypes {
+  homework,
+  test,
+  fixed,
+  repeating,
 }

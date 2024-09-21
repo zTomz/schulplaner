@@ -9,14 +9,14 @@ List<Event> getEventsForDay(
 }) {
   return events.where(
     (event) {
-      switch (event) {
-        case HomeworkEvent _:
+      switch (event.type) {
+        case EventTypes.homework:
           return day.compareWithoutTime(
-            event.date.date,
+            (event as HomeworkEvent).date.date,
           );
-        case TestEvent _:
+        case EventTypes.test:
           // Add all the practice dates
-          for (final date in event.praticeDates) {
+          for (final date in (event as TestEvent).praticeDates) {
             if (day.compareWithoutTime(date.date)) {
               return true;
             }
@@ -27,21 +27,19 @@ List<Event> getEventsForDay(
             event.deadline,
           );
 
-        case RepeatingEvent _:
+        case EventTypes.repeating:
           return day.compareWithoutTime(
-                    event.date.date,
+                    (event as RepeatingEvent).date.date,
                     repeatingType: event.repeatingEventType,
                   ) &&
                   day.isAfter(event.date.date) ||
               day.compareWithoutTime(event.date.date);
 
-        case FixedEvent _:
+        case EventTypes.fixed:
           return day.compareWithoutTime(
-            event.date.date,
+            (event as FixedEvent).date.date,
           );
       }
-
-      return true;
     },
   ).toList(growable: false);
 

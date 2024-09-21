@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 
 extension TimeOfDayExtension on TimeOfDay {
@@ -21,7 +19,6 @@ extension TimeOfDayExtension on TimeOfDay {
       'hour': hour,
     };
   }
-
 }
 
 TimeOfDay timeOfDayFromMap(Map<String, dynamic> map) {
@@ -30,5 +27,3 @@ TimeOfDay timeOfDayFromMap(Map<String, dynamic> map) {
     hour: int.tryParse(map['hour'].toString()) ?? 0,
   );
 }
-
-TimeOfDay fromJson(String source) => timeOfDayFromMap(json.decode(source));

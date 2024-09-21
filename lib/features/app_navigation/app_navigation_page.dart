@@ -7,6 +7,7 @@ import 'package:schulplaner/common/constants/numbers.dart';
 import 'package:schulplaner/common/dialogs/account_dialog.dart';
 import 'package:schulplaner/common/dialogs/events/edit_homework_dialog.dart';
 import 'package:schulplaner/common/models/event.dart';
+import 'package:schulplaner/common/services/database_service.dart';
 import 'package:schulplaner/config/routes/router.gr.dart';
 import 'package:schulplaner/features/app_navigation/widgets/custom_navigation_rail.dart';
 
@@ -65,6 +66,12 @@ class AppNavigationPage extends HookWidget {
                   );
 
                   // TODO: Upload the homework
+                  if (result != null && context.mounted) {
+                    await DatabaseService.uploadEvents(
+                      context,
+                      events: [result],
+                    );
+                  }
                 },
               ),
               _buildFabOption(

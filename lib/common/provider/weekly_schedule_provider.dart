@@ -11,13 +11,11 @@ final weeklyScheduleProvider = StreamProvider<
       Set<TimeSpan> timeSpans,
       List<Teacher> teachers,
       List<Subject> subjects,
-    )?>(
+    )>(
   (ref) {
     final userStream = ref.watch(userProvider);
 
-    final user = userStream.value;
-
-    if (user != null) {
+    if (userStream.value != null) {
       return DatabaseService.weeklyScheduleCollection.snapshots().map(
             (value) => _convertWeeklyScheduleSnapshotToData(data: value),
           );

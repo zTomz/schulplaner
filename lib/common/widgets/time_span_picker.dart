@@ -53,40 +53,4 @@ class TimeSpanPicker extends StatelessWidget {
       ],
     );
   }
-
-  Widget _buildPicker(
-    BuildContext context,
-    TimeOfDay? value,
-    void Function(TimeOfDay? value) onValueChanged,
-  ) {
-    return Material(
-      borderRadius: const BorderRadius.all(Radii.small),
-      color: Theme.of(context).colorScheme.surfaceContainerHigh,
-      child: InkWell(
-        borderRadius: const BorderRadius.all(Radii.small),
-        onTap: () async {
-          final result = await showTimePicker(
-            context: context,
-            initialTime: value ?? TimeOfDay.now(),
-          );
-
-          if (result != null) {
-            onValueChanged(result);
-          }
-        },
-        child: SizedBox(
-          width: 120,
-          height: 35,
-          child: value != null
-              ? Center(
-                  child: Text(
-                    "${value.format(context)} Uhr",
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                )
-              : null,
-        ),
-      ),
-    );
-  }
 }

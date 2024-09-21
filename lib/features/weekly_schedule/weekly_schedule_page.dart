@@ -32,10 +32,6 @@ class WeeklySchedulePage extends HookConsumerWidget {
 
     return weeklyScheduleStream.when(
       data: (data) {
-        if (data == null) {
-          return const DataErrorWidget();
-        }
-
         List<Lesson> lessons = data.$1;
         Set<TimeSpan> timeSpans = data.$2;
         final List<Teacher> teachers = data.$3;

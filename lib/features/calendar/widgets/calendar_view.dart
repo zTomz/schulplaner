@@ -8,19 +8,23 @@ import 'package:schulplaner/common/extensions/date_time_extension.dart';
 import 'package:schulplaner/common/functions/get_events_for_day.dart';
 import 'package:schulplaner/common/models/event.dart';
 import 'package:schulplaner/common/models/time.dart';
+import 'package:schulplaner/common/models/weekly_schedule.dart';
+import 'package:schulplaner/features/calendar/functions/get_color_for_event.dart';
 
 class CalendarView extends HookWidget {
   final DateTime startDate;
   final DateTime selectedDate;
   final List<Event> events;
+  final List<Subject> subjects;
   final void Function(DateTime date) onDaySelected;
 
   const CalendarView({
     super.key,
     required this.startDate,
     required this.selectedDate,
-    required this.onDaySelected,
     required this.events,
+    required this.subjects,
+    required this.onDaySelected,
   });
 
   @override
@@ -176,7 +180,10 @@ class CalendarView extends HookWidget {
                                 height: 8,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: eventsOfDay[i].color,
+                                  color: getColorForEvent(
+                                    eventsOfDay[i],
+                                    subjects,
+                                  ),
                                 ),
                               ),
                             if (eventsOfDay.length - 8 > 0)

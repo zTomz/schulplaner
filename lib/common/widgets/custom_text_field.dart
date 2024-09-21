@@ -12,6 +12,7 @@ class CustomTextField extends HookWidget {
   final Widget? prefixIcon;
   final TextInputType? keyboardType;
   final int maxLines;
+  final int? minLines;
   final bool validate;
   final String? Function(String? value)? validator;
   final AutovalidateMode? autovalidateMode;
@@ -27,6 +28,7 @@ class CustomTextField extends HookWidget {
     this.prefixIcon,
     this.keyboardType,
     this.maxLines = 1,
+    this.minLines = 1,
     this.validate = false,
     this.validator,
     this.autovalidateMode,
@@ -45,6 +47,7 @@ class CustomTextField extends HookWidget {
     this.prefixIcon,
     this.keyboardType,
     this.maxLines = 1,
+    this.minLines = 1,
     this.validate = false,
     this.validator,
     this.autovalidateMode,
@@ -63,6 +66,7 @@ class CustomTextField extends HookWidget {
     this.prefixIcon,
     this.keyboardType,
     this.maxLines = 1,
+    this.minLines = 1,
     this.validate = false,
     this.validator,
     this.autovalidateMode,
@@ -84,12 +88,13 @@ class CustomTextField extends HookWidget {
       // if it is not null, than use it, else use the preconfigured validator
       validator: _getValidator(),
       autovalidateMode: autovalidateMode,
-      minLines: 1,
+      minLines: minLines,
       maxLines: maxLines,
       obscureText:
           !showPassword.value && _type == _CustomTextFieldType.password,
       decoration: InputDecoration(
         labelText: labelText,
+        alignLabelWithHint: true,
         hintText: hintText,
         prefixIcon: _getPrefixIcon(),
         suffix: _type == _CustomTextFieldType.password

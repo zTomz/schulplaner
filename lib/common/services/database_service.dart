@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:schulplaner/common/functions/check_user_is_signed_in.dart';
+import 'package:schulplaner/common/models/event.dart';
 import 'package:schulplaner/common/models/hobby.dart';
 import 'package:schulplaner/common/models/weekly_schedule_data.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
@@ -14,6 +15,9 @@ abstract class DatabaseService {
 
   static CollectionReference<Map<String, dynamic>> get hobbiesCollection =>
       currentUserDocument.collection("hobbies");
+
+  static CollectionReference<Map<String, dynamic>> get eventsCollection =>
+      currentUserDocument.collection("events");
 
   static CollectionReference<Map<String, dynamic>> get userCollection =>
       FirebaseFirestore.instance.collection("users");
@@ -103,5 +107,59 @@ abstract class DatabaseService {
     for (final hobby in hobbies) {
       await hobbiesCollection.doc(hobby.uuid).delete();
     }
+  }
+
+  static Future<void> uploadEvents(
+    BuildContext context, {
+    required List<Event> events,
+  }) async {
+    if (!checkUserIsSignedIn(context)) {
+      return;
+    }
+
+    List<HomeworkEvent> homeworkEvents = [];
+    List<TestEvent> testEvents = [];
+    List<FixedEvent> fixedEvents = [];
+    List<RepeatingEvent> repeatingEvents = [];
+
+    for (final event in events) {
+      switch (event) {
+        case HomeworkEvent homeworkEvent:
+          homeworkEvents.add(homeworkEvent);
+          break;
+        case TestEvent testEvent:
+          testEvents.add(testEvent);
+          break;
+        case FixedEvent fixedEvent:
+          fixedEvents.add(fixedEvent);
+          break;
+        case RepeatingEvent repeatingEvent:
+          repeatingEvents.add(repeatingEvent);
+          break;
+      }
+    }
+
+    // Create a map to store the data and then sync the data to firestore
+    final homeworkMap = <String, dynamic>{};
+    for (final homework in homeworkEvents) {
+      homeworkMap[homework.uuid] = homework.toMap();
+    }
+
+    // Try to update, if no document exists, then we create it
+    try {
+      await eventsCollection.doc("homework").update(homeworkMap);
+    } catch (_) {
+      await eventsCollection.doc("homework").set(homeworkMap);
+    }
+    // TODO: Handle other event uploads here
+    // await eventsCollection.doc("tests").set({
+    //   "tests": testEvents.map((e) => e.toMap()).toList(),
+    // });
+    // await eventsCollection.doc("fixed").set({
+    //   "fixed": fixedEvents.map((e) => e.toMap()).toList(),
+    // });
+    // await eventsCollection.doc("repeating").set({
+    //   "repeating": repeatingEvents.map((e) => e.toMap()).toList(),
+    // });
   }
 }

@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:schulplaner/common/constants/numbers.dart';
 import 'package:schulplaner/common/models/event.dart';
+import 'package:schulplaner/common/models/weekly_schedule.dart';
+import 'package:schulplaner/features/calendar/functions/get_color_for_event.dart';
 
 class EventInfoBox extends StatelessWidget {
   final Event event;
+  final List<Subject> subjects;
 
   const EventInfoBox({
     super.key,
     required this.event,
+    required this.subjects,
   });
 
   @override
@@ -28,7 +32,7 @@ class EventInfoBox extends StatelessWidget {
               width: 4,
               height: 20,
               decoration: BoxDecoration(
-                color: event.color,
+                color: getColorForEvent(event, subjects),
                 borderRadius: BorderRadius.circular(360),
               ),
             ),

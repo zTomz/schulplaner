@@ -6,11 +6,11 @@ import 'package:schulplaner/common/constants/numbers.dart';
 import 'package:schulplaner/common/dialogs/custom_dialog.dart';
 import 'package:schulplaner/common/dialogs/events/event_date_dialog.dart';
 import 'package:schulplaner/common/dialogs/weekly_schedule/subject_dialogs.dart';
+import 'package:schulplaner/common/functions/get_value_or_null.dart';
 import 'package:schulplaner/common/functions/handle_state_change_database.dart';
 import 'package:schulplaner/common/models/event.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
 import 'package:schulplaner/common/provider/weekly_schedule_provider.dart';
-import 'package:schulplaner/common/widgets/color_choose_list_tile.dart';
 import 'package:schulplaner/common/widgets/custom_button.dart';
 import 'package:schulplaner/common/widgets/custom_text_field.dart';
 import 'package:schulplaner/common/widgets/data_state_widgets.dart';
@@ -27,16 +27,15 @@ class EditHomeworkDialog extends HookConsumerWidget {
     final subject = useState<Subject?>(null);
     final eventDate = useState<EventDate?>(null);
     final color = useState<Color>(Colors.blue);
+    final nameController = useTextEditingController(
+      text: "Hausaufgabe ",
+    );
     final descriptionController = useTextEditingController();
 
     final formKey = useMemoized(() => GlobalKey<FormState>());
 
     return weeklyScheduleData.when(
       data: (value) {
-        if (value == null) {
-          return const DataErrorWidget();
-        }
-
         final List<Teacher> teachers = value.$3;
         final List<Subject> subjects = value.$4;
 
@@ -47,6 +46,12 @@ class EditHomeworkDialog extends HookConsumerWidget {
             key: formKey,
             child: Column(
               children: [
+                CustomTextField(
+                  controller: nameController,
+                  validate: true,
+                  labelText: "Name",
+                ),
+                const SizedBox(height: Spacing.small),
                 RequiredField(
                   errorText: "Ein Fach ist erforderlich.",
                   value: subject.value,
@@ -73,6 +78,12 @@ class EditHomeworkDialog extends HookConsumerWidget {
 
                       if (result != null) {
                         subject.value = result;
+
+                        if (nameController.text.trim() == "Hausaufgabe" ||
+                            nameController.text.trim().isEmpty) {
+                          nameController.text =
+                              "Hausaufgabe ${subject.value?.name}";
+                        }
 
                         if (color.value == Colors.blue) {
                           color.value = result.color;
@@ -103,17 +114,11 @@ class EditHomeworkDialog extends HookConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: Spacing.small),
-                ColorChooseListTile(
-                  color: color.value,
-                  onColorChanged: (newColor) {
-                    color.value = newColor;
-                  },
-                ),
-                const SizedBox(height: Spacing.small),
                 CustomTextField(
                   controller: descriptionController,
                   labelText: "Beschreibung",
-                  maxLines: 4,
+                  maxLines: 3,
+                  minLines: 3,
                 )
               ],
             ),
@@ -131,9 +136,9 @@ class EditHomeworkDialog extends HookConsumerWidget {
                 }
 
                 final event = HomeworkEvent(
-                  subject: subject.value!,
-                  description: descriptionController.text,
-                  color: color.value,
+                  name: nameController.text.trim(),
+                  subjectUuid: subject.value!.uuid,
+                  description: descriptionController.text.getStringOrNull(),
                   date: eventDate.value!,
                   uuid: const Uuid().v4(),
                 );
