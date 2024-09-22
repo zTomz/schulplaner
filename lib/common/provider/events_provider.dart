@@ -46,14 +46,27 @@ final eventsProvider = StreamProvider<
       )
       .firstOrNull;
 
-    print("Homework doc data: ${homeworkDoc?.data()}");
-
   if (homeworkDoc != null) {
     final homeworkData = homeworkDoc.data();
-    print("Test");
     for (final entry in homeworkData.entries) {
       homeworkEvents.add(
         HomeworkEvent.fromMap(homeworkData[entry.key] as Map<String, dynamic>),
+      );
+    }
+  }
+
+  // Get the test events
+  final testDoc = data.docs
+      .where(
+        (doc) => doc.id == "tests",
+      )
+      .firstOrNull;
+
+  if (testDoc != null) {
+    final testData = testDoc.data();
+    for (final entry in testData.entries) {
+      testEvents.add(
+        TestEvent.fromMap(testData[entry.key] as Map<String, dynamic>),
       );
     }
   }

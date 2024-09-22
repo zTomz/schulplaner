@@ -148,7 +148,7 @@ class CalendarPage extends HookConsumerWidget {
 
                                 return EventInfoBox(
                                   event: event,
-                                  events: eventsForDay,
+                                  events: combinedEvents,
                                   subjects: weeklyScheduleData.$4,
                                 );
                               },
@@ -163,9 +163,7 @@ class CalendarPage extends HookConsumerWidget {
           loading: () => const DataLoadingWidget(),
         );
       },
-      error: (error, stackstrace) {
-        print(error);
-        print(stackstrace);
+      error: (_, __) {
         return const DataErrorWidget();
       },
       loading: () => const DataLoadingWidget(),

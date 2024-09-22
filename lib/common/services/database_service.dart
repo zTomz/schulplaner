@@ -150,10 +150,18 @@ abstract class DatabaseService {
       await eventsCollection.doc("homework").set(homeworkMap);
     }
 
+    final testMap = <String, dynamic>{};
+    for (final test in testEvents) {
+      testMap[test.uuid] = test.toMap();
+    }
+
+    if (testMap.isEmpty) {
+      await eventsCollection.doc("tests").delete();
+    } else {
+      await eventsCollection.doc("tests").set(testMap);
+    }
+
     // TODO: Handle other event uploads here
-    // await eventsCollection.doc("tests").set({
-    //   "tests": testEvents.map((e) => e.toMap()).toList(),
-    // });
     // await eventsCollection.doc("fixed").set({
     //   "fixed": fixedEvents.map((e) => e.toMap()).toList(),
     // });

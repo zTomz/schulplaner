@@ -24,7 +24,7 @@ List<Event> getEventsForDay(
 
           // Add the deadline of the test
           return day.compareWithoutTime(
-            event.deadline,
+            event.date,
           );
 
         case EventTypes.repeating:

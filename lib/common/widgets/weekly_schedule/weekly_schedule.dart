@@ -1,5 +1,3 @@
-// TODO: Show something, when no data is provided
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:schulplaner/config/constants/svg_pictures.dart';

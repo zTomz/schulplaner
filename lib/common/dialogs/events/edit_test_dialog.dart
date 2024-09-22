@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:schulplaner/common/widgets/time_picker_modal_bottom_sheet.dart';
-import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/common/dialogs/custom_dialog.dart';
 import 'package:schulplaner/common/dialogs/weekly_schedule/subject_dialogs.dart';
 import 'package:schulplaner/common/extensions/date_time_extension.dart';
@@ -17,51 +15,52 @@ import 'package:schulplaner/common/widgets/custom_button.dart';
 import 'package:schulplaner/common/widgets/custom_text_field.dart';
 import 'package:schulplaner/common/widgets/data_state_widgets.dart';
 import 'package:schulplaner/common/widgets/required_field.dart';
+import 'package:schulplaner/common/widgets/time_picker_modal_bottom_sheet.dart';
+import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:uuid/uuid.dart';
 
-class EditHomeworkDialog extends HookConsumerWidget {
-  final HomeworkEvent? homeworkEvent;
-  final void Function()? onHomeworkDeleted;
+class EditTestDialog extends HookConsumerWidget {
+  final TestEvent? testEvent;
+  final void Function()? onTestDeleted;
 
-  const EditHomeworkDialog({
+  const EditTestDialog({
     super.key,
-    this.homeworkEvent,
-    this.onHomeworkDeleted,
+    this.testEvent,
+    this.onTestDeleted,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final weeklyScheduleData = ref.watch(weeklyScheduleProvider);
 
+    final nameController = useTextEditingController(
+      text: testEvent?.name,
+    );
+    final descriptionController = useTextEditingController(
+      text: testEvent?.description,
+    );
     final subject = useState<Subject?>(
       weeklyScheduleData.hasValue
           ? firstWhereOrNull(
               weeklyScheduleData.value!.$4,
-              (s) => s.uuid == homeworkEvent?.subjectUuid,
+              (s) => s.uuid == testEvent?.subjectUuid,
             )
           : null,
     );
-    final date = useState<DateTime?>(homeworkEvent?.date);
-    final nameController = useTextEditingController(
-      text: homeworkEvent?.name,
-    );
-    final descriptionController = useTextEditingController(
-      text: homeworkEvent?.description,
-    );
+    final date = useState<DateTime?>(testEvent?.date);
 
     final formKey = useMemoized(() => GlobalKey<FormState>());
 
     return weeklyScheduleData.when(
-      data: (value) {
-        final List<Lesson> lessons = value.$1;
-        final List<Teacher> teachers = value.$3;
-        final List<Subject> subjects = value.$4;
+      data: (data) {
+        final lessons = data.$1;
+        final subjects = data.$4;
+        final teachers = data.$3;
 
         return CustomDialog.expanded(
-          icon: const Icon(LucideIcons.book_open_text),
-          title: Text(
-            "Hausaufgaben ${homeworkEvent == null ? "hinzufügen" : "bearbeiten"}",
-          ),
+          title:
+              Text("Arbeit ${testEvent != null ? "bearbeiten" : "hinzufügen"}"),
+          icon: const Icon(LucideIcons.briefcase_business),
           content: Form(
             key: formKey,
             child: Column(
@@ -99,10 +98,9 @@ class EditHomeworkDialog extends HookConsumerWidget {
                       if (result != null) {
                         subject.value = result;
 
-                        if (nameController.text.trim() == "Hausaufgabe" ||
+                        if (nameController.text.trim() == "Arbeit" ||
                             nameController.text.trim().isEmpty) {
-                          nameController.text =
-                              "Hausaufgabe ${subject.value?.name}";
+                          nameController.text = "Arbeit ${subject.value?.name}";
                         }
                       }
                     },
@@ -129,15 +127,6 @@ class EditHomeworkDialog extends HookConsumerWidget {
                       if (result != null) {
                         date.value = result;
                       }
-
-                      // final result = await showDialog<EventDate>(
-                      //   context: context,
-                      //   builder: (context) => const EventDateDialog(),
-                      // );
-
-                      // if (result != null) {
-                      //   eventDate.value = result;
-                      // }
                     },
                     child: const Text("Datum"),
                   ),
@@ -153,33 +142,35 @@ class EditHomeworkDialog extends HookConsumerWidget {
             ),
           ),
           actions: [
-            if (homeworkEvent != null && onHomeworkDeleted != null) ...[
+             if (testEvent != null && onTestDeleted != null) ...[
               ElevatedButton.icon(
                 onPressed: () async {
                   final result = await showDialog<bool>(
                     context: context,
                     builder: (context) => CustomDialog.confirmation(
-                      title: "Hausaufgabe löschen",
+                      title: "Arbeit löschen",
                       description:
-                          "Sind Sie sich sicher, dass Sie diese Hausaufgabe löschen möchten?",
+                          "Sind Sie sich sicher, dass Sie diese Arbeit löschen möchten?",
                     ),
                   );
 
                   if (result != null && context.mounted) {
-                    onHomeworkDeleted?.call();
+                    onTestDeleted?.call();
                   }
                 },
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Theme.of(context).colorScheme.error,
                 ),
                 icon: const Icon(LucideIcons.book_open_text),
-                label: const Text("Hausaufgabe löschen"),
+                label: const Text("Arbeit löschen"),
               ),
               const Spacer(),
             ],
             TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Schließen"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("Abbrechen"),
             ),
             const SizedBox(width: Spacing.small),
             ElevatedButton(
@@ -188,20 +179,18 @@ class EditHomeworkDialog extends HookConsumerWidget {
                   return;
                 }
 
-                final event = HomeworkEvent(
-                  name: nameController.text.trim(),
-                  subjectUuid: subject.value!.uuid,
-                  description: descriptionController.text.getStringOrNull(),
-                  date: date.value!,
-                  uuid: homeworkEvent?.uuid ?? const Uuid().v4(),
-                );
-
-                Navigator.pop(
-                  context,
-                  event,
+                Navigator.of(context).pop(
+                  TestEvent(
+                    name: nameController.text,
+                    description: descriptionController.text.getStringOrNull(),
+                    subjectUuid: subject.value!.uuid,
+                    date: date.value!,
+                    praticeDates: [], // TODO: Add practice dates. Maybe with AI
+                    uuid: testEvent?.uuid ?? const Uuid().v4(),
+                  ),
                 );
               },
-              child: Text(homeworkEvent == null ? "Hinzufügen" : "Bearbeiten"),
+              child: Text(testEvent == null ? "Hinzufügen" : "Bearbeiten"),
             ),
           ],
         );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:schulplaner/common/dialogs/events/edit_test_dialog.dart';
 import 'package:schulplaner/common/functions/close_all_dialogs.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/common/dialogs/events/edit_homework_dialog.dart';
@@ -63,9 +64,58 @@ class EventInfoBox extends StatelessWidget {
               );
 
               if (result != null && context.mounted) {
+                List<Event> eventsList = List<Event>.from(events);
+                eventsList.removeWhere((e) => e.uuid == result.uuid);
+
                 await DatabaseService.uploadEvents(
                   context,
-                  events: [...events, result],
+                  events: [...eventsList, result],
+                );
+              }
+              break;
+            case EventTypes.test:
+              final result = await showDialog<TestEvent>(
+                context: context,
+                builder: (context) => EditTestDialog(
+                  testEvent: event as TestEvent,
+                  onTestDeleted: () async {
+                    List<Event> eventsList = List<Event>.from(events);
+                    eventsList.removeWhere((e) => e.uuid == event.uuid);
+
+                    await DatabaseService.uploadEvents(
+                      context,
+                      events: eventsList,
+                    );
+
+                    if (context.mounted) {
+                      await closeAllDialogs(context);
+                    }
+                    // if (context.mounted) {
+                    //   final eventSubject = firstWhereOrNull(
+                    //     subjects,
+                    //     (subject) =>
+                    //         subject.uuid ==
+                    //         (event as HomeworkEvent).subjectUuid,
+                    //   );
+                    //   SnackBarService.show(
+                    //     context: context,
+                    //     content: Text(
+                    //       "Die Hausaufgabe für ${eventSubject?.name ?? "das angegebenen Fach"} wurde gelöscht.",
+                    //     ),
+                    //     type: CustomSnackbarType.info,
+                    //   );
+                    // }
+                  },
+                ),
+              );
+
+              if (result != null && context.mounted) {
+                List<Event> eventsList = List<Event>.from(events);
+                eventsList.removeWhere((e) => e.uuid == result.uuid);
+
+                await DatabaseService.uploadEvents(
+                  context,
+                  events: [...eventsList, result],
                 );
               }
               break;

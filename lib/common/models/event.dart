@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
 import 'package:schulplaner/common/extensions/duration_extension.dart';
 
 /// An event in the calendar
@@ -66,7 +67,7 @@ class HomeworkEvent extends Event {
 /// A test event.
 class TestEvent extends Event {
   /// When the test takes place
-  final DateTime deadline;
+  final DateTime date;
 
   /// The dates, when the pratice for the test is due
   final List<EventDate> praticeDates;
@@ -78,10 +79,33 @@ class TestEvent extends Event {
     required super.name,
     required super.description,
     required super.uuid,
-    required this.deadline,
+    required this.date,
     required this.praticeDates,
     required this.subjectUuid,
   }) : super(type: EventTypes.test);
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'description': description,
+      'date': date.millisecondsSinceEpoch,
+      'praticeDates': praticeDates.map((x) => x.toMap()).toList(),
+      'subjectUuid': subjectUuid,
+      'uuid': uuid,
+    };
+  }
+
+  factory TestEvent.fromMap(Map<String, dynamic> map) {
+    return TestEvent(
+      name: map['name'],
+      description: map['description'],
+      date: DateTime.fromMillisecondsSinceEpoch(map['date']),
+      praticeDates: List<EventDate>.from(
+          map['praticeDates']?.map((x) => EventDate.fromMap(x))),
+      subjectUuid: map['subjectUuid'] ?? '',
+      uuid: map['uuid'],
+    );
+  }
 }
 
 class FixedEvent extends Event {
