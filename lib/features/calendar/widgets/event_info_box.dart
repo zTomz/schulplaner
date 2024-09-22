@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:schulplaner/common/functions/close_all_dialogs.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/common/dialogs/events/edit_homework_dialog.dart';
 import 'package:schulplaner/common/models/event.dart';
@@ -8,11 +9,13 @@ import 'package:schulplaner/features/calendar/functions/get_color_for_event.dart
 
 class EventInfoBox extends StatelessWidget {
   final Event event;
+  final List<Event> events;
   final List<Subject> subjects;
 
   const EventInfoBox({
     super.key,
     required this.event,
+    required this.events,
     required this.subjects,
   });
 
@@ -28,13 +31,41 @@ class EventInfoBox extends StatelessWidget {
                 context: context,
                 builder: (context) => EditHomeworkDialog(
                   homeworkEvent: event as HomeworkEvent,
+                  onHomeworkDeleted: () async {
+                    List<Event> eventsList = List<Event>.from(events);
+                    eventsList.removeWhere((e) => e.uuid == event.uuid);
+
+                    await DatabaseService.uploadEvents(
+                      context,
+                      events: eventsList,
+                    );
+
+                    if (context.mounted) {
+                      await closeAllDialogs(context);
+                    }
+                    // if (context.mounted) {
+                    //   final eventSubject = firstWhereOrNull(
+                    //     subjects,
+                    //     (subject) =>
+                    //         subject.uuid ==
+                    //         (event as HomeworkEvent).subjectUuid,
+                    //   );
+                    //   SnackBarService.show(
+                    //     context: context,
+                    //     content: Text(
+                    //       "Die Hausaufgabe für ${eventSubject?.name ?? "das angegebenen Fach"} wurde gelöscht.",
+                    //     ),
+                    //     type: CustomSnackbarType.info,
+                    //   );
+                    // }
+                  },
                 ),
               );
 
               if (result != null && context.mounted) {
                 await DatabaseService.uploadEvents(
                   context,
-                  events: [result],
+                  events: [...events, result],
                 );
               }
               break;

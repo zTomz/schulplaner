@@ -144,12 +144,12 @@ abstract class DatabaseService {
       homeworkMap[homework.uuid] = homework.toMap();
     }
 
-    // Try to update, if no document exists, then we create it
-    try {
-      await eventsCollection.doc("homework").update(homeworkMap);
-    } catch (_) {
+    if (homeworkMap.isEmpty) {
+      await eventsCollection.doc("homework").delete();
+    } else {
       await eventsCollection.doc("homework").set(homeworkMap);
     }
+
     // TODO: Handle other event uploads here
     // await eventsCollection.doc("tests").set({
     //   "tests": testEvents.map((e) => e.toMap()).toList(),

@@ -65,7 +65,6 @@ class AppNavigationPage extends HookWidget {
                     builder: (context) => const EditHomeworkDialog(),
                   );
 
-                  // TODO: Upload the homework
                   if (result != null && context.mounted) {
                     await DatabaseService.uploadEvents(
                       context,

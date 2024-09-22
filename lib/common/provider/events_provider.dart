@@ -40,11 +40,17 @@ final eventsProvider = StreamProvider<
   List<RepeatingEvent> repeatingEvents = [];
 
   // Get the homework events
-  final homeworkDoc =
-      data.docs.where((doc) => doc.id == "homework").firstOrNull;
+  final homeworkDoc = data.docs
+      .where(
+        (doc) => doc.id == "homework",
+      )
+      .firstOrNull;
+
+    print("Homework doc data: ${homeworkDoc?.data()}");
 
   if (homeworkDoc != null) {
     final homeworkData = homeworkDoc.data();
+    print("Test");
     for (final entry in homeworkData.entries) {
       homeworkEvents.add(
         HomeworkEvent.fromMap(homeworkData[entry.key] as Map<String, dynamic>),
@@ -54,10 +60,5 @@ final eventsProvider = StreamProvider<
 
   // TODO: Handle the other events here and convert them
 
-  return (
-    homeworkEvents,
-    testEvents,
-    fixedEvents,
-    repeatingEvents
-  );
+  return (homeworkEvents, testEvents, fixedEvents, repeatingEvents);
 }

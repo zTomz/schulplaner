@@ -21,10 +21,12 @@ import 'package:uuid/uuid.dart';
 
 class EditHomeworkDialog extends HookConsumerWidget {
   final HomeworkEvent? homeworkEvent;
+  final void Function()? onHomeworkDeleted;
 
   const EditHomeworkDialog({
     super.key,
     this.homeworkEvent,
+    this.onHomeworkDeleted,
   });
 
   @override
@@ -156,6 +158,30 @@ class EditHomeworkDialog extends HookConsumerWidget {
             ),
           ),
           actions: [
+            if (homeworkEvent != null && onHomeworkDeleted != null) ...[
+              ElevatedButton.icon(
+                onPressed: () async {
+                  final result = await showDialog<bool>(
+                    context: context,
+                    builder: (context) => CustomDialog.confirmation(
+                      title: "Hausaufgabe löschen",
+                      description:
+                          "Sind Sie sich sicher, dass Sie diese Hausaufgabe löschen möchten?",
+                    ),
+                  );
+
+                  if (result != null && context.mounted) {
+                    onHomeworkDeleted?.call();
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.error,
+                ),
+                icon: const Icon(LucideIcons.book_open_text),
+                label: const Text("Hausaufgabe löschen"),
+              ),
+              const Spacer(),
+            ],
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: const Text("Schließen"),
