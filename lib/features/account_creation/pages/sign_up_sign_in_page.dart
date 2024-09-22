@@ -9,9 +9,8 @@ import 'package:schulplaner/common/services/database_service.dart';
 import 'package:schulplaner/common/widgets/custom_button.dart';
 import 'package:schulplaner/common/widgets/custom_text_field.dart';
 import 'package:schulplaner/common/widgets/gradient_scaffold.dart';
-import 'package:schulplaner/common/constants/numbers.dart';
+import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/config/routes/router.gr.dart';
-import 'package:schulplaner/common/models/weekly_schedule_data.dart';
 
 @RoutePage()
 class SignUpSignInPage extends HookWidget {

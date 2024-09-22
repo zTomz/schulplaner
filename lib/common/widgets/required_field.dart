@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:schulplaner/common/constants/numbers.dart';
+import 'package:schulplaner/config/constants/numbers.dart';
 
 class RequiredField<T> extends FormField {
   final Widget child;

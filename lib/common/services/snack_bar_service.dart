@@ -2,11 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
-import 'package:schulplaner/common/constants/numbers.dart';
+import 'package:schulplaner/config/constants/numbers.dart';
 
 class SnackBarService {
-  // TODO: Add an SnackBarService.of(context) method
-
   static void show({
     required BuildContext context,
     required Widget content,

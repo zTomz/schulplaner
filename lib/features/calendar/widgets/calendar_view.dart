@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
-import 'package:schulplaner/common/constants/numbers.dart';
+import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/common/extensions/date_time_extension.dart';
 import 'package:schulplaner/common/functions/get_events_for_day.dart';
 import 'package:schulplaner/common/models/event.dart';
@@ -162,7 +162,12 @@ class CalendarView extends HookWidget {
                                           ? Theme.of(context)
                                               .colorScheme
                                               .outline
-                                          : null,
+                                          : day.compareWithoutTime(
+                                                  DateTime.now())
+                                              ? Theme.of(context)
+                                                  .colorScheme
+                                                  .primary
+                                              : null,
                                 ),
                             textAlign: TextAlign.center,
                           ),

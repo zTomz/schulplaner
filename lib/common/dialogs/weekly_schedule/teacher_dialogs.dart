@@ -12,7 +12,7 @@ import 'package:schulplaner/common/functions/get_value_or_null.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
 import 'package:schulplaner/common/widgets/custom_text_field.dart';
 import 'package:schulplaner/common/widgets/weekly_schedule/models.dart';
-import 'package:schulplaner/common/constants/numbers.dart';
+import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/common/widgets/custom_button.dart';
 import 'package:uuid/uuid.dart';
 

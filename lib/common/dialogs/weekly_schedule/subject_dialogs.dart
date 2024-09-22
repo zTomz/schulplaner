@@ -14,7 +14,7 @@ import 'package:schulplaner/common/widgets/color_choose_list_tile.dart';
 import 'package:schulplaner/common/widgets/custom_text_field.dart';
 import 'package:schulplaner/common/widgets/required_field.dart';
 import 'package:schulplaner/common/widgets/custom_button.dart';
-import 'package:schulplaner/common/constants/numbers.dart';
+import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:uuid/uuid.dart';
 
 class SubjectDialog extends StatelessWidget {

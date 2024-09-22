@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:schulplaner/common/constants/numbers.dart';
+import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/common/dialogs/events/edit_homework_dialog.dart';
 import 'package:schulplaner/common/models/event.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
@@ -22,7 +22,6 @@ class EventInfoBox extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: Spacing.small),
       child: MaterialButton(
         onPressed: () async {
-          // TODO: Edit an event
           switch (event.type) {
             case EventTypes.homework:
               final result = await showDialog<HomeworkEvent>(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:schulplaner/common/constants/numbers.dart';
+import 'package:schulplaner/config/constants/numbers.dart';
 
 /// Returns a widget with helpful information if [snapshot] has an error or no data. If 
 /// everything is okay, returns null.

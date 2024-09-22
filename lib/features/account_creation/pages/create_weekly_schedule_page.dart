@@ -12,8 +12,7 @@ import 'package:schulplaner/common/widgets/custom_app_bar.dart';
 import 'package:schulplaner/common/widgets/gradient_scaffold.dart';
 import 'package:schulplaner/common/widgets/weekly_schedule/weekly_schedule.dart';
 import 'package:schulplaner/config/routes/router.gr.dart';
-import 'package:schulplaner/common/constants/numbers.dart';
-import 'package:schulplaner/common/models/weekly_schedule_data.dart';
+import 'package:schulplaner/config/constants/numbers.dart';
 
 class CreateWeeklySchedulePage extends StatefulWidget {
   const CreateWeeklySchedulePage({super.key});

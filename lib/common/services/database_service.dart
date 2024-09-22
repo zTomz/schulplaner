@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:schulplaner/common/functions/check_user_is_signed_in.dart';
 import 'package:schulplaner/common/models/event.dart';
 import 'package:schulplaner/common/models/hobby.dart';
-import 'package:schulplaner/common/models/weekly_schedule_data.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
 
 abstract class DatabaseService {

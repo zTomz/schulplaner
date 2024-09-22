@@ -10,9 +10,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i10;
 import 'package:flutter/material.dart' as _i11;
-import 'package:schulplaner/common/models/hobby.dart' as _i14;
-import 'package:schulplaner/common/models/weekly_schedule.dart' as _i13;
-import 'package:schulplaner/common/models/weekly_schedule_data.dart' as _i12;
+import 'package:schulplaner/common/models/hobby.dart' as _i13;
+import 'package:schulplaner/common/models/weekly_schedule.dart' as _i12;
 import 'package:schulplaner/features/account_creation/pages/configure_hobbies_page.dart'
     as _i3;
 import 'package:schulplaner/features/account_creation/pages/configure_weekly_schedule_page.dart'
@@ -73,8 +72,8 @@ class ConfigureHobbyRoute extends _i10.PageRouteInfo<ConfigureHobbyRouteArgs> {
   ConfigureHobbyRoute({
     _i11.Key? key,
     _i12.WeeklyScheduleData? weeklyScheduleData,
-    List<_i13.Teacher>? teachers,
-    List<_i13.Subject>? subjects,
+    List<_i12.Teacher>? teachers,
+    List<_i12.Subject>? subjects,
     List<_i10.PageRouteInfo>? children,
   }) : super(
           ConfigureHobbyRoute.name,
@@ -116,9 +115,9 @@ class ConfigureHobbyRouteArgs {
 
   final _i12.WeeklyScheduleData? weeklyScheduleData;
 
-  final List<_i13.Teacher>? teachers;
+  final List<_i12.Teacher>? teachers;
 
-  final List<_i13.Subject>? subjects;
+  final List<_i12.Subject>? subjects;
 
   @override
   String toString() {
@@ -208,9 +207,9 @@ class SignUpSignInRoute extends _i10.PageRouteInfo<SignUpSignInRouteArgs> {
   SignUpSignInRoute({
     _i11.Key? key,
     _i12.WeeklyScheduleData? weeklyScheduleData,
-    List<_i13.Teacher>? teachers,
-    List<_i13.Subject>? subjects,
-    List<_i14.Hobby>? hobbies,
+    List<_i12.Teacher>? teachers,
+    List<_i12.Subject>? subjects,
+    List<_i13.Hobby>? hobbies,
     List<_i10.PageRouteInfo>? children,
   }) : super(
           SignUpSignInRoute.name,
@@ -255,11 +254,11 @@ class SignUpSignInRouteArgs {
 
   final _i12.WeeklyScheduleData? weeklyScheduleData;
 
-  final List<_i13.Teacher>? teachers;
+  final List<_i12.Teacher>? teachers;
 
-  final List<_i13.Subject>? subjects;
+  final List<_i12.Subject>? subjects;
 
-  final List<_i14.Hobby>? hobbies;
+  final List<_i13.Hobby>? hobbies;
 
   @override
   String toString() {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:schulplaner/common/widgets/gradient_scaffold.dart';
 import 'package:schulplaner/config/theme/app_colors.dart';
-import 'package:schulplaner/common/constants/numbers.dart';
+import 'package:schulplaner/config/constants/numbers.dart';
 
 class AccountCreationLayout extends StatelessWidget {
   /// The title of the layout

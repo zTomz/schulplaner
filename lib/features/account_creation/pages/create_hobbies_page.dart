@@ -3,18 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:schulplaner/common/constants/svg_pictures.dart';
+import 'package:schulplaner/config/constants/svg_pictures.dart';
 import 'package:schulplaner/common/dialogs/custom_dialog.dart';
 import 'package:schulplaner/common/dialogs/hobby/edit_hobby_dialog.dart';
 import 'package:schulplaner/common/functions/get_value_or_null.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
-import 'package:schulplaner/common/models/weekly_schedule_data.dart';
 import 'package:schulplaner/common/models/hobby.dart';
 import 'package:schulplaner/common/widgets/custom_app_bar.dart';
 import 'package:schulplaner/common/widgets/gradient_scaffold.dart';
 import 'package:schulplaner/common/widgets/hobby_list_tile.dart';
 import 'package:schulplaner/config/routes/router.gr.dart';
-import 'package:schulplaner/common/constants/numbers.dart';
+import 'package:schulplaner/config/constants/numbers.dart';
 
 class CreateHobbiesPage extends HookWidget {
   /// The weekly schedule if created from the [create_weekly_schedule_page.dart]

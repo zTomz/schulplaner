@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:schulplaner/common/constants/numbers.dart';
-import 'package:schulplaner/common/constants/svg_pictures.dart';
+import 'package:schulplaner/config/constants/numbers.dart';
+import 'package:schulplaner/config/constants/svg_pictures.dart';
 import 'package:schulplaner/common/extensions/date_time_extension.dart';
 
 class NoEventsInfo extends StatelessWidget {

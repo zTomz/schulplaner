@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:schulplaner/common/constants/numbers.dart';
+import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/common/functions/get_events_for_day.dart';
 import 'package:schulplaner/common/provider/events_provider.dart';
 import 'package:schulplaner/common/provider/weekly_schedule_provider.dart';

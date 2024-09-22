@@ -4,7 +4,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
 import 'package:schulplaner/config/routes/router.gr.dart';
-import 'package:schulplaner/common/models/weekly_schedule_data.dart';
 import 'package:schulplaner/features/account_creation/pages/create_hobbies_page.dart';
 import 'package:schulplaner/features/account_creation/widgets/account_creation_layout.dart';
 
