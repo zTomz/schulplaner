@@ -29,7 +29,7 @@ abstract class Event {
 /// A homework event
 class HomeworkEvent extends Event {
   /// The date, when the homework event is due
-  final EventDate date;
+  final DateTime date;
 
   /// The subject of the homework. E. g. Math, English etc.
   final String subjectUuid;
@@ -45,7 +45,7 @@ class HomeworkEvent extends Event {
   Map<String, dynamic> toMap() {
     return {
       'name': name,
-      'date': date.toMap(),
+      'date': Timestamp.fromDate(date),
       'subjectUuid': subjectUuid,
       'description': description,
       'uuid': uuid,
@@ -55,7 +55,7 @@ class HomeworkEvent extends Event {
   factory HomeworkEvent.fromMap(Map<String, dynamic> map) {
     return HomeworkEvent(
       name: map['name'],
-      date: EventDate.fromMap(map['date']),
+      date: (map['date'] as Timestamp).toDate(),
       subjectUuid: map['subjectUuid'],
       description: map['description'],
       uuid: map['uuid'],

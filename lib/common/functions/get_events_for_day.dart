@@ -12,7 +12,7 @@ List<Event> getEventsForDay(
       switch (event.type) {
         case EventTypes.homework:
           return day.compareWithoutTime(
-            (event as HomeworkEvent).date.date,
+            (event as HomeworkEvent).date,
           );
         case EventTypes.test:
           // Add all the practice dates

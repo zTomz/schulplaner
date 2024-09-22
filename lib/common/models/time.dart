@@ -80,6 +80,20 @@ enum Weekday {
   saturday,
   sunday;
 
+  static Weekday fromDateTime(DateTime dateTime) {
+    return Weekday.values[dateTime.weekday - 1];
+  }
+
+  static List<Weekday> get mondayToFriday {
+    return [
+      Weekday.monday,
+      Weekday.tuesday,
+      Weekday.wednesday,
+      Weekday.thursday,
+      Weekday.friday
+    ];
+  }
+
   int get weekdayAsInt {
     switch (this) {
       case Weekday.monday:
@@ -99,16 +113,6 @@ enum Weekday {
     }
   }
 
-  static List<Weekday> get mondayToFriday {
-    return [
-      Weekday.monday,
-      Weekday.tuesday,
-      Weekday.wednesday,
-      Weekday.thursday,
-      Weekday.friday
-    ];
-  }
-
   String get name {
     switch (this) {
       case Weekday.monday:
@@ -126,6 +130,38 @@ enum Weekday {
       case Weekday.sunday:
         return "Sonntag";
     }
+  }
+
+  Weekday get next {
+    switch (this) {
+      case Weekday.monday:
+        return Weekday.tuesday;
+      case Weekday.tuesday:
+        return Weekday.wednesday;
+      case Weekday.wednesday:
+        return Weekday.thursday;
+      case Weekday.thursday:
+        return Weekday.friday;
+      case Weekday.friday:
+        return Weekday.saturday;
+      case Weekday.saturday:
+        return Weekday.sunday;
+      case Weekday.sunday:
+        return Weekday.monday;
+    }
+  }
+
+  /// Return the difference in days between this weekday and the given weekday
+  int getDifference(Weekday weekday) {
+    int difference = 0;
+    Weekday currentWeekday = this;
+
+    while (currentWeekday != weekday) {
+      difference += 1;
+      currentWeekday = currentWeekday.next;
+    }
+
+    return difference;
   }
 
   Map<String, dynamic> toMap() {
