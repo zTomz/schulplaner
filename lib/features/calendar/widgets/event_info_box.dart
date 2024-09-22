@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:schulplaner/common/constants/numbers.dart';
+import 'package:schulplaner/common/dialogs/events/edit_homework_dialog.dart';
 import 'package:schulplaner/common/models/event.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
+import 'package:schulplaner/common/services/database_service.dart';
 import 'package:schulplaner/features/calendar/functions/get_color_for_event.dart';
 
 class EventInfoBox extends StatelessWidget {
@@ -19,8 +21,28 @@ class EventInfoBox extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: Spacing.small),
       child: MaterialButton(
-        onPressed: () {
+        onPressed: () async {
           // TODO: Edit an event
+          switch (event.type) {
+            case EventTypes.homework:
+              final result = await showDialog<HomeworkEvent>(
+                context: context,
+                builder: (context) => EditHomeworkDialog(
+                  homeworkEvent: event as HomeworkEvent,
+                ),
+              );
+
+              if (result != null && context.mounted) {
+                await DatabaseService.uploadEvents(
+                  context,
+                  events: [result],
+                );
+              }
+              break;
+            // TODO: Implement editing other events here
+            default:
+              break;
+          }
         },
         padding: const EdgeInsets.all(Spacing.medium),
         shape: const RoundedRectangleBorder(

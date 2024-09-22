@@ -20,19 +20,33 @@ import 'package:schulplaner/common/widgets/required_field.dart';
 import 'package:uuid/uuid.dart';
 
 class EditHomeworkDialog extends HookConsumerWidget {
-  const EditHomeworkDialog({super.key});
+  final HomeworkEvent? homeworkEvent;
+
+  const EditHomeworkDialog({
+    super.key,
+    this.homeworkEvent,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final weeklyScheduleData = ref.watch(weeklyScheduleProvider);
 
-    final subject = useState<Subject?>(null);
-    final date = useState<DateTime?>(null);
-    final color = useState<Color>(Colors.blue);
-    final nameController = useTextEditingController(
-      text: "Hausaufgabe ",
+    final subject = useState<Subject?>(
+      weeklyScheduleData.hasValue
+          ? firstWhereOrNull(
+              weeklyScheduleData.value!.$4,
+              (s) => s.uuid == homeworkEvent?.subjectUuid,
+            )
+          : null,
     );
-    final descriptionController = useTextEditingController();
+    final date = useState<DateTime?>(homeworkEvent?.date);
+    final color = useState<Color>(subject.value?.color ?? Colors.blue);
+    final nameController = useTextEditingController(
+      text: homeworkEvent?.name ?? "Hausaufgabe ",
+    );
+    final descriptionController = useTextEditingController(
+      text: homeworkEvent?.description,
+    );
 
     final formKey = useMemoized(() => GlobalKey<FormState>());
 
@@ -44,7 +58,9 @@ class EditHomeworkDialog extends HookConsumerWidget {
 
         return CustomDialog.expanded(
           icon: const Icon(LucideIcons.book_open_text),
-          title: const Text("Hausaufgaben erstellen"),
+          title: Text(
+            "Hausaufgaben ${homeworkEvent == null ? "erstellen" : "bearbeiten"}",
+          ),
           content: Form(
             key: formKey,
             child: Column(
@@ -156,7 +172,7 @@ class EditHomeworkDialog extends HookConsumerWidget {
                   subjectUuid: subject.value!.uuid,
                   description: descriptionController.text.getStringOrNull(),
                   date: date.value!,
-                  uuid: const Uuid().v4(),
+                  uuid: homeworkEvent?.uuid ?? const Uuid().v4(),
                 );
 
                 Navigator.pop(
@@ -164,7 +180,7 @@ class EditHomeworkDialog extends HookConsumerWidget {
                   event,
                 );
               },
-              child: const Text("Hinzufügen"),
+              child: Text(homeworkEvent == null ? "Hinzufügen" : "Bearbeiten"),
             ),
           ],
         );
