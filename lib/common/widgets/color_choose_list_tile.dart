@@ -15,7 +15,7 @@ class ColorChooseListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: const Text("Color"),
+      title: const Text("Farbe"),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radii.small),
       ),

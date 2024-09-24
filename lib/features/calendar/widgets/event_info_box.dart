@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:schulplaner/common/dialogs/events/edit_test_dialog.dart';
 import 'package:schulplaner/common/functions/close_all_dialogs.dart';
+import 'package:schulplaner/common/functions/first_where_or_null.dart';
+import 'package:schulplaner/common/services/snack_bar_service.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/common/dialogs/events/edit_homework_dialog.dart';
 import 'package:schulplaner/common/models/event.dart';
@@ -44,21 +46,21 @@ class EventInfoBox extends StatelessWidget {
                     if (context.mounted) {
                       await closeAllDialogs(context);
                     }
-                    // if (context.mounted) {
-                    //   final eventSubject = firstWhereOrNull(
-                    //     subjects,
-                    //     (subject) =>
-                    //         subject.uuid ==
-                    //         (event as HomeworkEvent).subjectUuid,
-                    //   );
-                    //   SnackBarService.show(
-                    //     context: context,
-                    //     content: Text(
-                    //       "Die Hausaufgabe für ${eventSubject?.name ?? "das angegebenen Fach"} wurde gelöscht.",
-                    //     ),
-                    //     type: CustomSnackbarType.info,
-                    //   );
-                    // }
+                    if (context.mounted) {
+                      final eventSubject = firstWhereOrNull(
+                        subjects,
+                        (subject) =>
+                            subject.uuid ==
+                            (event as HomeworkEvent).subjectUuid,
+                      );
+                      SnackBarService.show(
+                        context: context,
+                        content: Text(
+                          "Die Hausaufgabe für ${eventSubject?.name ?? "das angegebenen Fach"} wurde gelöscht.",
+                        ),
+                        type: CustomSnackbarType.info,
+                      );
+                    }
                   },
                 ),
               );
@@ -90,21 +92,21 @@ class EventInfoBox extends StatelessWidget {
                     if (context.mounted) {
                       await closeAllDialogs(context);
                     }
-                    // if (context.mounted) {
-                    //   final eventSubject = firstWhereOrNull(
-                    //     subjects,
-                    //     (subject) =>
-                    //         subject.uuid ==
-                    //         (event as HomeworkEvent).subjectUuid,
-                    //   );
-                    //   SnackBarService.show(
-                    //     context: context,
-                    //     content: Text(
-                    //       "Die Hausaufgabe für ${eventSubject?.name ?? "das angegebenen Fach"} wurde gelöscht.",
-                    //     ),
-                    //     type: CustomSnackbarType.info,
-                    //   );
-                    // }
+                    if (context.mounted) {
+                      final eventSubject = firstWhereOrNull(
+                        subjects,
+                        (subject) =>
+                            subject.uuid ==
+                            (event as HomeworkEvent).subjectUuid,
+                      );
+                      SnackBarService.show(
+                        context: context,
+                        content: Text(
+                          "Die Hausaufgabe für ${eventSubject?.name ?? "das angegebenen Fach"} wurde gelöscht.",
+                        ),
+                        type: CustomSnackbarType.info,
+                      );
+                    }
                   },
                 ),
               );

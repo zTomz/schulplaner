@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
@@ -12,7 +10,6 @@ class SnackBarService {
   }) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        width: min(MediaQuery.of(context).size.width, 600),
         content: Stack(
           children: [
             Positioned(
@@ -27,7 +24,7 @@ class SnackBarService {
                     colors: [
                       type.backgroundColor ??
                           Theme.of(context).colorScheme.primary,
-                      Theme.of(context).colorScheme.surface,
+                      Theme.of(context).colorScheme.onSurface,
                     ],
                   ),
                 ),
@@ -48,7 +45,7 @@ class SnackBarService {
                   ],
                   DefaultTextStyle(
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          color: Theme.of(context).colorScheme.onSurface,
+                          color: Theme.of(context).colorScheme.surface,
                         ),
                     child: Expanded(
                       child: content,
@@ -59,12 +56,12 @@ class SnackBarService {
             ),
           ],
         ),
-        backgroundColor: Theme.of(context).colorScheme.surface,
+        backgroundColor: Theme.of(context).colorScheme.onSurface,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radii.small),
+          borderRadius: BorderRadius.vertical(top: Radii.small),
         ),
         padding: EdgeInsets.zero,
-        behavior: SnackBarBehavior.floating,
+        behavior: SnackBarBehavior.fixed,
       ),
     );
   }

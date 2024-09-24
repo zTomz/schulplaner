@@ -106,15 +106,16 @@ class SchoolCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final foregroundColor =
-        (lesson.getSubject(subjects)?.color.computeLuminance() ??
-                    Theme.of(context)
-                        .colorScheme
-                        .primaryContainer
-                        .computeLuminance()) <
-                0.5
-            ? Theme.of(context).colorScheme.surface
-            : Theme.of(context).colorScheme.onSurface;
+    final subject = lesson.getSubject(subjects);
+    final teacher = subject?.getTeacher(teachers);
+
+    if (subject == null || teacher == null) {
+      return const SizedBox.shrink();
+    }
+
+    final foregroundColor = subject.color.computeLuminance() < 0.5
+        ? Theme.of(context).colorScheme.surface
+        : Theme.of(context).colorScheme.onSurface;
 
     return Expanded(
       child: Padding(
@@ -124,8 +125,7 @@ class SchoolCard extends StatelessWidget {
             onEdit(lesson);
           },
           padding: const EdgeInsets.all(Spacing.small),
-          color: lesson.getSubject(subjects)?.color ??
-              Theme.of(context).colorScheme.primaryContainer,
+          color: subject.color,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radii.small),
           ),
@@ -140,7 +140,7 @@ class SchoolCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    lesson.getSubject(subjects)!.name,
+                    subject.name,
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                           color: foregroundColor,
                         ),
@@ -179,7 +179,7 @@ class SchoolCard extends StatelessWidget {
                               // Doesn't use the lesson.subject.teacher.salutation because, with
                               // the current solution, the line could be wrapped.
                               Text(
-                                "${lesson.getSubject(subjects)?.getTeacher(teachers)?.gender.salutation} ",
+                                "${teacher.gender.salutation} ",
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium!
@@ -188,11 +188,7 @@ class SchoolCard extends StatelessWidget {
                                     ),
                               ),
                               Text(
-                                lesson
-                                        .getSubject(subjects)
-                                        ?.getTeacher(teachers)
-                                        ?.lastName ??
-                                    "Problem beim finden des Lehrers",
+                                teacher.lastName,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium!

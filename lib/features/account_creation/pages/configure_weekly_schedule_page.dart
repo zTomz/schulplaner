@@ -22,7 +22,7 @@ class ConfigureWeeklySchedulePage extends HookWidget {
         AccountCreationLayout(
           title: "Stundenplan erstellen",
           description:
-              "Mithilfe Ihres Stundenplans, kann die App die Ereignisse und Termine noch intelligenter legen.",
+              "Mithilfe Ihres Stundenplans kann die App die Ereignisse und Termine noch intelligenter legen.",
           buttonText: "Erstellen einen Plan",
           buttonIcon: const Icon(LucideIcons.pencil_ruler),
           onPressed: () {
