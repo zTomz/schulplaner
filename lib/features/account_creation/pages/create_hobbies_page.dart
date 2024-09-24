@@ -52,7 +52,7 @@ class CreateHobbiesPage extends HookWidget {
               );
 
               if (result != null) {
-                hobbies.value = hobbies.value..add(result);
+                hobbies.value = [...hobbies.value, result];
               }
             },
             icon: const Icon(
@@ -141,9 +141,10 @@ class CreateHobbiesPage extends HookWidget {
 
                     if (result == true) {
                       //  Delete the hobby
-                      hobbies.value.removeAt(index);
+                      List<Hobby> newHobbies = List<Hobby>.from(hobbies.value);
+                      newHobbies.removeAt(index);
 
-                      hobbies.value = [...hobbies.value];
+                      hobbies.value = newHobbies;
                     }
                   },
                 );

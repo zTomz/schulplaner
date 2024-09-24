@@ -79,6 +79,8 @@ class CustomTextField extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final showPassword = useState<bool>(false);
+    final isNotEmpty =
+        controller != null ? useListenable(controller!).text.trim().isNotEmpty : false;
 
     return TextFormField(
       controller: controller,
@@ -96,6 +98,14 @@ class CustomTextField extends HookWidget {
         labelText: labelText,
         alignLabelWithHint: true,
         hintText: hintText,
+        helper: (validate != false || validator != null) && !isNotEmpty
+            ? Text(
+                "Dieses Feld ist erforderlich.",
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                      color: Theme.of(context).colorScheme.outlineVariant,
+                    ),
+              )
+            : null,
         prefixIcon: _getPrefixIcon(),
         suffix: _type == _CustomTextFieldType.password
             ? ConstrainedBox(

@@ -65,6 +65,8 @@ class ConfigureHobbyPage extends HookWidget {
         ),
         CreateHobbiesPage(
           weeklyScheduleData: weeklyScheduleData,
+          subjects: subjects,
+          teachers: teachers,
         ),
       ],
     );
