@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:schulplaner/common/functions/check_user_is_signed_in.dart';
@@ -98,6 +99,32 @@ abstract class UserService {
           type: CustomSnackbarType.error,
         );
       }
+    }
+  }
+
+  /// Update the FCM token
+  static Future<void> updateFCMToken({
+    required String fcmToken,
+  }) async {
+    if (FirebaseAuth.instance.currentUser == null) {
+      return;
+    }
+
+    final doc = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+
+    if (doc.exists) {
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .update({"fcmToken": fcmToken});
+    } else {
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .set({"fcmToken": fcmToken});
     }
   }
 
