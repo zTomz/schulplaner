@@ -193,6 +193,7 @@ class EditHomeworkDialog extends HookConsumerWidget {
                   subjectUuid: subject.value!.uuid,
                   description: descriptionController.text.getStringOrNull(),
                   date: date.value!,
+                  isDone: homeworkEvent?.isDone ?? false,
                   uuid: homeworkEvent?.uuid ?? const Uuid().v4(),
                 );
 

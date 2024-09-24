@@ -159,6 +159,23 @@ class EventInfoBox extends StatelessWidget {
                 ],
               ),
             ),
+            if (event.type == EventTypes.homework)
+              Checkbox(
+                value: (event as HomeworkEvent).isDone,
+                onChanged: (value) async {
+                  // Update the homework [isDone] status
+                  List<Event> eventsList = List<Event>.from(events);
+                  eventsList.removeWhere((e) => e.uuid == event.uuid);
+                  eventsList.add(
+                    (event as HomeworkEvent).copyWith(isDone: value ?? false),
+                  );
+
+                  await DatabaseService.uploadEvents(
+                    context,
+                    events: eventsList,
+                  );
+                },
+              ),
           ],
         ),
       ),

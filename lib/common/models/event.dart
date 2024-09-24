@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'package:schulplaner/common/extensions/duration_extension.dart';
 
@@ -35,12 +36,16 @@ class HomeworkEvent extends Event {
   /// The subject of the homework. E. g. Math, English etc.
   final String subjectUuid;
 
+  /// Whether the homework is done
+  final bool isDone;
+
   HomeworkEvent({
     required super.name,
     required super.description,
-    required super.uuid,
     required this.date,
     required this.subjectUuid,
+    required this.isDone,
+    required super.uuid,
   }) : super(type: EventTypes.homework);
 
   Map<String, dynamic> toMap() {
@@ -49,6 +54,7 @@ class HomeworkEvent extends Event {
       'date': Timestamp.fromDate(date),
       'subjectUuid': subjectUuid,
       'description': description,
+      'isDone': isDone,
       'uuid': uuid,
     };
   }
@@ -59,7 +65,26 @@ class HomeworkEvent extends Event {
       date: (map['date'] as Timestamp).toDate(),
       subjectUuid: map['subjectUuid'],
       description: map['description'],
+      isDone: map['isDone'],
       uuid: map['uuid'],
+    );
+  }
+
+  HomeworkEvent copyWith({
+    String? name,
+    String? description,
+    DateTime? date,
+    String? subjectUuid,
+    bool? isDone,
+    String? uuid,
+  }) {
+    return HomeworkEvent(
+      name: name ?? this.name,
+      description: description ?? this.description,
+      date: date ?? this.date,
+      subjectUuid: subjectUuid ?? this.subjectUuid,
+      isDone: isDone ?? this.isDone,
+      uuid: uuid ?? this.uuid,
     );
   }
 }
