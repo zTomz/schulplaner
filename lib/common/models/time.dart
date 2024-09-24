@@ -175,4 +175,12 @@ enum Weekday {
   ) {
     return Weekday.values[int.tryParse(map['weekdayIndex'].toString()) ?? 0];
   }
+
+  operator >(Weekday weekday) {
+    return weekdayAsInt > weekday.weekdayAsInt;
+  }
+
+  operator <(Weekday weekday) {
+    return weekdayAsInt < weekday.weekdayAsInt;
+  }
 }

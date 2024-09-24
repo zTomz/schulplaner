@@ -40,13 +40,15 @@ class TimePickerModalBottomSheet extends StatelessWidget {
             onPressed: subject == null
                 ? null
                 : () {
-                    // Get the next lesson of the subject
-                    final sortedLessons = List<Lesson>.from(lessons);
+                    final currentWeekday = Weekday.fromDateTime(DateTime.now());
+
+                    // Get all lesson for the provided subject
+                    List<Lesson> sortedLessons = List<Lesson>.from(lessons);
                     sortedLessons.removeWhere(
                       (lesson) => lesson.subjectUuid != subject?.uuid,
                     );
 
-                    // If the sorted lessons do not have at least one lesson of the provided subject we return
+                    // If the lessons do not have at least one lesson of the provided subject we return
                     if (sortedLessons.isEmpty) {
                       Navigator.of(context).pop(null);
                       return;
@@ -54,24 +56,53 @@ class TimePickerModalBottomSheet extends StatelessWidget {
 
                     // Sort the lessons by weekday
                     sortedLessons.sort(
-                      (a, b) => a.weekday.index < b.weekday.index ? -1 : 1,
+                      (a, b) => a.weekday < b.weekday ? -1 : 1,
                     );
 
-                    final nextLesson = firstWhereOrNull<Lesson>(
+                    // Get the next lesson. Try to get a lesson where the weekday is larger than the current weekday.
+                    // If no lesson is found, than set [lessonIsInSameWeek] to false and try it again without the weekday
+                    // comparison
+                    bool lessonIsInSameWeek = true;
+                    bool lessonWeekdayIsBeforeCurrentWeekday = true;
+                    Lesson? nextLesson = firstWhereOrNull<Lesson>(
                       sortedLessons,
-                      (lesson) => lesson.subjectUuid == subject!.uuid,
+                      (lesson) =>
+                          lesson.subjectUuid == subject!.uuid &&
+                          lesson.weekday.weekdayAsInt >
+                              currentWeekday.weekdayAsInt,
                     );
 
-                    // Get the date of the next lesson, if it is null, return null
+                    if (nextLesson == null) {
+                      lessonIsInSameWeek = false;
+                      nextLesson = firstWhereOrNull<Lesson>(
+                        sortedLessons,
+                        (lesson) => lesson.subjectUuid == subject!.uuid,
+                      );
+
+                      if (nextLesson != null &&
+                          nextLesson.weekday.weekdayAsInt >=
+                              currentWeekday.weekdayAsInt) {
+                        lessonWeekdayIsBeforeCurrentWeekday = false;
+                      }
+                    }
+
+                    // If the next lesson is still null, it is not in the weekly schedule. Theoretically this should
+                    // never happen
                     if (nextLesson == null) {
                       Navigator.of(context).pop(null);
                       return;
                     }
-                    final currentWeekday = Weekday.fromDateTime(DateTime.now());
 
                     // Get the difference between the current weekday and the next lesson weekday
-                    final difference =
+                    int difference =
                         currentWeekday.getDifference(nextLesson.weekday);
+
+                    // Add a week, because the lesson is on the same day. Now it will be on the same day, but one
+                    // week later
+                    if (!lessonIsInSameWeek &&
+                        lessonWeekdayIsBeforeCurrentWeekday != true) {
+                      difference += 7;
+                    }
 
                     Navigator.of(context).pop(
                       DateTime.now().add(
@@ -87,26 +118,39 @@ class TimePickerModalBottomSheet extends StatelessWidget {
             onPressed: subject == null
                 ? null
                 : () {
-                    // Get the next lesson of the subject
-                    final sortedLessons = List<Lesson>.from(lessons);
+                    final currentWeekday = Weekday.fromDateTime(DateTime.now());
+
+                    // Get all lesson for the provided subject
+                    List<Lesson> sortedLessons = List<Lesson>.from(lessons);
                     sortedLessons.removeWhere(
                       (lesson) => lesson.subjectUuid != subject?.uuid,
                     );
 
-                    // If the sorted lessons do not have at least one lesson of the provided subject we return
+                    // If the lessons do not have at least one lesson of the provided subject we return
                     if (sortedLessons.isEmpty) {
                       Navigator.of(context).pop(null);
                       return;
                     }
 
+                    // Sort the lessons by weekday
                     sortedLessons.sort(
-                      (a, b) => a.weekday.index < b.weekday.index ? -1 : 1,
+                      (a, b) => a.weekday < b.weekday ? -1 : 1,
                     );
 
-                    // Get the next but one lesson
+                    // Get the next but one lesson. Try to get a lesson where the weekday is larger than the current weekday.
+                    // If no lesson is found, than set [lessonIsInSameWeek] to false and try it again without the weekday
+                    // comparison
                     Lesson? nextLesson;
+                    bool lessonIsInSameWeek = true;
                     bool onlyOneLessonOfSubjectInWeek = false;
-                    if (sortedLessons.sublist(1).isEmpty) {
+
+                    int lessonsBeforeTheCurrentWeekday = lessons
+                        .where((l) =>
+                            l.weekday.weekdayAsInt <=
+                            currentWeekday.weekdayAsInt)
+                        .length;
+
+                    if (sortedLessons.length == 1) {
                       onlyOneLessonOfSubjectInWeek = true;
 
                       nextLesson = firstWhereOrNull<Lesson>(
@@ -115,24 +159,43 @@ class TimePickerModalBottomSheet extends StatelessWidget {
                       );
                     } else {
                       nextLesson = firstWhereOrNull<Lesson>(
-                        sortedLessons.sublist(1),
+                        sortedLessons
+                            .sublist(lessonsBeforeTheCurrentWeekday + 1),
+                        (lesson) =>
+                            lesson.subjectUuid == subject!.uuid &&
+                            lesson.weekday.weekdayAsInt >
+                                currentWeekday.weekdayAsInt,
+                      );
+                    }
+
+                    if (nextLesson == null) {
+                      lessonIsInSameWeek = false;
+                      nextLesson = firstWhereOrNull<Lesson>(
+                        sortedLessons,
                         (lesson) => lesson.subjectUuid == subject!.uuid,
                       );
                     }
 
-                    // Get the date of the next lesson, if it is null, return null
+                    // If the next lesson is still null, it is not in the weekly schedule. Theoretically this should
+                    // never happen
                     if (nextLesson == null) {
                       Navigator.of(context).pop(null);
                       return;
                     }
-                    final currentWeekday = Weekday.fromDateTime(DateTime.now());
 
                     // Get the difference between the current weekday and the next lesson weekday
-                    int difference =
-                        currentWeekday.getDifference(nextLesson.weekday);
+                    int difference = currentWeekday.getDifference(
+                      nextLesson.weekday,
+                    );
 
                     // Add 7, because we want the next but one lesson. So we need to add one week, if there is only one lesson of the provided subject in the week
                     if (onlyOneLessonOfSubjectInWeek) {
+                      difference += 7;
+                    }
+
+                    // Add a week, because the lesson is on the same day. Now it will be on the same day, but one
+                    // week later
+                    if (!lessonIsInSameWeek && onlyOneLessonOfSubjectInWeek) {
                       difference += 7;
                     }
 
