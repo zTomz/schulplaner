@@ -71,6 +71,22 @@ final eventsProvider = StreamProvider<
     }
   }
 
+  // Get the fixed events
+  final fixedDoc = data.docs
+      .where(
+        (doc) => doc.id == "fixed_events",
+      )
+      .firstOrNull;
+
+  if (fixedDoc != null) {
+    final fixedEventsData = fixedDoc.data();
+    for (final entry in fixedEventsData.entries) {
+      fixedEvents.add(
+        FixedEvent.fromMap(fixedEventsData[entry.key] as Map<String, dynamic>),
+      );
+    }
+  }
+
   // TODO: Handle the other events here and convert them
 
   return (homeworkEvents, testEvents, fixedEvents, repeatingEvents);

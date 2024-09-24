@@ -29,15 +29,15 @@ List<Event> getEventsForDay(
 
         case EventTypes.repeating:
           return day.compareWithoutTime(
-                    (event as RepeatingEvent).date.date,
+                    (event as RepeatingEvent).date,
                     repeatingType: event.repeatingEventType,
                   ) &&
-                  day.isAfter(event.date.date) ||
-              day.compareWithoutTime(event.date.date);
+                  day.isAfter(event.date) ||
+              day.compareWithoutTime(event.date);
 
         case EventTypes.fixed:
           return day.compareWithoutTime(
-            (event as FixedEvent).date.date,
+            (event as FixedEvent).date,
           );
       }
     },

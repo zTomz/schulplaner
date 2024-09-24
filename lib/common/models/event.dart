@@ -12,6 +12,9 @@ abstract class Event {
   /// Optional. The description of the event
   final String? description;
 
+  /// When the event is due
+  final DateTime date;
+
   /// The type of the event
   final EventTypes type;
 
@@ -21,8 +24,9 @@ abstract class Event {
   Event({
     required this.name,
     this.description,
-    required this.uuid,
+    required this.date,
     required this.type,
+    required this.uuid,
   });
 }
 
@@ -30,9 +34,6 @@ abstract class Event {
 
 /// A homework event
 class HomeworkEvent extends Event {
-  /// The date, when the homework event is due
-  final DateTime date;
-
   /// The subject of the homework. E. g. Math, English etc.
   final String subjectUuid;
 
@@ -42,7 +43,7 @@ class HomeworkEvent extends Event {
   HomeworkEvent({
     required super.name,
     required super.description,
-    required this.date,
+    required super.date,
     required this.subjectUuid,
     required this.isDone,
     required super.uuid,
@@ -91,9 +92,6 @@ class HomeworkEvent extends Event {
 
 /// A test event.
 class TestEvent extends Event {
-  /// When the test takes place
-  final DateTime date;
-
   /// The dates, when the pratice for the test is due
   final List<EventDate> praticeDates;
 
@@ -104,7 +102,7 @@ class TestEvent extends Event {
     required super.name,
     required super.description,
     required super.uuid,
-    required this.date,
+    required super.date,
     required this.praticeDates,
     required this.subjectUuid,
   }) : super(type: EventTypes.test);
@@ -134,9 +132,6 @@ class TestEvent extends Event {
 }
 
 class FixedEvent extends Event {
-  /// When the event is due
-  final EventDate date;
-
   /// Optional. Where the event takes place
   final String? place;
 
@@ -146,17 +141,36 @@ class FixedEvent extends Event {
   FixedEvent({
     required super.name,
     required super.description,
-    required this.date,
+    required super.date,
     required this.color,
     required super.uuid,
     this.place,
   }) : super(type: EventTypes.fixed);
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'description': description,
+      'place': place,
+      'color': color.value,
+      'date': Timestamp.fromDate(date),
+      'uuid': uuid,
+    };
+  }
+
+  factory FixedEvent.fromMap(Map<String, dynamic> map) {
+    return FixedEvent(
+      name: map['name'],
+      description: map['description'],
+      place: map['place'],
+      color: Color(map['color']),
+      date: (map['date'] as Timestamp).toDate(),
+      uuid: map['uuid'],
+    );
+  }
 }
 
 class RepeatingEvent extends Event {
-  /// When the first event is due
-  final EventDate date;
-
   /// The type of repeating event. E. g. daily, weekly, monthly, yearly
   final RepeatingEventType repeatingEventType;
 
@@ -166,7 +180,7 @@ class RepeatingEvent extends Event {
   RepeatingEvent({
     required super.name,
     required super.description,
-    required this.date,
+    required super.date,
     required this.repeatingEventType,
     required this.color,
     required super.uuid,

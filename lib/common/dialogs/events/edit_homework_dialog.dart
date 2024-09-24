@@ -172,7 +172,7 @@ class EditHomeworkDialog extends HookConsumerWidget {
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Theme.of(context).colorScheme.error,
                 ),
-                icon: const Icon(LucideIcons.book_open_text),
+                icon: const Icon(LucideIcons.trash_2),
                 label: const Text("Hausaufgabe löschen"),
               ),
               const Spacer(),

@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/common/dialogs/events/edit_homework_dialog.dart';
+import 'package:schulplaner/common/dialogs/events/edit_fixed_event_dialog.dart';
 import 'package:schulplaner/common/dialogs/events/edit_test_dialog.dart';
 import 'package:schulplaner/common/models/event.dart';
 import 'package:schulplaner/common/provider/events_provider.dart';
@@ -82,8 +83,20 @@ class CustomFloatingActionButton extends HookConsumerWidget {
             _buildFabOption(
               title: "Erinnerung",
               icon: const Icon(LucideIcons.bell),
-              onPressed: () {
+              onPressed: ()async {
                 expandebleFabKey.currentState?.toggle();
+
+                final result = await showDialog<FixedEvent>(
+                  context: context,
+                  builder: (context) => const EditFixedEventDialog(),
+                );
+
+                if (result != null && context.mounted) {
+                  await DatabaseService.uploadEvents(
+                    context,
+                    events: [...events, result],
+                  );
+                }
                 // TODO: Add a reminder here
               },
             ),

@@ -8,9 +8,9 @@ class RequiredField<T> extends FormField {
 
   RequiredField({
     super.key,
-    required this.child,
     required this.errorText,
     required this.value,
+    required this.child,
   }) : super(
           validator: (_) {
             if (value == null) {

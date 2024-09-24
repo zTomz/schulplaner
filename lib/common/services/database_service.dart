@@ -150,6 +150,7 @@ abstract class DatabaseService {
       await eventsCollection.doc("homework").set(homeworkMap);
     }
 
+    // Upload test events
     final testMap = <String, dynamic>{};
     for (final test in testEvents) {
       testMap[test.uuid] = test.toMap();
@@ -161,10 +162,19 @@ abstract class DatabaseService {
       await eventsCollection.doc("tests").set(testMap);
     }
 
+    // Upload fixedEvent events
+    final fixedEventsMap = <String, dynamic>{};
+    for (final fixedEvent in fixedEvents) {
+      fixedEventsMap[fixedEvent.uuid] = fixedEvent.toMap();
+    }
+
+    if (fixedEventsMap.isEmpty) {
+      await eventsCollection.doc("fixed_events").delete();
+    } else {
+      await eventsCollection.doc("fixed_events").set(fixedEventsMap);
+    }
+
     // TODO: Handle other event uploads here
-    // await eventsCollection.doc("fixed").set({
-    //   "fixed": fixedEvents.map((e) => e.toMap()).toList(),
-    // });
     // await eventsCollection.doc("repeating").set({
     //   "repeating": repeatingEvents.map((e) => e.toMap()).toList(),
     // });

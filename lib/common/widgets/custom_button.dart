@@ -25,9 +25,9 @@ class CustomButton extends StatelessWidget {
 
   const CustomButton.selection({
     super.key,
-    required this.child,
     required this.selection,
     required this.onPressed,
+    required this.child,
   }) : _type = _CustomButtonType.selection;
 
   @override

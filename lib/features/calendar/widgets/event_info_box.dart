@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:schulplaner/common/dialogs/events/edit_fixed_event_dialog.dart';
 import 'package:schulplaner/common/dialogs/events/edit_test_dialog.dart';
 import 'package:schulplaner/common/functions/close_all_dialogs.dart';
 import 'package:schulplaner/common/functions/first_where_or_null.dart';
@@ -121,6 +123,52 @@ class EventInfoBox extends StatelessWidget {
                 );
               }
               break;
+            case EventTypes.fixed:
+              final result = await showDialog<FixedEvent>(
+                context: context,
+                builder: (context) => EditFixedEventDialog(
+                  fixedEvent: event as FixedEvent,
+                  onFixedEventDeleted: () async {
+                    List<Event> eventsList = List<Event>.from(events);
+                    eventsList.removeWhere((e) => e.uuid == event.uuid);
+
+                    await DatabaseService.uploadEvents(
+                      context,
+                      events: eventsList,
+                    );
+
+                    if (context.mounted) {
+                      await closeAllDialogs(context);
+                    }
+                    if (context.mounted) {
+                      final eventSubject = firstWhereOrNull(
+                        subjects,
+                        (subject) =>
+                            subject.uuid ==
+                            (event as HomeworkEvent).subjectUuid,
+                      );
+                      SnackBarService.show(
+                        context: context,
+                        content: Text(
+                          "Die Hausaufgabe für ${eventSubject?.name ?? "das angegebenen Fach"} wurde gelöscht.",
+                        ),
+                        type: CustomSnackbarType.info,
+                      );
+                    }
+                  },
+                ),
+              );
+
+              if (result != null && context.mounted) {
+                List<Event> eventsList = List<Event>.from(events);
+                eventsList.removeWhere((e) => e.uuid == result.uuid);
+
+                await DatabaseService.uploadEvents(
+                  context,
+                  events: [...eventsList, result],
+                );
+              }
+              break;
             // TODO: Implement editing other events here
             default:
               break;
@@ -149,6 +197,21 @@ class EventInfoBox extends StatelessWidget {
                     event.name,
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
+                  if (event.type == EventTypes.fixed &&
+                      (event as FixedEvent).place != null)
+                    Row(
+                      children: [
+                        const Icon(
+                          LucideIcons.map_pin,
+                          size: 12,
+                        ),
+                        const SizedBox(width: Spacing.extraSmall),
+                        Text(
+                          (event as FixedEvent).place!,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
                   if (event.description != null) ...[
                     const SizedBox(height: Spacing.extraSmall),
                     Text(
