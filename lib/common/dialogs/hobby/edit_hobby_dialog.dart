@@ -85,13 +85,13 @@ class EditHobbyDialog extends HookWidget {
                   width: 200,
                   child: CustomButton(
                     onPressed: () async {
-                      final result = await showDialog<TimeInDay>(
+                      final result = await showDialog<List<TimeInDay>>(
                         context: context,
                         builder: (context) => const EditDayDialog(),
                       );
 
                       if (result != null) {
-                        days.value = [...days.value, result];
+                        days.value = [...days.value, ...result];
                       }
                     },
                     child: const Text("Tag hinzufügen"),

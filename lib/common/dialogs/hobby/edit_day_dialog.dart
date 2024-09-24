@@ -19,7 +19,9 @@ class EditDayDialog extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final weekday = useState<Weekday?>(timeInDay?.day);
+    final weekdays = useState<Set<Weekday?>>({
+      timeInDay?.day,
+    });
     final timeSpan = useState<TimeSpan?>(timeInDay?.timeSpan);
 
     final formKey = useMemoized(() => GlobalKey<FormState>());
@@ -34,9 +36,9 @@ class EditDayDialog extends HookWidget {
           children: [
             RequiredField(
               errorText: "Ein Wochentag ist erforderlich.",
-              value: weekday.value,
+              value: weekdays.value,
               child: buildBodyPart(
-                title: const Text("Wochentag"),
+                title: const Text("Wochentag(e)"),
                 child: SegmentedButton<Weekday?>(
                   segments: Weekday.values
                       .map(
@@ -49,9 +51,10 @@ class EditDayDialog extends HookWidget {
                         ),
                       )
                       .toList(),
-                  selected: {weekday.value},
+                  selected: weekdays.value,
+                  multiSelectionEnabled: true,
                   onSelectionChanged: (value) {
-                    weekday.value = value.first;
+                    weekdays.value = value;
                   },
                 ),
               ),
@@ -94,11 +97,21 @@ class EditDayDialog extends HookWidget {
               return;
             }
 
-            Navigator.of(context).pop<TimeInDay>(
-              TimeInDay(
-                day: weekday.value!,
-                timeSpan: timeSpan.value!,
-              ),
+            List<TimeInDay> days = [];
+
+            for (Weekday? day in weekdays.value) {
+              if (day != null) {
+                days.add(
+                  TimeInDay(
+                    day: day,
+                    timeSpan: timeSpan.value!,
+                  ),
+                );
+              }
+            }
+
+            Navigator.of(context).pop<List<TimeInDay>>(
+              days,
             );
           },
           child: Text(timeInDay == null ? "Hinzufügen" : "Bearbeiten"),
