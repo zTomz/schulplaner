@@ -1,6 +1,6 @@
 // TODO: Write Firestore rules for database
 
-import 'dart:developer';
+import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,23 +20,25 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  await FirebaseMessaging.instance.setAutoInitEnabled(true);
-  final _ = await FirebaseMessaging.instance.requestPermission(
-    provisional: true,
-  );
+  if (!Platform.isWindows && !Platform.isLinux) {
+    await FirebaseMessaging.instance.setAutoInitEnabled(true);
+    final _ = await FirebaseMessaging.instance.requestPermission(
+      provisional: true,
+    );
 
-  final fcmToken = await FirebaseMessaging.instance.getToken();
-  if (FirebaseAuth.instance.currentUser != null && fcmToken != null) {
-    UserService.updateFCMToken(fcmToken: fcmToken);
-  }
-
-  FirebaseMessaging.instance.onTokenRefresh.listen((token) {
-    if (FirebaseAuth.instance.currentUser != null) {
-      UserService.updateFCMToken(fcmToken: token);
+    final fcmToken = await FirebaseMessaging.instance.getToken();
+    if (FirebaseAuth.instance.currentUser != null && fcmToken != null) {
+      UserService.updateFCMToken(fcmToken: fcmToken);
     }
-  }).onError((err) {
-    // TODO: Handle error Error getting token.
-  });
+
+    FirebaseMessaging.instance.onTokenRefresh.listen((token) {
+      if (FirebaseAuth.instance.currentUser != null) {
+        UserService.updateFCMToken(fcmToken: token);
+      }
+    }).onError((err) {
+      // TODO: Handle error Error getting token.
+    });
+  }
 
   runApp(
     ProviderScope(

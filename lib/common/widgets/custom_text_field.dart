@@ -86,6 +86,7 @@ class CustomTextField extends HookWidget {
       controller: controller,
       onChanged: onChanged,
       keyboardType: _getKeyboardType(),
+      scribbleEnabled: true,
       // Check if validate is enabled. If it is check if the validator is not null
       // if it is not null, than use it, else use the preconfigured validator
       validator: _getValidator(),

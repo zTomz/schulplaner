@@ -2,8 +2,9 @@
 from firebase_functions import firestore_fn, https_fn
 
 # The Firebase Admin SDK to access Cloud Firestore.
-from firebase_admin import initialize_app, firestore
+from firebase_admin import initialize_app, firestore, credentials
 import google.cloud.firestore
 
-app = initialize_app()
+cred = credentials.Certificate("service-account-key.json")
+initialize_app(cred)
 

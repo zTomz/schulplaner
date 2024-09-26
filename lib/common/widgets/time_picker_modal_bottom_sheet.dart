@@ -199,6 +199,10 @@ class TimePickerModalBottomSheet extends StatelessWidget {
                       difference += 7;
                     }
 
+                    if (nextLesson.weekday == currentWeekday) {
+                      difference += 7;
+                    }
+
                     Navigator.of(context).pop(
                       DateTime.now().add(
                         Duration(days: difference),
