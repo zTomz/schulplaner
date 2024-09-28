@@ -134,6 +134,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "8.9.2"
+  cached_value:
+    dependency: transitive
+    description:
+      name: cached_value
+      sha256: "534a6c618e2e891548236c90a3a3ac055dfe4c870efff29719cf28c51ca8b7a5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   characters:
     dependency: transitive
     description:
@@ -182,30 +190,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.3.1"
-  cloud_functions:
-    dependency: "direct main"
-    description:
-      name: cloud_functions
-      sha256: "225447ae732d01aacc5238f2b6ecea0550d91dbee72924bbbbb17fea70a2ec70"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.1.2"
-  cloud_functions_platform_interface:
-    dependency: transitive
-    description:
-      name: cloud_functions_platform_interface
-      sha256: "0a624fe8a25db0bbc00bf6aece8db843b3af835d16559d3872f3f6021bd7ad35"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.5.36"
-  cloud_functions_web:
-    dependency: transitive
-    description:
-      name: cloud_functions_web
-      sha256: ea5903f58ec62efc3c0c9ec2db0e316d7288bc3eaa30ec88e5e90bf822a4e0cb
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.10.1"
   code_builder:
     dependency: transitive
     description:
@@ -420,6 +404,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.5.1"
+  flutter_shaders:
+    dependency: transitive
+    description:
+      name: flutter_shaders
+      sha256: "34794acadd8275d971e02df03afee3dee0f98dbfb8c4837082ad0034f612a3e2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.3"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -590,6 +582,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.11.1"
+  mesh:
+    dependency: "direct main"
+    description:
+      name: mesh
+      sha256: "0fe4ced9cb5e5c71a467f401cb13a665b3fc7db3cbeb34e9fe2116511ab69d65"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.1"
   meta:
     dependency: transitive
     description:
