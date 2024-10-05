@@ -148,6 +148,7 @@ class CalendarPage extends HookConsumerWidget {
 
                                 return EventInfoBox(
                                   event: event,
+                                  day: selectedDate.value,
                                   events: combinedEvents,
                                   subjects: weeklyScheduleData.$4,
                                 );

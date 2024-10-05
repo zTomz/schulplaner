@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/common/dialogs/events/edit_fixed_event_dialog.dart';
 import 'package:schulplaner/common/dialogs/events/edit_test_dialog.dart';
+import 'package:schulplaner/common/extensions/date_time_extension.dart';
 import 'package:schulplaner/common/functions/close_all_dialogs.dart';
 import 'package:schulplaner/common/functions/first_where_or_null.dart';
 import 'package:schulplaner/common/services/snack_bar_service.dart';
@@ -13,13 +14,22 @@ import 'package:schulplaner/common/services/database_service.dart';
 import 'package:schulplaner/features/calendar/functions/get_color_for_event.dart';
 
 class EventInfoBox extends StatelessWidget {
+  /// The event that should be shown in the info box
   final Event event;
+
+  /// The selected day
+  final DateTime day;
+
+  /// All events. Used when the user changes the state of the provided event. To update the database
   final List<Event> events;
+
+  /// A list of all subjects
   final List<Subject> subjects;
 
   const EventInfoBox({
     super.key,
     required this.event,
+    required this.day,
     required this.events,
     required this.subjects,
   });
@@ -194,7 +204,9 @@ class EventInfoBox extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    event.name,
+                    event.date.compareWithoutTime(day)
+                        ? "${_getDeadlineTextBeforeName(event)}: ${event.name}"
+                        : event.name,
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   if (event.type == EventTypes.reminder &&
@@ -243,5 +255,16 @@ class EventInfoBox extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _getDeadlineTextBeforeName(Event event) {
+    switch (event.type) {
+      case EventTypes.homework:
+        return "Abgabe";
+      case EventTypes.test:
+        return "Prüfungstermin";
+      case EventTypes.reminder || EventTypes.repeating:
+        return "";
+    }
   }
 }
