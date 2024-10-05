@@ -3,7 +3,7 @@ import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 
 class CustomButton extends StatelessWidget {
-  final Text child;
+  final Widget child;
   final String? selection;
   final void Function() onPressed;
 

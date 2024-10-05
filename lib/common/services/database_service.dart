@@ -118,7 +118,7 @@ abstract class DatabaseService {
 
     List<HomeworkEvent> homeworkEvents = [];
     List<TestEvent> testEvents = [];
-    List<FixedEvent> fixedEvents = [];
+    List<ReminderEvent> reminderEvents = [];
     List<RepeatingEvent> repeatingEvents = [];
 
     for (final event in events) {
@@ -129,8 +129,8 @@ abstract class DatabaseService {
         case TestEvent testEvent:
           testEvents.add(testEvent);
           break;
-        case FixedEvent fixedEvent:
-          fixedEvents.add(fixedEvent);
+        case ReminderEvent reminderEvent:
+          reminderEvents.add(reminderEvent);
           break;
         case RepeatingEvent repeatingEvent:
           repeatingEvents.add(repeatingEvent);
@@ -162,16 +162,16 @@ abstract class DatabaseService {
       await eventsCollection.doc("tests").set(testMap);
     }
 
-    // Upload fixedEvent events
-    final fixedEventsMap = <String, dynamic>{};
-    for (final fixedEvent in fixedEvents) {
-      fixedEventsMap[fixedEvent.uuid] = fixedEvent.toMap();
+    // Upload ReminderEvent events
+    final reminderEventsMap = <String, dynamic>{};
+    for (final reminderEvent in reminderEvents) {
+      reminderEventsMap[reminderEvent.uuid] = reminderEvent.toMap();
     }
 
-    if (fixedEventsMap.isEmpty) {
-      await eventsCollection.doc("fixed_events").delete();
+    if (reminderEventsMap.isEmpty) {
+      await eventsCollection.doc("reminder").delete();
     } else {
-      await eventsCollection.doc("fixed_events").set(fixedEventsMap);
+      await eventsCollection.doc("reminder").set(reminderEventsMap);
     }
 
     // TODO: Handle other event uploads here

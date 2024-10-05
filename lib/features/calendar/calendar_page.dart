@@ -77,7 +77,7 @@ class CalendarPage extends HookConsumerWidget {
     //     repeatingEventType: RepeatingEventType.weekly,
     //     uuid: const Uuid().v4(),
     //   ),
-    //   FixedEvent(
+    //   ReminderEvent(
     //     name: "Klasenfahrt",
     //     description: "Klassenfahrt zum  Gardersee",
     //     color: Colors.blue,

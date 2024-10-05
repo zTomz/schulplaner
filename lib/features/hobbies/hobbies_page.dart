@@ -2,22 +2,26 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:schulplaner/common/provider/hobbies_provider.dart';
+import 'package:schulplaner/common/widgets/data_state_widgets.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/config/constants/svg_pictures.dart';
 import 'package:schulplaner/common/dialogs/custom_dialog.dart';
 import 'package:schulplaner/common/dialogs/hobby/edit_hobby_dialog.dart';
-import 'package:schulplaner/common/functions/handle_snapshot_state.dart';
 import 'package:schulplaner/common/models/hobby.dart';
 import 'package:schulplaner/common/services/database_service.dart';
 import 'package:schulplaner/common/widgets/custom_app_bar.dart';
 import 'package:schulplaner/common/widgets/hobby_list_tile.dart';
 
 @RoutePage()
-class HobbiesPage extends StatelessWidget {
+class HobbiesPage extends ConsumerWidget {
   const HobbiesPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hobbiesData = ref.watch(hobbiesProvider);
+
     return Scaffold(
       appBar: CustomAppBar(
         title: const Text(
@@ -49,22 +53,8 @@ class HobbiesPage extends StatelessWidget {
           const SizedBox(width: Spacing.medium),
         ],
       ),
-      body: StreamBuilder(
-        stream: DatabaseService.hobbiesCollection.snapshots(),
-        builder: (context, snapshot) {
-          final snapshotState = handleSnapshotState(
-            context,
-            snapshot: snapshot,
-          );
-
-          if (snapshotState != null) {
-            return snapshotState;
-          }
-
-          final List<Hobby> hobbies = snapshot.data!.docs
-              .map((doc) => Hobby.fromMap(doc.data()))
-              .toList();
-
+      body: hobbiesData.when(
+        data: (hobbies) {
           if (hobbies.isEmpty) {
             return Center(
               child: Column(
@@ -136,6 +126,10 @@ class HobbiesPage extends StatelessWidget {
             },
           );
         },
+        error: (_, __) {
+          return const DataErrorWidget();
+        },
+        loading: () => const DataLoadingWidget(),
       ),
     );
   }

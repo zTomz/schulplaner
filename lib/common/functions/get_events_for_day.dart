@@ -35,9 +35,9 @@ List<Event> getEventsForDay(
                   day.isAfter(event.date) ||
               day.compareWithoutTime(event.date);
 
-        case EventTypes.fixed:
+        case EventTypes.reminder:
           return day.compareWithoutTime(
-            (event as FixedEvent).date,
+            (event as ReminderEvent).date,
           );
       }
     },

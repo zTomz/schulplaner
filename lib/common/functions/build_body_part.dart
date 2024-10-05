@@ -4,7 +4,7 @@ import 'package:schulplaner/config/constants/numbers.dart';
 Widget buildBodyPart({
   required Widget title,
   required Widget child,
-  EdgeInsets padding = const EdgeInsets.only(bottom: Spacing.medium),
+  EdgeInsets padding = EdgeInsets.zero,
 }) {
   return Builder(
     builder: (context) {

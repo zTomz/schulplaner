@@ -123,12 +123,12 @@ class EventInfoBox extends StatelessWidget {
                 );
               }
               break;
-            case EventTypes.fixed:
-              final result = await showDialog<FixedEvent>(
+            case EventTypes.reminder:
+              final result = await showDialog<ReminderEvent>(
                 context: context,
-                builder: (context) => EditFixedEventDialog(
-                  fixedEvent: event as FixedEvent,
-                  onFixedEventDeleted: () async {
+                builder: (context) => EditReminderEventDialog(
+                  reminderEvent: event as ReminderEvent,
+                  onReminderEventDeleted: () async {
                     List<Event> eventsList = List<Event>.from(events);
                     eventsList.removeWhere((e) => e.uuid == event.uuid);
 
@@ -197,8 +197,8 @@ class EventInfoBox extends StatelessWidget {
                     event.name,
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
-                  if (event.type == EventTypes.fixed &&
-                      (event as FixedEvent).place != null)
+                  if (event.type == EventTypes.reminder &&
+                      (event as ReminderEvent).place != null)
                     Row(
                       children: [
                         const Icon(
@@ -207,7 +207,7 @@ class EventInfoBox extends StatelessWidget {
                         ),
                         const SizedBox(width: Spacing.extraSmall),
                         Text(
-                          (event as FixedEvent).place!,
+                          (event as ReminderEvent).place!,
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ],

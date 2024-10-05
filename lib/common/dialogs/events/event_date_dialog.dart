@@ -9,8 +9,8 @@ import 'package:schulplaner/common/models/event.dart';
 import 'package:schulplaner/common/widgets/selection_row.dart';
 import 'package:schulplaner/common/widgets/time_span_picker.dart';
 
-class EventDateDialog extends HookWidget {
-  const EventDateDialog({super.key});
+class ProcessingDateDialog extends HookWidget {
+  const ProcessingDateDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +90,7 @@ class EventDateDialog extends HookWidget {
               }
 
               Navigator.of(context).pop(
-                EventDate(
+                ProcessingDate(
                   date: date.value!.copyWith(
                     hour: durationStart.value!.hour,
                     minute: durationStart.value!.minute,

@@ -83,12 +83,12 @@ class CustomFloatingActionButton extends HookConsumerWidget {
             _buildFabOption(
               title: "Erinnerung",
               icon: const Icon(LucideIcons.bell),
-              onPressed: ()async {
+              onPressed: () async {
                 expandebleFabKey.currentState?.toggle();
 
-                final result = await showDialog<FixedEvent>(
+                final result = await showDialog<ReminderEvent>(
                   context: context,
-                  builder: (context) => const EditFixedEventDialog(),
+                  builder: (context) => const EditReminderEventDialog(),
                 );
 
                 if (result != null && context.mounted) {

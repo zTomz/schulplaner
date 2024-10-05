@@ -8,7 +8,7 @@ final eventsProvider = StreamProvider<
     (
       List<HomeworkEvent> homeworkEvents,
       List<TestEvent> testEvents,
-      List<FixedEvent> fixedEvents,
+      List<ReminderEvent> reminderEvents,
       List<RepeatingEvent> repeatingEvents
     )>(
   (ref) {
@@ -29,14 +29,14 @@ final eventsProvider = StreamProvider<
 (
   List<HomeworkEvent> homeworkEvents,
   List<TestEvent> testEvents,
-  List<FixedEvent> fixedEvents,
+  List<ReminderEvent> reminderEvents,
   List<RepeatingEvent> repeatingEvents
 ) _convertEventsSnapshotToData({
   required QuerySnapshot<Map<String, dynamic>> data,
 }) {
   List<HomeworkEvent> homeworkEvents = [];
   List<TestEvent> testEvents = [];
-  List<FixedEvent> fixedEvents = [];
+  List<ReminderEvent> reminderEvents = [];
   List<RepeatingEvent> repeatingEvents = [];
 
   // Get the homework events
@@ -71,23 +71,25 @@ final eventsProvider = StreamProvider<
     }
   }
 
-  // Get the fixed events
-  final fixedDoc = data.docs
+  // Get the reminder events
+  final reminderDoc = data.docs
       .where(
-        (doc) => doc.id == "fixed_events",
+        (doc) => doc.id == "reminder",
       )
       .firstOrNull;
 
-  if (fixedDoc != null) {
-    final fixedEventsData = fixedDoc.data();
-    for (final entry in fixedEventsData.entries) {
-      fixedEvents.add(
-        FixedEvent.fromMap(fixedEventsData[entry.key] as Map<String, dynamic>),
+  if (reminderDoc != null) {
+    final reminderEventsData = reminderDoc.data();
+    for (final entry in reminderEventsData.entries) {
+      reminderEvents.add(
+        ReminderEvent.fromMap(
+          reminderEventsData[entry.key] as Map<String, dynamic>,
+        ),
       );
     }
   }
 
   // TODO: Handle the other events here and convert them
 
-  return (homeworkEvents, testEvents, fixedEvents, repeatingEvents);
+  return (homeworkEvents, testEvents, reminderEvents, repeatingEvents);
 }

@@ -12,36 +12,36 @@ import 'package:schulplaner/common/widgets/required_field.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:uuid/uuid.dart';
 
-class EditFixedEventDialog extends HookWidget {
-  final FixedEvent? fixedEvent;
-  final void Function()? onFixedEventDeleted;
+class EditReminderEventDialog extends HookWidget {
+  final ReminderEvent? reminderEvent;
+  final void Function()? onReminderEventDeleted;
 
-  const EditFixedEventDialog({
+  const EditReminderEventDialog({
     super.key,
-    this.fixedEvent,
-    this.onFixedEventDeleted,
+    this.reminderEvent,
+    this.onReminderEventDeleted,
   });
 
   @override
   Widget build(BuildContext context) {
-    final date = useState<DateTime?>(fixedEvent?.date);
+    final date = useState<DateTime?>(reminderEvent?.date);
     final nameController = useTextEditingController(
-      text: fixedEvent?.name,
+      text: reminderEvent?.name,
     );
     final descriptionController = useTextEditingController(
-      text: fixedEvent?.description,
+      text: reminderEvent?.description,
     );
     final locationController = useTextEditingController(
-      text: fixedEvent?.place,
+      text: reminderEvent?.place,
     );
-    final color = useState<Color>(fixedEvent?.color ?? Colors.blue);
+    final color = useState<Color>(reminderEvent?.color ?? Colors.blue);
 
     final formKey = useMemoized(() => GlobalKey<FormState>());
 
     return CustomDialog.expanded(
       icon: const Icon(LucideIcons.bell),
-      title:
-          Text("Erinnerung ${fixedEvent == null ? "erstellen" : "bearbeiten"}"),
+      title: Text(
+          "Erinnerung ${reminderEvent == null ? "erstellen" : "bearbeiten"}"),
       content: Form(
         key: formKey,
         child: Column(
@@ -96,7 +96,7 @@ class EditFixedEventDialog extends HookWidget {
         ),
       ),
       actions: [
-        if (fixedEvent != null && onFixedEventDeleted != null) ...[
+        if (reminderEvent != null && onReminderEventDeleted != null) ...[
           ElevatedButton.icon(
             onPressed: () async {
               final result = await showDialog<bool>(
@@ -109,7 +109,7 @@ class EditFixedEventDialog extends HookWidget {
               );
 
               if (result != null && context.mounted) {
-                onFixedEventDeleted?.call();
+                onReminderEventDeleted?.call();
               }
             },
             style: ElevatedButton.styleFrom(
@@ -134,17 +134,17 @@ class EditFixedEventDialog extends HookWidget {
             }
 
             Navigator.of(context).pop(
-              FixedEvent(
+              ReminderEvent(
                 name: nameController.text,
                 description: descriptionController.text.getStringOrNull(),
                 place: locationController.text.getStringOrNull(),
                 date: date.value!,
                 color: color.value,
-                uuid: fixedEvent?.uuid ?? const Uuid().v4(),
+                uuid: reminderEvent?.uuid ?? const Uuid().v4(),
               ),
             );
           },
-          child: Text(fixedEvent == null ? "Erstellen" : "Bearbeiten"),
+          child: Text(reminderEvent == null ? "Erstellen" : "Bearbeiten"),
         ),
       ],
     );

@@ -17,8 +17,8 @@ Color getColorForEvent(Event event, List<Subject> subjects) {
                   (subject) => subject.uuid == (event as TestEvent).subjectUuid)
               ?.color ??
           Colors.blue;
-    case EventTypes.fixed:
-      return (event as FixedEvent).color;
+    case EventTypes.reminder:
+      return (event as ReminderEvent).color;
     case EventTypes.repeating:
       return (event as RepeatingEvent).color;
   }

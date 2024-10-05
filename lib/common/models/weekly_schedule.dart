@@ -87,6 +87,24 @@ class Lesson extends Equatable {
       (subject) => subject.uuid == subjectUuid,
     );
   }
+
+  /// Get a complete map. This means, a map with a Subject object and a Teacher object will be returned,
+  /// instead of displaying only the uuid.
+  Map<String, dynamic> getCompleteMap(
+    List<Subject> subjects,
+    List<Teacher> teachers,
+  ) {
+    final subject = getSubject(subjects);
+
+    return {
+      'subject': subject?.getCompleteMap(teachers),
+      'timeSpan': timeSpan.toMap(),
+      'weekday': weekday.toMap(),
+      'week': week.toMap(),
+      'room': room,
+      'uuid': uuid,
+    };
+  }
 }
 
 /// Represents a subject
@@ -139,6 +157,19 @@ class Subject {
       teachers,
       (teacher) => teacher.uuid == teacherUuid,
     );
+  }
+
+  /// Get a complete map. This means, a map with a Subject object and a Teacher object will be returned,
+  /// instead of displaying only the uuid.
+  Map<String, dynamic> getCompleteMap(List<Teacher> teachers) {
+    final teacher = getTeacher(teachers);
+
+    return {
+      'name': name,
+      'teacher': teacher?.toMap(),
+      'color': color.value,
+      'uuid': uuid,
+    };
   }
 }
 
