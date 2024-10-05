@@ -185,10 +185,14 @@ class CalendarView extends HookWidget {
                                 height: 8,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: getColorForEvent(
+                                  // If the date is not the current day, we have a processing date. Which we want to display in a lighter color.
+                                  color: eventsOfDay[i].date.compareWithoutTime(day) ?  getColorForEvent(
                                     eventsOfDay[i],
                                     subjects,
-                                  ),
+                                  ) : getColorForEvent(
+                                    eventsOfDay[i],
+                                    subjects,
+                                  ).withOpacity(0.6),
                                 ),
                               ),
                             if (eventsOfDay.length - 8 > 0)

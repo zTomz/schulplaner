@@ -11,9 +11,15 @@ List<Event> getEventsForDay(
     (event) {
       switch (event.type) {
         case EventTypes.homework:
+          // Add the processing date
+          if (day.compareWithoutTime((event as HomeworkEvent).processingDate.date)) {
+            return true;
+          }
+
           return day.compareWithoutTime(
-            (event as HomeworkEvent).date,
+            event.date,
           );
+
         case EventTypes.test:
           // Add all the practice dates
           for (final date in (event as TestEvent).praticeDates) {
@@ -29,30 +35,17 @@ List<Event> getEventsForDay(
 
         case EventTypes.repeating:
           return day.compareWithoutTime(
-                    (event as RepeatingEvent).date,
-                    repeatingType: event.repeatingEventType,
+                    event.date,
+                    repeatingType: (event as RepeatingEvent).repeatingEventType,
                   ) &&
                   day.isAfter(event.date) ||
               day.compareWithoutTime(event.date);
 
         case EventTypes.reminder:
           return day.compareWithoutTime(
-            (event as ReminderEvent).date,
+            event.date,
           );
       }
     },
   ).toList(growable: false);
-
-  //     return day.compareWithoutTime(
-  //     event.date.date,
-  //     repeatingType: event.repeatingEventType,
-  //   )
-  //       ? event.repeatingEventType != null
-  //           ? day.isAfter(event.date.date) ||
-  //               day.compareWithoutTime(event.date.date)
-  //           : true
-  //       : false;
-  //   },
-  // )
-  // .toList(growable: false);
 }
