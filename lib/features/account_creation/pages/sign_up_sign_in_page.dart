@@ -26,17 +26,22 @@ class SignUpSignInPage extends HookWidget {
   /// The hobbies from the create hobbies page
   final List<Hobby>? hobbies;
 
+  /// Default to `false`. If this is `true`, the isSigningUp variable will be `true` and the user
+  /// will directly asked to sign in. If this is `false`, the user will be asked to sign up.
+  final bool alreadyHasAnAccount;
+
   const SignUpSignInPage({
     super.key,
     this.weeklyScheduleData,
     this.teachers,
     this.subjects,
     this.hobbies,
+    this.alreadyHasAnAccount = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final isSigningUp = useState<bool>(true);
+    final isSigningUp = useState<bool>(!alreadyHasAnAccount);
 
     final usernameController = useTextEditingController();
     final emailController = useTextEditingController();

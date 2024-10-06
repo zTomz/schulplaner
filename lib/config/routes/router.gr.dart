@@ -210,6 +210,7 @@ class SignUpSignInRoute extends _i10.PageRouteInfo<SignUpSignInRouteArgs> {
     List<_i12.Teacher>? teachers,
     List<_i12.Subject>? subjects,
     List<_i13.Hobby>? hobbies,
+    bool alreadyHasAnAccount = false,
     List<_i10.PageRouteInfo>? children,
   }) : super(
           SignUpSignInRoute.name,
@@ -219,6 +220,7 @@ class SignUpSignInRoute extends _i10.PageRouteInfo<SignUpSignInRouteArgs> {
             teachers: teachers,
             subjects: subjects,
             hobbies: hobbies,
+            alreadyHasAnAccount: alreadyHasAnAccount,
           ),
           initialChildren: children,
         );
@@ -236,6 +238,7 @@ class SignUpSignInRoute extends _i10.PageRouteInfo<SignUpSignInRouteArgs> {
         teachers: args.teachers,
         subjects: args.subjects,
         hobbies: args.hobbies,
+        alreadyHasAnAccount: args.alreadyHasAnAccount,
       );
     },
   );
@@ -248,6 +251,7 @@ class SignUpSignInRouteArgs {
     this.teachers,
     this.subjects,
     this.hobbies,
+    this.alreadyHasAnAccount = false,
   });
 
   final _i11.Key? key;
@@ -260,9 +264,11 @@ class SignUpSignInRouteArgs {
 
   final List<_i13.Hobby>? hobbies;
 
+  final bool alreadyHasAnAccount;
+
   @override
   String toString() {
-    return 'SignUpSignInRouteArgs{key: $key, weeklyScheduleData: $weeklyScheduleData, teachers: $teachers, subjects: $subjects, hobbies: $hobbies}';
+    return 'SignUpSignInRouteArgs{key: $key, weeklyScheduleData: $weeklyScheduleData, teachers: $teachers, subjects: $subjects, hobbies: $hobbies, alreadyHasAnAccount: $alreadyHasAnAccount}';
   }
 }
 

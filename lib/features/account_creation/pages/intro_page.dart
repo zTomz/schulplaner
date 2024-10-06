@@ -19,6 +19,23 @@ class IntroPage extends StatelessWidget {
       onPressed: () {
         context.pushRoute(const ConfigureWeeklyScheduleRoute());
       },
+      secondButton: TextButton(
+        onPressed: () async {
+          await context.router.push(
+            SignUpSignInRoute(
+              weeklyScheduleData: null,
+              hobbies: null,
+              teachers: null,
+              subjects: null,
+              alreadyHasAnAccount: true,
+            ),
+          );
+        },
+        child: const Text(
+          "Sie haben bereits ein Konto?",
+        ),
+      ),
+      buttonHasShadow: true,
     );
   }
 }
