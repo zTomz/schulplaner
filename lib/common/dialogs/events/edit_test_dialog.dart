@@ -13,7 +13,6 @@ import 'package:schulplaner/common/models/weekly_schedule.dart';
 import 'package:schulplaner/common/provider/weekly_schedule_provider.dart';
 import 'package:schulplaner/common/widgets/custom_button.dart';
 import 'package:schulplaner/common/widgets/custom_text_field.dart';
-import 'package:schulplaner/common/widgets/data_state_widgets.dart';
 import 'package:schulplaner/common/widgets/required_field.dart';
 import 'package:schulplaner/common/widgets/time_picker_modal_bottom_sheet.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
@@ -32,6 +31,10 @@ class EditTestDialog extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final weeklyScheduleData = ref.watch(weeklyScheduleProvider);
+    final weeklyScheduleTuple = weeklyScheduleData.valueOrNull;
+    final lessons = weeklyScheduleTuple?.$1 ?? [];
+    final teachers = weeklyScheduleTuple?.$3 ?? [];
+    final subjects = weeklyScheduleTuple?.$4 ?? [];
 
     final nameController = useTextEditingController(
       text: testEvent?.name,
@@ -51,152 +54,145 @@ class EditTestDialog extends HookConsumerWidget {
 
     final formKey = useMemoized(() => GlobalKey<FormState>());
 
-    return weeklyScheduleData.when(
-      data: (data) {
-        final lessons = data.$1;
-        final subjects = data.$4;
-        final teachers = data.$3;
-
-        return CustomDialog.expanded(
-          title:
-              Text("Arbeit ${testEvent != null ? "bearbeiten" : "hinzufügen"}"),
-          icon: const Icon(LucideIcons.briefcase_business),
-          content: Form(
-            key: formKey,
-            child: Column(
-              children: [
-                CustomTextField(
-                  controller: nameController,
-                  validate: true,
-                  labelText: "Name",
-                ),
-                const SizedBox(height: Spacing.small),
-                RequiredField(
-                  errorText: "Ein Fach ist erforderlich.",
-                  value: subject.value,
-                  child: CustomButton.selection(
-                    selection: subject.value?.name,
-                    onPressed: () async {
-                      final result = await showDialog<Subject>(
-                        context: context,
-                        builder: (context) => SubjectDialog(
-                          subjects: subjects,
-                          teachers: teachers,
-                          onSubjectChanged: (subject) => onSubjectChanged(
-                            context,
-                            subject,
-                            subjects,
-                          ),
-                          onTeacherChanged: (teacher) => onTeacherChanged(
-                            context,
-                            teacher,
-                            teachers,
-                          ),
-                        ),
-                      );
-
-                      if (result != null) {
-                        subject.value = result;
-
-                        if (nameController.text.trim() == "Arbeit" ||
-                            nameController.text.trim().isEmpty) {
-                          nameController.text = "Arbeit ${subject.value?.name}";
-                        }
-                      }
-                    },
-                    child: const Text("Fach"),
-                  ),
-                ),
-                const SizedBox(height: Spacing.small),
-                RequiredField(
-                  errorText: "Ein Datum ist erforderlich.",
-                  value: date.value,
-                  child: CustomButton.selection(
-                    selection: date.value?.formattedDate,
-                    onPressed: () async {
-                      final result = await showModalBottomSheet<DateTime>(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return TimePickerModalBottomSheet(
-                            subject: subject.value,
-                            lessons: lessons,
-                          );
-                        },
-                      );
-
-                      if (result != null) {
-                        date.value = result;
-                      }
-                    },
-                    child: const Text("Datum"),
-                  ),
-                ),
-                const SizedBox(height: Spacing.small),
-                CustomTextField(
-                  controller: descriptionController,
-                  labelText: "Beschreibung",
-                  maxLines: 3,
-                  minLines: 3,
-                ),
-              ],
+    return CustomDialog.expanded(
+      title: Text("Arbeit ${testEvent != null ? "bearbeiten" : "hinzufügen"}"),
+      icon: const Icon(LucideIcons.briefcase_business),
+      loading: weeklyScheduleData.isLoading,
+      fatalError: weeklyScheduleData.hasError
+          ? Text(weeklyScheduleData.error.toString())
+          : null,
+      content: Form(
+        key: formKey,
+        child: Column(
+          children: [
+            CustomTextField(
+              controller: nameController,
+              validate: true,
+              labelText: "Name",
             ),
-          ),
-          actions: [
-             if (testEvent != null && onTestDeleted != null) ...[
-              ElevatedButton.icon(
+            const SizedBox(height: Spacing.small),
+            RequiredField(
+              errorText: "Ein Fach ist erforderlich.",
+              value: subject.value,
+              child: CustomButton.selection(
+                selection: subject.value?.name,
                 onPressed: () async {
-                  final result = await showDialog<bool>(
+                  final result = await showDialog<Subject>(
                     context: context,
-                    builder: (context) => CustomDialog.confirmation(
-                      title: "Arbeit löschen",
-                      description:
-                          "Sind Sie sich sicher, dass Sie diese Arbeit löschen möchten?",
+                    builder: (context) => SubjectDialog(
+                      subjects: subjects,
+                      teachers: teachers,
+                      onSubjectChanged: (subject) => onSubjectChanged(
+                        context,
+                        subject,
+                        subjects,
+                      ),
+                      onTeacherChanged: (teacher) => onTeacherChanged(
+                        context,
+                        teacher,
+                        teachers,
+                      ),
                     ),
                   );
 
-                  if (result != null && context.mounted) {
-                    onTestDeleted?.call();
+                  if (result != null) {
+                    subject.value = result;
+
+                    if (nameController.text.trim() == "Arbeit" ||
+                        nameController.text.trim().isEmpty) {
+                      nameController.text = "Arbeit ${subject.value?.name}";
+                    }
                   }
                 },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.error,
-                ),
-                icon: const Icon(LucideIcons.trash_2),
-                label: const Text("Arbeit löschen"),
+                child: const Text("Fach"),
               ),
-              const Spacer(),
-            ],
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text("Abbrechen"),
             ),
-            const SizedBox(width: Spacing.small),
-            ElevatedButton(
-              onPressed: () {
-                if (!formKey.currentState!.validate()) {
-                  return;
-                }
+            const SizedBox(height: Spacing.small),
+            RequiredField(
+              errorText: "Ein Datum ist erforderlich.",
+              value: date.value,
+              child: CustomButton.selection(
+                selection: date.value?.formattedDate,
+                onPressed: () async {
+                  final result = await showModalBottomSheet<DateTime>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return TimePickerModalBottomSheet(
+                        subject: subject.value,
+                        lessons: lessons,
+                      );
+                    },
+                  );
 
-                Navigator.of(context).pop(
-                  TestEvent(
-                    name: nameController.text,
-                    description: descriptionController.text.getStringOrNull(),
-                    subjectUuid: subject.value!.uuid,
-                    date: date.value!,
-                    praticeDates: [], // TODO: Add practice dates. Maybe with AI
-                    uuid: testEvent?.uuid ?? const Uuid().v4(),
-                  ),
-                );
-              },
-              child: Text(testEvent == null ? "Hinzufügen" : "Bearbeiten"),
+                  if (result != null) {
+                    date.value = result;
+                  }
+                },
+                child: const Text("Datum"),
+              ),
+            ),
+            const SizedBox(height: Spacing.small),
+            CustomTextField(
+              controller: descriptionController,
+              labelText: "Beschreibung",
+              maxLines: 3,
+              minLines: 3,
             ),
           ],
-        );
-      },
-      error: (_, __) => const DataErrorWidget(),
-      loading: () => const DataLoadingWidget(),
+        ),
+      ),
+      actions: [
+        if (testEvent != null && onTestDeleted != null) ...[
+          ElevatedButton.icon(
+            onPressed: () async {
+              final result = await showDialog<bool>(
+                context: context,
+                builder: (context) => CustomDialog.confirmation(
+                  title: "Arbeit löschen",
+                  description:
+                      "Sind Sie sich sicher, dass Sie diese Arbeit löschen möchten?",
+                ),
+              );
+
+              if (result != null && context.mounted) {
+                onTestDeleted?.call();
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
+            ),
+            icon: const Icon(LucideIcons.trash_2),
+            label: const Text("Arbeit löschen"),
+          ),
+          const Spacer(),
+        ],
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text("Abbrechen"),
+        ),
+        const SizedBox(width: Spacing.small),
+        ElevatedButton(
+          onPressed: () {
+            if (!formKey.currentState!.validate()) {
+              return;
+            }
+
+            Navigator.of(context).pop(
+              TestEvent(
+                name: nameController.text,
+                description: descriptionController.text.getStringOrNull(),
+                subjectUuid: subject.value!.uuid,
+                date: date.value!,
+                praticeDates: [], // TODO: Add practice dates. Maybe with AI
+                uuid: testEvent?.uuid ?? const Uuid().v4(),
+              ),
+            );
+          },
+          child: Text(testEvent == null ? "Hinzufügen" : "Bearbeiten"),
+        ),
+      ],
     );
   }
 }
