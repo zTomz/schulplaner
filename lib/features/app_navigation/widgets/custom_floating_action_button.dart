@@ -9,7 +9,6 @@ import 'package:schulplaner/common/dialogs/events/edit_test_dialog.dart';
 import 'package:schulplaner/common/models/event.dart';
 import 'package:schulplaner/common/provider/events_provider.dart';
 import 'package:schulplaner/common/services/database_service.dart';
-import 'package:schulplaner/common/widgets/data_state_widgets.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 
 class CustomFloatingActionButton extends HookConsumerWidget {
@@ -103,8 +102,8 @@ class CustomFloatingActionButton extends HookConsumerWidget {
           ],
         );
       },
-      error: (_, __) => const DataErrorWidget(),
-      loading: () => const DataLoadingWidget(),
+      error: (_, __) => const SizedBox.shrink(),
+      loading: () => const SizedBox.shrink(),
     );
   }
 
