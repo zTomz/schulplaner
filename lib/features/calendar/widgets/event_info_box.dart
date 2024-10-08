@@ -5,6 +5,7 @@ import 'package:schulplaner/common/dialogs/events/edit_test_dialog.dart';
 import 'package:schulplaner/common/extensions/date_time_extension.dart';
 import 'package:schulplaner/common/functions/close_all_dialogs.dart';
 import 'package:schulplaner/common/functions/first_where_or_null.dart';
+import 'package:schulplaner/common/services/exeption_handler_service.dart';
 import 'package:schulplaner/common/services/snack_bar_service.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/common/dialogs/events/edit_homework_dialog.dart';
@@ -50,10 +51,19 @@ class EventInfoBox extends StatelessWidget {
                     List<Event> eventsList = List<Event>.from(events);
                     eventsList.removeWhere((e) => e.uuid == event.uuid);
 
-                    await DatabaseService.uploadEvents(
-                      context,
-                      events: eventsList,
-                    );
+                    try {
+                      await DatabaseService.uploadEvents(
+                        events: eventsList,
+                      );
+                    } catch (error) {
+                      if (context.mounted) {
+                        await closeAllDialogs(context);
+                      }
+                      if (context.mounted) {
+                        ExeptionHandlerService.handleExeption(context, error);
+                      }
+                      return;
+                    }
 
                     if (context.mounted) {
                       await closeAllDialogs(context);
@@ -77,14 +87,19 @@ class EventInfoBox extends StatelessWidget {
                 ),
               );
 
-              if (result != null && context.mounted) {
+              if (result != null) {
                 List<Event> eventsList = List<Event>.from(events);
                 eventsList.removeWhere((e) => e.uuid == result.uuid);
 
-                await DatabaseService.uploadEvents(
-                  context,
-                  events: [...eventsList, result],
-                );
+                try {
+                  await DatabaseService.uploadEvents(
+                    events: [...eventsList, result],
+                  );
+                } catch (error) {
+                  if (context.mounted) {
+                    ExeptionHandlerService.handleExeption(context, error);
+                  }
+                }
               }
               break;
             case EventTypes.test:
@@ -96,10 +111,19 @@ class EventInfoBox extends StatelessWidget {
                     List<Event> eventsList = List<Event>.from(events);
                     eventsList.removeWhere((e) => e.uuid == event.uuid);
 
-                    await DatabaseService.uploadEvents(
-                      context,
-                      events: eventsList,
-                    );
+                    try {
+                      await DatabaseService.uploadEvents(
+                        events: eventsList,
+                      );
+                    } catch (error) {
+                      if (context.mounted) {
+                        await closeAllDialogs(context);
+                      }
+                      if (context.mounted) {
+                        ExeptionHandlerService.handleExeption(context, error);
+                      }
+                      return;
+                    }
 
                     if (context.mounted) {
                       await closeAllDialogs(context);
@@ -123,14 +147,19 @@ class EventInfoBox extends StatelessWidget {
                 ),
               );
 
-              if (result != null && context.mounted) {
+              if (result != null) {
                 List<Event> eventsList = List<Event>.from(events);
                 eventsList.removeWhere((e) => e.uuid == result.uuid);
 
-                await DatabaseService.uploadEvents(
-                  context,
-                  events: [...eventsList, result],
-                );
+                try {
+                  await DatabaseService.uploadEvents(
+                    events: [...eventsList, result],
+                  );
+                } catch (error) {
+                  if (context.mounted) {
+                    ExeptionHandlerService.handleExeption(context, error);
+                  }
+                }
               }
               break;
             case EventTypes.reminder:
@@ -142,10 +171,19 @@ class EventInfoBox extends StatelessWidget {
                     List<Event> eventsList = List<Event>.from(events);
                     eventsList.removeWhere((e) => e.uuid == event.uuid);
 
-                    await DatabaseService.uploadEvents(
-                      context,
-                      events: eventsList,
-                    );
+                    try {
+                      await DatabaseService.uploadEvents(
+                        events: eventsList,
+                      );
+                    } catch (error) {
+                      if (context.mounted) {
+                        await closeAllDialogs(context);
+                      }
+                      if (context.mounted) {
+                        ExeptionHandlerService.handleExeption(context, error);
+                      }
+                      return;
+                    }
 
                     if (context.mounted) {
                       await closeAllDialogs(context);
@@ -169,14 +207,19 @@ class EventInfoBox extends StatelessWidget {
                 ),
               );
 
-              if (result != null && context.mounted) {
+              if (result != null) {
                 List<Event> eventsList = List<Event>.from(events);
                 eventsList.removeWhere((e) => e.uuid == result.uuid);
 
-                await DatabaseService.uploadEvents(
-                  context,
-                  events: [...eventsList, result],
-                );
+                try {
+                  await DatabaseService.uploadEvents(
+                    events: [...eventsList, result],
+                  );
+                } catch (error) {
+                  if (context.mounted) {
+                    ExeptionHandlerService.handleExeption(context, error);
+                  }
+                }
               }
               break;
             // TODO: Implement editing other events here
@@ -245,10 +288,15 @@ class EventInfoBox extends StatelessWidget {
                     (event as HomeworkEvent).copyWith(isDone: value ?? false),
                   );
 
-                  await DatabaseService.uploadEvents(
-                    context,
-                    events: eventsList,
-                  );
+                  try {
+                    await DatabaseService.uploadEvents(
+                      events: eventsList,
+                    );
+                  } catch (error) {
+                    if (context.mounted) {
+                      ExeptionHandlerService.handleExeption(context, error);
+                    }
+                  }
                 },
               ),
           ],

@@ -6,6 +6,7 @@ import 'package:schulplaner/common/models/hobby.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
 import 'package:schulplaner/common/services/auth_service.dart';
 import 'package:schulplaner/common/services/database_service.dart';
+import 'package:schulplaner/common/services/exeption_handler_service.dart';
 import 'package:schulplaner/common/widgets/custom_button.dart';
 import 'package:schulplaner/common/widgets/custom_text_field.dart';
 import 'package:schulplaner/common/widgets/gradient_scaffold.dart';
@@ -103,36 +104,43 @@ class SignUpSignInPage extends HookWidget {
                           return;
                         }
 
-                        if (isSigningUp.value) {
-                          final result = await AuthService.createAccount(
-                            context,
-                            name: usernameController.text,
-                            email: emailController.text,
-                            password: passwordController.text,
-                          );
+                        try {
+                          if (isSigningUp.value) {
+                            final result = await AuthService.createAccount(
+                              name: usernameController.text,
+                              email: emailController.text,
+                              password: passwordController.text,
+                            );
 
-                          if (result != null && context.mounted) {
-                            // Upload the weekly schedule data, teachers, subjects and the hobbies
-                            await _createUserData(context);
+                            if (result != null && context.mounted) {
+                              // Upload the weekly schedule data, teachers, subjects and the hobbies
+                              await _createUserData(context);
 
-                            if (context.mounted) {
+                              if (context.mounted) {
+                                context.router.replaceAll([
+                                  const AppNavigationRoute(),
+                                ]);
+                              }
+                            }
+                          } else {
+                            // If the users signes in, we do not want to override the current weekly schedule and hobby data
+                            final result = await AuthService.signIn(
+                              email: emailController.text,
+                              password: passwordController.text,
+                            );
+
+                            if (result != null && context.mounted) {
                               context.router.replaceAll([
                                 const AppNavigationRoute(),
                               ]);
                             }
                           }
-                        } else {
-                          // If the users signes in, we do not want to override the current weekly schedule and hobby data
-                          final result = await AuthService.signIn(
-                            context,
-                            email: emailController.text,
-                            password: passwordController.text,
-                          );
-
-                          if (result != null && context.mounted) {
-                            context.router.replaceAll([
-                              const AppNavigationRoute(),
-                            ]);
+                        } catch (error) {
+                          if (context.mounted) {
+                            ExeptionHandlerService.handleExeption(
+                              context,
+                              error,
+                            );
                           }
                         }
                       },
@@ -163,30 +171,31 @@ class SignUpSignInPage extends HookWidget {
   }
 
   Future<void> _createUserData(BuildContext context) async {
-    if (weeklyScheduleData != null) {
-      await DatabaseService.uploadWeeklySchedule(
-        context,
-        weeklyScheduleData: weeklyScheduleData!,
-      );
-    }
-    if (teachers != null && teachers!.isNotEmpty && context.mounted) {
-      await DatabaseService.uploadTeachers(
-        context,
-        teachers: teachers!,
-      );
-    }
-    if (subjects != null && teachers!.isNotEmpty && context.mounted) {
-      await DatabaseService.uploadSubjects(
-        context,
-        subjects: subjects!,
-      );
-    }
-
-    if (hobbies != null && context.mounted) {
-      await DatabaseService.uploadHobbies(
-        context,
-        hobbies: hobbies!,
-      );
+    try {
+      if (weeklyScheduleData != null) {
+        await DatabaseService.uploadWeeklySchedule(
+          weeklyScheduleData: weeklyScheduleData!,
+        );
+      }
+      if (teachers != null && teachers!.isNotEmpty && context.mounted) {
+        await DatabaseService.uploadTeachers(
+          teachers: teachers!,
+        );
+      }
+      if (subjects != null && teachers!.isNotEmpty && context.mounted) {
+        await DatabaseService.uploadSubjects(
+          subjects: subjects!,
+        );
+      }
+      if (hobbies != null && context.mounted) {
+        await DatabaseService.uploadHobbies(
+          hobbies: hobbies!,
+        );
+      }
+    } catch (error) {
+      if (context.mounted) {
+        ExeptionHandlerService.handleExeption(context, error);
+      }
     }
   }
 

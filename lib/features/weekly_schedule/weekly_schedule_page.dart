@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:schulplaner/common/services/exeption_handler_service.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/common/dialogs/custom_dialog.dart';
 import 'package:schulplaner/common/dialogs/edit_time_span_dialog.dart';
@@ -50,14 +51,19 @@ class WeeklySchedulePage extends HookConsumerWidget {
                     builder: (context) => const EditTimeSpanDialog(),
                   );
 
-                  if (result != null && context.mounted) {
-                    await DatabaseService.uploadWeeklySchedule(
-                      context,
-                      weeklyScheduleData: WeeklyScheduleData(
-                        timeSpans: {...timeSpans, result},
-                        lessons: lessons,
-                      ),
-                    );
+                  if (result != null) {
+                    try {
+                      await DatabaseService.uploadWeeklySchedule(
+                        weeklyScheduleData: WeeklyScheduleData(
+                          timeSpans: {...timeSpans, result},
+                          lessons: lessons,
+                        ),
+                      );
+                    } catch (error) {
+                      if (context.mounted) {
+                        ExeptionHandlerService.handleExeption(context, error);
+                      }
+                    }
                   }
                 },
                 icon: const Icon(
@@ -80,20 +86,26 @@ class WeeklySchedulePage extends HookConsumerWidget {
                           timeSpans: timeSpans,
                         );
 
-                        if (result != null && context.mounted) {
+                        if (result != null) {
                           List<Lesson> updatedLessons = List.from(lessons);
                           updatedLessons.removeWhere(
                             (lesson) => lesson.uuid == result.uuid,
                           );
                           updatedLessons.add(result);
 
-                          await DatabaseService.uploadWeeklySchedule(
-                            context,
-                            weeklyScheduleData: WeeklyScheduleData(
-                              timeSpans: timeSpans,
-                              lessons: updatedLessons,
-                            ),
-                          );
+                          try {
+                            await DatabaseService.uploadWeeklySchedule(
+                              weeklyScheduleData: WeeklyScheduleData(
+                                timeSpans: timeSpans,
+                                lessons: updatedLessons,
+                              ),
+                            );
+                          } catch (error) {
+                            if (context.mounted) {
+                              ExeptionHandlerService.handleExeption(
+                                  context, error);
+                            }
+                          }
                         }
                       },
                 icon: const Icon(
@@ -119,19 +131,24 @@ class WeeklySchedulePage extends HookConsumerWidget {
                   timeSpans: timeSpans,
                 );
 
-                if (result != null && context.mounted) {
+                if (result != null) {
                   lessons.removeWhere(
                     (lesson) => lesson.uuid == result.uuid,
                   );
                   lessons.add(result);
 
-                  await DatabaseService.uploadWeeklySchedule(
-                    context,
-                    weeklyScheduleData: WeeklyScheduleData(
-                      timeSpans: timeSpans,
-                      lessons: lessons,
-                    ),
-                  );
+                  try {
+                    await DatabaseService.uploadWeeklySchedule(
+                      weeklyScheduleData: WeeklyScheduleData(
+                        timeSpans: timeSpans,
+                        lessons: lessons,
+                      ),
+                    );
+                  } catch (error) {
+                    if (context.mounted) {
+                      ExeptionHandlerService.handleExeption(context, error);
+                    }
+                  }
                 }
               },
               onWeekTapped: () {
@@ -159,14 +176,17 @@ class WeeklySchedulePage extends HookConsumerWidget {
                     (lesson) => lesson.timeSpan == timeSpanToDelete,
                   );
 
-                  if (context.mounted) {
+                  try {
                     await DatabaseService.uploadWeeklySchedule(
-                      context,
                       weeklyScheduleData: WeeklyScheduleData(
                         timeSpans: timeSpans,
                         lessons: lessons,
                       ),
                     );
+                  } catch (error) {
+                    if (context.mounted) {
+                      ExeptionHandlerService.handleExeption(context, error);
+                    }
                   }
                 }
               },
@@ -217,13 +237,22 @@ Future<T?> _showEditLessonDialog<T>(
                 (l) => l.uuid == lesson.uuid,
               );
 
-              await DatabaseService.uploadWeeklySchedule(
-                context,
-                weeklyScheduleData: WeeklyScheduleData(
-                  timeSpans: timeSpans,
-                  lessons: lessons,
-                ),
-              );
+              try {
+                await DatabaseService.uploadWeeklySchedule(
+                  weeklyScheduleData: WeeklyScheduleData(
+                    timeSpans: timeSpans,
+                    lessons: lessons,
+                  ),
+                );
+              } catch (error) {
+                if (context.mounted) {
+                  closeAllDialogs(context);
+                }
+                if (context.mounted) {
+                  ExeptionHandlerService.handleExeption(context, error);
+                }
+                return;
+              }
 
               if (context.mounted) {
                 await closeAllDialogs(context);

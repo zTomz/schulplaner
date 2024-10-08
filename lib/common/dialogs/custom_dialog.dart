@@ -189,30 +189,58 @@ class CustomDialog extends StatelessWidget {
                     filter: ImageFilter.blur(sigmaX: 2.5, sigmaY: 2.5),
                     child: ColoredBox(
                       color: Colors.white.withOpacity(0.6),
-                      child: Center(
-                        child: fatalError != null
-                            ? Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(LucideIcons.circle_x, color: Theme.of(context).colorScheme.error, size: 50,),
-                                const SizedBox(height: Spacing.small),
-                                DefaultTextStyle(
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge!
-                                        .copyWith(
-                                          color:
-                                              Theme.of(context).colorScheme.error,
-                                        ),
-                                    textAlign: TextAlign.center,
-                                    child: fatalError!,
-                                  ),
-                              ],
-                            )
-                            : const CircularProgressIndicator(),
+                      child: Padding(
+                        padding: const EdgeInsets.all(Spacing.small),
+                        child: Center(
+                          child: fatalError != null
+                              ? Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      LucideIcons.circle_x,
+                                      color:
+                                          Theme.of(context).colorScheme.error,
+                                      size: 50,
+                                    ),
+                                    const SizedBox(height: Spacing.small),
+                                    DefaultTextStyle(
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge!
+                                          .copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .error,
+                                          ),
+                                      textAlign: TextAlign.center,
+                                      child: fatalError!,
+                                    ),
+                                  ],
+                                )
+                              : const CircularProgressIndicator(),
+                        ),
                       ),
                     ),
                   ),
+                ),
+              ),
+            if (loading || fatalError != null)
+              Positioned(
+                top: Spacing.medium,
+                right: Spacing.medium,
+                child: IconButton.filled(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: IconButton.styleFrom(
+                    backgroundColor: Colors.grey.shade300,
+                    foregroundColor: Colors.grey.shade600,
+                  ),
+                  constraints: const BoxConstraints(),
+                  iconSize: 16,
+                  padding: const EdgeInsets.all(Spacing.extraSmall),
+                  tooltip: "Schließen",
+                  icon: const Icon(LucideIcons.x),
                 ),
               ),
           ],

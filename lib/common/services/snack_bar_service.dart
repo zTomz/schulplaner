@@ -10,6 +10,12 @@ class SnackBarService {
   }) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
+        backgroundColor: Theme.of(context).colorScheme.onSurface,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radii.small),
+        ),
+        padding: EdgeInsets.zero,
+        behavior: SnackBarBehavior.fixed,
         content: Stack(
           children: [
             Positioned(
@@ -56,12 +62,6 @@ class SnackBarService {
             ),
           ],
         ),
-        backgroundColor: Theme.of(context).colorScheme.onSurface,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radii.small),
-        ),
-        padding: EdgeInsets.zero,
-        behavior: SnackBarBehavior.fixed,
       ),
     );
   }

@@ -4,6 +4,7 @@ import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/common/provider/hobbies_provider.dart';
+import 'package:schulplaner/common/services/exeption_handler_service.dart';
 import 'package:schulplaner/common/widgets/data_state_widgets.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/config/constants/svg_pictures.dart';
@@ -37,11 +38,16 @@ class HobbiesPage extends ConsumerWidget {
                 },
               );
 
-              if (result != null && context.mounted) {
-                await DatabaseService.uploadHobbies(
-                  context,
-                  hobbies: [result],
-                );
+              if (result != null) {
+                try {
+                  await DatabaseService.uploadHobbies(
+                    hobbies: [result],
+                  );
+                } catch (error) {
+                  if (context.mounted) {
+                    ExeptionHandlerService.handleExeption(context, error);
+                  }
+                }
               }
             },
             icon: const Icon(
@@ -99,11 +105,16 @@ class HobbiesPage extends ConsumerWidget {
                     },
                   );
 
-                  if (result != null && context.mounted) {
-                    await DatabaseService.uploadHobbies(
-                      context,
-                      hobbies: [result],
-                    );
+                  if (result != null) {
+                    try {
+                      await DatabaseService.uploadHobbies(
+                        hobbies: [result],
+                      );
+                    } catch (error) {
+                      if (context.mounted) {
+                        ExeptionHandlerService.handleExeption(context, error);
+                      }
+                    }
                   }
                 },
                 onDelete: () async {
@@ -115,11 +126,16 @@ class HobbiesPage extends ConsumerWidget {
                     ),
                   );
 
-                  if (result == true && context.mounted) {
-                    await DatabaseService.deleteHobbies(
-                      context,
-                      hobbies: [currentHobby],
-                    );
+                  if (result == true) {
+                    try {
+                      await DatabaseService.deleteHobbies(
+                        hobbies: [currentHobby],
+                      );
+                    } catch (error) {
+                      if (context.mounted) {
+                        ExeptionHandlerService.handleExeption(context, error);
+                      }
+                    }
                   }
                 },
               );

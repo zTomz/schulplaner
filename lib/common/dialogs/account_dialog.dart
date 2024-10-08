@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:schulplaner/common/functions/close_all_dialogs.dart';
+import 'package:schulplaner/common/services/exeption_handler_service.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/common/dialogs/custom_dialog.dart';
 import 'package:schulplaner/common/services/user_service.dart';
@@ -15,6 +17,7 @@ class AccountDialog extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final currentUser = useMemoized(() => FirebaseAuth.instance.currentUser!);
+    final requiresRecentLoginExeptionThrown = useState(false);
 
     final usernameController = useTextEditingController(
       text: currentUser.displayName ?? "Unknown",
@@ -43,6 +46,10 @@ class AccountDialog extends HookWidget {
           },
           keyboardType: TextInputType.name,
         ),
+        error: requiresRecentLoginExeptionThrown.value
+            ? const Text(
+                "Sie müssen sich erneut Anmelden, da die von Ihnen ausgefürhte Aktion einen neuen Login benötigt.")
+            : null,
         content: Column(
           children: [
             CustomTextField.email(
@@ -77,9 +84,32 @@ class AccountDialog extends HookWidget {
                             "Sind Sie sich sicher, dass Sie Ihr Konto löschen möchten?",
                       ),
                     );
-
-                    if (result == true && context.mounted) {
-                      await UserService.deleteAccount(context);
+        
+                    if (result == true) {
+                      try {
+                        await UserService.deleteAccount();
+                      } catch (error) {
+                        // If the error is, that the user requires a recent login, we want to only show 
+                        // a simple error message at the top of the dialog
+                        if (error is FirebaseAuthException &&
+                            FirebaseAuthExceptionCode.fromErrorCode(
+                                    error.code) ==
+                                FirebaseAuthExceptionCode
+                                    .requiresRecentLogin) {
+                          requiresRecentLoginExeptionThrown.value = true;
+                          return;
+                        }
+        
+                        if (context.mounted) {
+                          await closeAllDialogs(context);
+                        }
+                        if (context.mounted) {
+                          ExeptionHandlerService.handleExeption(
+                            context,
+                            error,
+                          );
+                        }
+                      }
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -117,15 +147,22 @@ class AccountDialog extends HookWidget {
           const SizedBox(width: Spacing.small),
           ElevatedButton(
             onPressed: () async {
-              if (formKey.currentState!.validate()) {
+              if (!formKey.currentState!.validate()) {
+                return;
+              }
+
+              try {
                 await UserService.updateStats(
-                  context,
                   name: usernameController.text,
                   email: emailController.text,
                 );
 
                 if (context.mounted) {
                   Navigator.of(context).pop();
+                }
+              } catch (error) {
+                if (context.mounted) {
+                  ExeptionHandlerService.handleExeption(context, error);
                 }
               }
             },
@@ -169,14 +206,21 @@ class ChangePasswordDialog extends HookWidget {
         const SizedBox(width: Spacing.small),
         ElevatedButton(
           onPressed: () async {
-            if (formKey.currentState!.validate()) {
+            if (!formKey.currentState!.validate()) {
+              return;
+            }
+
+            try {
               await UserService.updatePassword(
-                context,
                 newPassword: passwordController.text,
               );
 
               if (context.mounted) {
                 Navigator.of(context).pop();
+              }
+            } catch (error) {
+              if (context.mounted) {
+                ExeptionHandlerService.handleExeption(context, error);
               }
             }
           },

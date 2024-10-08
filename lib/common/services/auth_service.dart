@@ -1,13 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:schulplaner/common/functions/close_all_dialogs.dart';
-import 'package:schulplaner/common/services/exeption_handler_service.dart';
-import 'package:schulplaner/common/services/snack_bar_service.dart';
+import 'package:schulplaner/config/constants/logger.dart';
 
 abstract class AuthService {
-  /// Create a new account. This function also handels the errors and shows corresponding snackbar messages
-  static Future<UserCredential?> createAccount(
-    BuildContext context, {
+  /// Create a new account. This will create a new Firebase user and update the display name.
+  /// If an error occurs, it will log it and then rethrown
+  static Future<UserCredential?> createAccount({
     required String name,
     required String email,
     required String password,
@@ -22,27 +19,18 @@ abstract class AuthService {
         password: password.trim(),
       );
     } on FirebaseAuthException catch (e) {
-      if (context.mounted) {
-        await closeAllDialogs(context);
-      }
-      if (context.mounted) {
-        ExeptionHandlerService.handleFirebaseAuthException(context, e);
-      }
-
-      return null;
+      logger.e(
+        "Error while creation the account.",
+        error: e,
+      );
+      rethrow;
     } catch (e) {
-      if (context.mounted) {
-        await closeAllDialogs(context);
-      }
-      if (context.mounted) {
-        SnackBarService.show(
-          context: context,
-          content: const Text("Ein unbekannter Fehler ist aufgetreten."),
-          type: CustomSnackbarType.error,
-        );
-      }
+      logger.e(
+        "Unknown error occurred, while creating the account.",
+        error: e,
+      );
 
-      return null;
+      rethrow;
     }
 
     // Update the name
@@ -51,8 +39,9 @@ abstract class AuthService {
     return userCredential;
   }
 
-  static Future<UserCredential?> signIn(
-    BuildContext context, {
+  /// Sign the user in and return the user credential. If an error occurs, it will log it and
+  /// then rethrown
+  static Future<UserCredential?> signIn({
     required String email,
     required String password,
   }) async {
@@ -64,27 +53,19 @@ abstract class AuthService {
         password: password.trim(),
       );
     } on FirebaseAuthException catch (e) {
-      if (context.mounted) {
-        await closeAllDialogs(context);
-      }
-      if (context.mounted) {
-        ExeptionHandlerService.handleFirebaseAuthException(context, e);
-      }
+      logger.e(
+        "Error while signing in.",
+        error: e,
+      );
 
-      return null;
+      rethrow;
     } catch (e) {
-      if (context.mounted) {
-        await closeAllDialogs(context);
-      }
-      if (context.mounted) {
-        SnackBarService.show(
-          context: context,
-          content: const Text("Ein unbekannter Fehler ist aufgetreten."),
-          type: CustomSnackbarType.error,
-        );
-      }
+      logger.e(
+        "Unknown error occurred, while signing in.",
+        error: e,
+      );
 
-      return null;
+      rethrow;
     }
 
     return userCredential;

@@ -9,6 +9,7 @@ import 'package:schulplaner/common/dialogs/events/edit_test_dialog.dart';
 import 'package:schulplaner/common/models/event.dart';
 import 'package:schulplaner/common/provider/events_provider.dart';
 import 'package:schulplaner/common/services/database_service.dart';
+import 'package:schulplaner/common/services/exeption_handler_service.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 
 class CustomFloatingActionButton extends HookConsumerWidget {
@@ -53,11 +54,16 @@ class CustomFloatingActionButton extends HookConsumerWidget {
                   builder: (context) => const EditHomeworkDialog(),
                 );
 
-                if (result != null && context.mounted) {
-                  await DatabaseService.uploadEvents(
-                    context,
-                    events: [...events, result],
-                  );
+                if (result != null) {
+                  try {
+                    await DatabaseService.uploadEvents(
+                      events: [...events, result],
+                    );
+                  } catch (error) {
+                    if (context.mounted) {
+                      ExeptionHandlerService.handleExeption(context, error);
+                    }
+                  }
                 }
               },
             ),
@@ -71,11 +77,16 @@ class CustomFloatingActionButton extends HookConsumerWidget {
                   builder: (context) => const EditTestDialog(),
                 );
 
-                if (result != null && context.mounted) {
-                  await DatabaseService.uploadEvents(
-                    context,
-                    events: [...events, result],
-                  );
+                if (result != null) {
+                  try {
+                    await DatabaseService.uploadEvents(
+                      events: [...events, result],
+                    );
+                  } catch (error) {
+                    if (context.mounted) {
+                      ExeptionHandlerService.handleExeption(context, error);
+                    }
+                  }
                 }
               },
             ),
@@ -90,11 +101,16 @@ class CustomFloatingActionButton extends HookConsumerWidget {
                   builder: (context) => const EditReminderEventDialog(),
                 );
 
-                if (result != null && context.mounted) {
-                  await DatabaseService.uploadEvents(
-                    context,
-                    events: [...events, result],
-                  );
+                if (result != null) {
+                  try {
+                    await DatabaseService.uploadEvents(
+                      events: [...events, result],
+                    );
+                  } catch (error) {
+                    if (context.mounted) {
+                      ExeptionHandlerService.handleExeption(context, error);
+                    }
+                  }
                 }
                 // TODO: Add a reminder here
               },

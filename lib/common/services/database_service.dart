@@ -1,35 +1,39 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:schulplaner/common/functions/check_user_is_signed_in.dart';
 import 'package:schulplaner/common/models/event.dart';
 import 'package:schulplaner/common/models/hobby.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
+import 'package:schulplaner/common/services/exeptions.dart';
+import 'package:schulplaner/config/constants/logger.dart';
 
 abstract class DatabaseService {
-  /// Get the weekly schedule data collection from firestore for the current user
+  /// The weekly schedule collection from Firestore for the current user
   static CollectionReference<Map<String, dynamic>>
       get weeklyScheduleCollection =>
           currentUserDocument.collection("weekly_schedule");
 
+  /// The hobbies collection from Firestore for the current user
   static CollectionReference<Map<String, dynamic>> get hobbiesCollection =>
       currentUserDocument.collection("hobbies");
 
+  /// The events collection from Firestore for the current user
   static CollectionReference<Map<String, dynamic>> get eventsCollection =>
       currentUserDocument.collection("events");
 
+  /// The users collection from Firestore
   static CollectionReference<Map<String, dynamic>> get userCollection =>
       FirebaseFirestore.instance.collection("users");
 
+  /// The document of the currently signed in user
   static DocumentReference<Map<String, dynamic>> get currentUserDocument =>
       userCollection.doc(FirebaseAuth.instance.currentUser!.uid);
 
-  static Future<void> uploadWeeklySchedule(
-    BuildContext context, {
+  static Future<void> uploadWeeklySchedule({
     required WeeklyScheduleData weeklyScheduleData,
   }) async {
-    if (!checkUserIsSignedIn(context)) {
-      return;
+    if (FirebaseAuth.instance.currentUser == null) {
+      logger.e("The user need to be signed in to upload his weekly schedule.");
+      throw AuthException();
     }
 
     // Create a map to store the data and then sync the data to firestore
@@ -45,12 +49,12 @@ abstract class DatabaseService {
     });
   }
 
-  static Future<void> uploadTeachers(
-    BuildContext context, {
+  static Future<void> uploadTeachers({
     required List<Teacher> teachers,
   }) async {
-    if (!checkUserIsSignedIn(context)) {
-      return;
+    if (FirebaseAuth.instance.currentUser == null) {
+      logger.e("The user need to be signed in to upload his teachers.");
+      throw AuthException();
     }
 
     // Create a map to store the data and then sync the data to firestore
@@ -62,12 +66,12 @@ abstract class DatabaseService {
     await weeklyScheduleCollection.doc("teachers").set(data);
   }
 
-  static Future<void> uploadSubjects(
-    BuildContext context, {
+  static Future<void> uploadSubjects({
     required List<Subject> subjects,
   }) async {
-    if (!checkUserIsSignedIn(context)) {
-      return;
+    if (FirebaseAuth.instance.currentUser == null) {
+      logger.e("The user need to be signed in to upload his subjects.");
+      throw AuthException();
     }
 
     // Create a map to store the data and then sync the data to firestore
@@ -80,12 +84,12 @@ abstract class DatabaseService {
   }
 
   /// Upload a single or multiple hobbies to firestore. If a user edits an hobby we just overwrite it with this function.
-  static Future<void> uploadHobbies(
-    BuildContext context, {
+  static Future<void> uploadHobbies({
     required List<Hobby> hobbies,
   }) async {
-    if (!checkUserIsSignedIn(context)) {
-      return;
+    if (FirebaseAuth.instance.currentUser == null) {
+      logger.e("The user need to be signed in to upload his hobbies.");
+      throw AuthException();
     }
 
     for (final hobby in hobbies) {
@@ -95,12 +99,12 @@ abstract class DatabaseService {
   }
 
   /// Delete a single or multiple hobbies from firestore
-  static Future<void> deleteHobbies(
-    BuildContext context, {
+  static Future<void> deleteHobbies({
     required List<Hobby> hobbies,
   }) async {
-    if (!checkUserIsSignedIn(context)) {
-      return;
+    if (FirebaseAuth.instance.currentUser == null) {
+      logger.e("The user need to be signed in to delete his hobbies.");
+      throw AuthException();
     }
 
     for (final hobby in hobbies) {
@@ -108,12 +112,12 @@ abstract class DatabaseService {
     }
   }
 
-  static Future<void> uploadEvents(
-    BuildContext context, {
+  static Future<void> uploadEvents({
     required List<Event> events,
   }) async {
-    if (!checkUserIsSignedIn(context)) {
-      return;
+    if (FirebaseAuth.instance.currentUser == null) {
+      logger.e("The user need to be signed in to upload his events.");
+      throw AuthException();
     }
 
     List<HomeworkEvent> homeworkEvents = [];

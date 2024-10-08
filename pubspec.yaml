@@ -23,12 +23,13 @@ dependencies:
   flutter_expandable_fab: ^2.3.0
   flutter_hooks: ^0.20.5
   hooks_riverpod: ^2.5.2
+  logger: ^2.4.0
   
   firebase_core: ^3.5.0
   firebase_auth: ^5.3.0
   cloud_firestore: ^5.4.2
   firebase_vertexai: ^0.2.3+4
-  firebase_messaging: ^15.1.2
+  # firebase_messaging: ^15.1.2
   
 dev_dependencies:
   flutter_test:

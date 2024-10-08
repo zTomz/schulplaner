@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:schulplaner/common/models/weekly_schedule.dart';
 import 'package:schulplaner/common/services/database_service.dart';
+import 'package:schulplaner/common/services/exeption_handler_service.dart';
 
 /// A method to handle an edit on a subject. This method is used, when an account exists
 Future<void> onSubjectChanged(
@@ -19,10 +20,15 @@ Future<void> onSubjectChanged(
     updatedSubjects[index] = subject;
   }
 
-  await DatabaseService.uploadSubjects(
-    context,
-    subjects: updatedSubjects,
-  );
+  try {
+    await DatabaseService.uploadSubjects(
+      subjects: updatedSubjects,
+    );
+  } catch (error) {
+    if (context.mounted) {
+      ExeptionHandlerService.handleExeption(context, error);
+    }
+  }
 }
 
 /// A method to handle an edit on a teacher. This method is used, when an account exists
@@ -41,8 +47,13 @@ Future<void> onTeacherChanged(
     updatedTeachers[index] = teacher;
   }
 
-  await DatabaseService.uploadTeachers(
-    context,
-    teachers: updatedTeachers,
-  );
+  try {
+    await DatabaseService.uploadTeachers(
+      teachers: updatedTeachers,
+    );
+  } catch (error) {
+    if (context.mounted) {
+      ExeptionHandlerService.handleExeption(context, error);
+    }
+  }
 }
