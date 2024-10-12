@@ -41,11 +41,11 @@ class EditHomeworkDialog extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final weeklyScheduleData = ref.watch(weeklyScheduleProvider);
-    final weeklyScheduleTuple = weeklyScheduleData.valueOrNull;
-    final lessons = weeklyScheduleTuple?.$1 ?? [];
-    final teachers = weeklyScheduleTuple?.$3 ?? [];
-    final subjects = weeklyScheduleTuple?.$4 ?? [];
+    final weeklyScheduleDataProvider = ref.watch(weeklyScheduleProvider);
+    final weeklyScheduleData = weeklyScheduleDataProvider.valueOrNull;
+    final lessons = weeklyScheduleData?.lessons ?? [];
+    final teachers = weeklyScheduleData?.teachers ?? [];
+    final subjects = weeklyScheduleData?.subjects ?? [];
 
     final nameController = useTextEditingController(
       text: homeworkEvent?.name,
@@ -54,9 +54,9 @@ class EditHomeworkDialog extends HookConsumerWidget {
       text: homeworkEvent?.description,
     );
     final subject = useState<Subject?>(
-      weeklyScheduleData.hasValue
+      weeklyScheduleDataProvider.hasValue
           ? firstWhereOrNull(
-              weeklyScheduleData.value!.$4,
+              subjects,
               (s) => s.uuid == homeworkEvent?.subjectUuid,
             )
           : null,
@@ -73,9 +73,9 @@ class EditHomeworkDialog extends HookConsumerWidget {
         "Hausaufgaben ${homeworkEvent == null ? "hinzufügen" : "bearbeiten"}",
       ),
       icon: const Icon(LucideIcons.book_open_text),
-      loading: weeklyScheduleData.isLoading,
-      fatalError: weeklyScheduleData.hasError
-          ? Text(weeklyScheduleData.error.toString())
+      loading: weeklyScheduleDataProvider.isLoading,
+      fatalError: weeklyScheduleDataProvider.hasError
+          ? Text(weeklyScheduleDataProvider.error.toString())
           : null,
       content: Form(
         key: formKey,
@@ -185,13 +185,13 @@ class EditHomeworkDialog extends HookConsumerWidget {
                 IconButton(
                   onPressed: subject.value != null &&
                           date.value != null &&
-                          weeklyScheduleTuple != null
+                          weeklyScheduleData != null
                       ? () async {
                           final result = await showDialog(
                             context: context,
                             builder: (context) =>
                                 GenerateProcessingDateWithAiDialog(
-                              weeklyScheduleTuple: weeklyScheduleTuple,
+                              weeklyScheduleData: weeklyScheduleData,
                               subject: subject.value!,
                               deadline: date.value!,
                             ),
@@ -277,18 +277,13 @@ class EditHomeworkDialog extends HookConsumerWidget {
 }
 
 class GenerateProcessingDateWithAiDialog extends HookConsumerWidget {
-  final (
-    List<Lesson>,
-    Set<TimeSpan>,
-    List<Teacher>,
-    List<Subject>
-  ) weeklyScheduleTuple;
+  final WeeklyScheduleData weeklyScheduleData;
   final Subject subject;
   final DateTime deadline;
 
   const GenerateProcessingDateWithAiDialog({
     super.key,
-    required this.weeklyScheduleTuple,
+    required this.weeklyScheduleData,
     required this.subject,
     required this.deadline,
   });
@@ -344,28 +339,23 @@ class GenerateProcessingDateWithAiDialog extends HookConsumerWidget {
             errorMessage.value = null;
             loading.value = true;
 
-            final lessons = weeklyScheduleTuple.$1;
-            final timeSpans = weeklyScheduleTuple.$2;
-            final teachers = weeklyScheduleTuple.$3;
-            final subjects = weeklyScheduleTuple.$4;
-
             // Create a map containing a list of weekdays, containing a list of time spans, containing a list of lessons for the timespan and weekday
             Map<String, dynamic> weeklySchedule = {
               'weekdays': Weekday.mondayToFriday
                   .map(
                     (day) => {
                       'day': day.name,
-                      'time_spans': timeSpans.map(
+                      'time_spans': weeklyScheduleData.timeSpans.map(
                         (timeSpan) => {
                           'time_span': timeSpan.toMap(),
-                          'lessons': lessons
+                          'lessons': weeklyScheduleData.lessons
                               .where((lesson) =>
                                   lesson.weekday == day &&
                                   lesson.timeSpan == timeSpan)
                               .map(
                                 (lesson) => lesson.getCompleteMap(
-                                  subjects,
-                                  teachers,
+                                  weeklyScheduleData.subjects,
+                                  weeklyScheduleData.teachers,
                                 ),
                               )
                               .toList(),
@@ -380,14 +370,14 @@ class GenerateProcessingDateWithAiDialog extends HookConsumerWidget {
             Map<String, dynamic> events = {
               "homework": eventsTuple!.$1.map(
                 (event) => event.getCompleteMap(
-                  subjects,
-                  teachers,
+                  weeklyScheduleData.subjects,
+                  weeklyScheduleData.teachers,
                 ),
               ),
               "tests": eventsTuple.$2.map(
                 (event) => event.getCompleteMap(
-                  subjects,
-                  teachers,
+                  weeklyScheduleData.subjects,
+                  weeklyScheduleData.teachers,
                 ),
               ),
               "reminders": eventsTuple.$3.map(
@@ -426,7 +416,7 @@ class GenerateProcessingDateWithAiDialog extends HookConsumerWidget {
 
             final prompt = [
               Content.text(
-                """The homework is in the subject: ${subject.getCompleteMap(teachers)}.
+                """The homework is in the subject: ${subject.getCompleteMap(weeklyScheduleData.teachers)}.
 The deadline is: $deadline.
 The user thinks, the task will be: ${difficulty.value.englishName}.
 When do you think, the user should do the homework and how long do you think the user will need to do it? When generating the homework, please make sure that it does not interfere with lesson time or other events that have already been created. The user should also have time to relax and not have to work without a break.

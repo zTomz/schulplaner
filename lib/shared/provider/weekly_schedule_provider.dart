@@ -5,13 +5,7 @@ import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/shared/provider/user_provider.dart';
 import 'package:schulplaner/shared/services/database_service.dart';
 
-final weeklyScheduleProvider = StreamProvider<
-    (
-      List<Lesson> lessons,
-      Set<TimeSpan> timeSpans,
-      List<Teacher> teachers,
-      List<Subject> subjects,
-    )>(
+final weeklyScheduleProvider = StreamProvider<WeeklyScheduleData>(
   (ref) {
     final userStream = ref.watch(userProvider);
 
@@ -27,12 +21,7 @@ final weeklyScheduleProvider = StreamProvider<
   },
 );
 
-(
-  List<Lesson> lessons,
-  Set<TimeSpan> timeSpans,
-  List<Teacher> teachers,
-  List<Subject> subjects,
-) _convertWeeklyScheduleSnapshotToData({
+WeeklyScheduleData _convertWeeklyScheduleSnapshotToData({
   required QuerySnapshot<Map<String, dynamic>> data,
 }) {
   List<Lesson> lessons = [];
@@ -40,58 +29,45 @@ final weeklyScheduleProvider = StreamProvider<
   List<Teacher> teachers = [];
   List<Subject> subjects = [];
 
-  // Get the teachers
-  final teacherDoc = data.docs.where((doc) => doc.id == "teachers").firstOrNull;
-  if (teacherDoc != null) {
-    final teacherData = teacherDoc.data();
-    for (final entry in teacherData.entries) {
-      teachers.add(
-        Teacher.fromMap(teacherData[entry.key] as Map<String, dynamic>),
-      );
-    }
-  }
+  final dataDoc = data.docs.where((doc) => doc.id == "data").firstOrNull;
 
-  // Get the lessons
-  final lessonDoc = data.docs.where((doc) => doc.id == "data").firstOrNull;
-  if (lessonDoc != null) {
-    final lessonData = lessonDoc.data();
-
-    for (final entry in lessonData["lessons"].entries) {
-      lessons.add(Lesson.fromMap(
-        lessonData["lessons"][entry.key] as Map<String, dynamic>,
-      ));
-    }
-  }
-
-  // Get the time spans
-  final timeSpanDoc = data.docs.where((doc) => doc.id == "data").firstOrNull;
-  if (timeSpanDoc != null) {
-    final timeSpanData = timeSpanDoc.data();
-
+  if (dataDoc != null) {
+    final dataDocData = dataDoc.data();
+    // Load the time spans
     for (int i = 0;
-        i < (timeSpanData["timeSpans"] as List<dynamic>).length;
+        i < (dataDocData["timeSpans"] as List<dynamic>).length;
         i++) {
       timeSpans.add(TimeSpan.fromMap(
-        timeSpanData["timeSpans"][i] as Map<String, dynamic>,
+        dataDocData["timeSpans"][i] as Map<String, dynamic>,
+      ));
+    }
+
+    // Load the lessons
+    for (int i = 0; i < dataDocData["lessons"].length; i++) {
+      lessons.add(Lesson.fromMap(
+        dataDocData["lessons"][i] as Map<String, dynamic>,
+      ));
+    }
+
+    // Load the subjects
+    for (int i = 0; i < dataDocData["subjects"].length; i++) {
+      subjects.add(Subject.fromMap(
+        dataDocData["subjects"][i] as Map<String, dynamic>,
+      ));
+    }
+
+    // Load the teachers
+    for (int i = 0; i < dataDocData["teachers"].length; i++) {
+      teachers.add(Teacher.fromMap(
+        dataDocData["teachers"][i] as Map<String, dynamic>,
       ));
     }
   }
 
-  // Get the subjects
-  final subjectDoc = data.docs.where((doc) => doc.id == "subjects").firstOrNull;
-  if (subjectDoc != null) {
-    final subjectData = subjectDoc.data();
-    for (final entry in subjectData.entries) {
-      subjects.add(
-        Subject.fromMap(subjectData[entry.key] as Map<String, dynamic>),
-      );
-    }
-  }
-
-  return (
-    lessons,
-    timeSpans,
-    teachers,
-    subjects,
+  return WeeklyScheduleData(
+    timeSpans: timeSpans,
+    lessons: lessons,
+    subjects: subjects,
+    teachers: teachers,
   );
 }

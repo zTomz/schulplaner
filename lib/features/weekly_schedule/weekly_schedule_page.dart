@@ -32,10 +32,10 @@ class WeeklySchedulePage extends HookConsumerWidget {
 
     return weeklyScheduleStream.when(
       data: (data) {
-        List<Lesson> lessons = data.$1;
-        Set<TimeSpan> timeSpans = data.$2;
-        final List<Teacher> teachers = data.$3;
-        final List<Subject> subjects = data.$4;
+        List<Lesson> lessons = data.lessons;
+        Set<TimeSpan> timeSpans = data.timeSpans;
+        final List<Teacher> teachers = data.teachers;
+        final List<Subject> subjects = data.subjects;
 
         return Scaffold(
           appBar: CustomAppBar(

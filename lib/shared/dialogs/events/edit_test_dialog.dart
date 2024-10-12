@@ -30,11 +30,11 @@ class EditTestDialog extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final weeklyScheduleData = ref.watch(weeklyScheduleProvider);
-    final weeklyScheduleTuple = weeklyScheduleData.valueOrNull;
-    final lessons = weeklyScheduleTuple?.$1 ?? [];
-    final teachers = weeklyScheduleTuple?.$3 ?? [];
-    final subjects = weeklyScheduleTuple?.$4 ?? [];
+    final weeklyScheduleDataProvider = ref.watch(weeklyScheduleProvider);
+    final weeklyScheduleData = weeklyScheduleDataProvider.valueOrNull;
+    final lessons = weeklyScheduleData?.lessons ?? [];
+    final teachers = weeklyScheduleData?.teachers ?? [];
+    final subjects = weeklyScheduleData?.subjects ?? [];
 
     final nameController = useTextEditingController(
       text: testEvent?.name,
@@ -43,9 +43,9 @@ class EditTestDialog extends HookConsumerWidget {
       text: testEvent?.description,
     );
     final subject = useState<Subject?>(
-      weeklyScheduleData.hasValue
+      weeklyScheduleDataProvider.hasValue
           ? firstWhereOrNull(
-              weeklyScheduleData.value!.$4,
+              subjects,
               (s) => s.uuid == testEvent?.subjectUuid,
             )
           : null,
@@ -57,9 +57,9 @@ class EditTestDialog extends HookConsumerWidget {
     return CustomDialog.expanded(
       title: Text("Arbeit ${testEvent != null ? "bearbeiten" : "hinzufügen"}"),
       icon: const Icon(LucideIcons.briefcase_business),
-      loading: weeklyScheduleData.isLoading,
-      fatalError: weeklyScheduleData.hasError
-          ? Text(weeklyScheduleData.error.toString())
+      loading: weeklyScheduleDataProvider.isLoading,
+      fatalError: weeklyScheduleDataProvider.hasError
+          ? Text(weeklyScheduleDataProvider.error.toString())
           : null,
       content: Form(
         key: formKey,

@@ -126,7 +126,7 @@ class CalendarPage extends HookConsumerWidget {
                         selectedDate.value = date;
                       },
                       events: combinedEvents,
-                      subjects: weeklyScheduleData.$4,
+                      subjects: weeklyScheduleData.subjects,
                     ),
                   ),
                   const SizedBox(width: Spacing.medium),
@@ -150,7 +150,7 @@ class CalendarPage extends HookConsumerWidget {
                                   event: event,
                                   day: selectedDate.value,
                                   events: combinedEvents,
-                                  subjects: weeklyScheduleData.$4,
+                                  subjects: weeklyScheduleData.subjects,
                                 );
                               },
                             ),
