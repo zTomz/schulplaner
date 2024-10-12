@@ -23,7 +23,6 @@ class IntroPage extends StatelessWidget {
         onPressed: () async {
           await context.router.push(
             SignUpSignInRoute(
-              hobbies: null,
               alreadyHasAnAccount: true,
             ),
           );

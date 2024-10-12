@@ -24,7 +24,6 @@ import 'package:schulplaner/features/hobbies/hobbies_page.dart' as _i5;
 import 'package:schulplaner/features/overview/overview_page.dart' as _i7;
 import 'package:schulplaner/features/weekly_schedule/weekly_schedule_page.dart'
     as _i9;
-import 'package:schulplaner/shared/models/hobby.dart' as _i12;
 
 /// generated route for
 /// [_i1.AppNavigationPage]
@@ -164,14 +163,12 @@ class OverviewRoute extends _i10.PageRouteInfo<void> {
 class SignUpSignInRoute extends _i10.PageRouteInfo<SignUpSignInRouteArgs> {
   SignUpSignInRoute({
     _i11.Key? key,
-    List<_i12.Hobby>? hobbies,
     bool alreadyHasAnAccount = false,
     List<_i10.PageRouteInfo>? children,
   }) : super(
           SignUpSignInRoute.name,
           args: SignUpSignInRouteArgs(
             key: key,
-            hobbies: hobbies,
             alreadyHasAnAccount: alreadyHasAnAccount,
           ),
           initialChildren: children,
@@ -186,7 +183,6 @@ class SignUpSignInRoute extends _i10.PageRouteInfo<SignUpSignInRouteArgs> {
           orElse: () => const SignUpSignInRouteArgs());
       return _i8.SignUpSignInPage(
         key: args.key,
-        hobbies: args.hobbies,
         alreadyHasAnAccount: args.alreadyHasAnAccount,
       );
     },
@@ -196,19 +192,16 @@ class SignUpSignInRoute extends _i10.PageRouteInfo<SignUpSignInRouteArgs> {
 class SignUpSignInRouteArgs {
   const SignUpSignInRouteArgs({
     this.key,
-    this.hobbies,
     this.alreadyHasAnAccount = false,
   });
 
   final _i11.Key? key;
 
-  final List<_i12.Hobby>? hobbies;
-
   final bool alreadyHasAnAccount;
 
   @override
   String toString() {
-    return 'SignUpSignInRouteArgs{key: $key, hobbies: $hobbies, alreadyHasAnAccount: $alreadyHasAnAccount}';
+    return 'SignUpSignInRouteArgs{key: $key, alreadyHasAnAccount: $alreadyHasAnAccount}';
   }
 }
 

@@ -6,9 +6,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/config/constants/logger.dart';
 import 'package:schulplaner/config/routes/router.gr.dart';
 import 'package:schulplaner/features/auth/presentation/providers/auth_provider.dart';
+import 'package:schulplaner/features/auth/presentation/providers/create_hobbies_provider.dart';
 import 'package:schulplaner/features/auth/presentation/providers/create_weekly_schedule_provider.dart';
 import 'package:schulplaner/features/auth/presentation/providers/state/auth_state.dart';
-import 'package:schulplaner/shared/models/hobby.dart';
 import 'package:schulplaner/shared/services/snack_bar_service.dart';
 import 'package:schulplaner/shared/widgets/custom_button.dart';
 import 'package:schulplaner/shared/widgets/custom_text_field.dart';
@@ -18,16 +18,12 @@ import 'package:schulplaner/shared/widgets/loading_overlay.dart';
 
 @RoutePage()
 class SignUpSignInPage extends HookConsumerWidget {
-  /// The hobbies from the create hobbies page
-  final List<Hobby>? hobbies;
-
   /// Default to `false`. If this is `true`, the isSigningUp variable will be `true` and the user
   /// will directly asked to sign in. If this is `false`, the user will be asked to sign up.
   final bool alreadyHasAnAccount;
 
   const SignUpSignInPage({
     super.key,
-    this.hobbies,
     this.alreadyHasAnAccount = false,
   });
 
@@ -104,8 +100,10 @@ class SignUpSignInPage extends HookConsumerWidget {
                             email: emailController.text,
                             password: passwordController.text,
                             displayName: usernameController.text,
-                            weeklyScheduleData:
-                                ref.read(createWeeklyScheduleProvider),
+                            weeklyScheduleData: ref.read(
+                              createWeeklyScheduleProvider,
+                            ),
+                            hobbies: ref.read(createHobbiesProvider),
                           );
                     } else {
                       // If the users signes in, we do not want to override the current weekly schedule and hobby data

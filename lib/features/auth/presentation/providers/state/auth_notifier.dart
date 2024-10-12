@@ -1,6 +1,7 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/features/auth/domain/repositories/auth_repository.dart';
 import 'package:schulplaner/features/auth/presentation/providers/state/auth_state.dart';
+import 'package:schulplaner/shared/models/hobby.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 
 class AuthNotifier extends StateNotifier<AuthStateWrapper> {
@@ -28,6 +29,7 @@ class AuthNotifier extends StateNotifier<AuthStateWrapper> {
     required String password,
     required String displayName,
     required WeeklyScheduleData weeklyScheduleData,
+    required List<Hobby> hobbies,
   }) async {
     state = const AuthStateWrapper.loading();
     final result = await authRepository.signUpWithEmailPassword(
@@ -35,6 +37,7 @@ class AuthNotifier extends StateNotifier<AuthStateWrapper> {
       password: password,
       displayName: displayName,
       weeklyScheduleData: weeklyScheduleData,
+      hobbies: hobbies,
     );
     result.fold(
       (l) => state = AuthStateWrapper.error(l),

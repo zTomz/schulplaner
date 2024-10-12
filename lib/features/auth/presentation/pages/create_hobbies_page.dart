@@ -1,12 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/config/constants/svg_pictures.dart';
+import 'package:schulplaner/features/auth/presentation/providers/create_hobbies_provider.dart';
 import 'package:schulplaner/shared/dialogs/custom_dialog.dart';
 import 'package:schulplaner/shared/dialogs/hobby/edit_hobby_dialog.dart';
-import 'package:schulplaner/shared/functions/get_value_or_null.dart';
 import 'package:schulplaner/shared/models/hobby.dart';
 import 'package:schulplaner/shared/widgets/custom_app_bar.dart';
 import 'package:schulplaner/shared/widgets/gradient_scaffold.dart';
@@ -14,14 +14,14 @@ import 'package:schulplaner/shared/widgets/hobby_list_tile.dart';
 import 'package:schulplaner/config/routes/router.gr.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 
-class CreateHobbiesPage extends HookWidget {
+class CreateHobbiesPage extends HookConsumerWidget {
   const CreateHobbiesPage({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
-    final hobbies = useState<List<Hobby>>([]);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hobbies = ref.watch(createHobbiesProvider);
 
     return GradientScaffold(
       appBar: CustomAppBar(
@@ -39,7 +39,7 @@ class CreateHobbiesPage extends HookWidget {
               );
 
               if (result != null) {
-                hobbies.value = [...hobbies.value, result];
+                ref.read(createHobbiesProvider.notifier).addHobby(result);
               }
             },
             icon: const Icon(
@@ -54,15 +54,13 @@ class CreateHobbiesPage extends HookWidget {
       floatingActionButton: FloatingActionButton.large(
         onPressed: () async {
           await context.router.push(
-            SignUpSignInRoute(
-              hobbies: hobbies.value.getListOrNull() as List<Hobby>?,
-            ),
+            SignUpSignInRoute(),
           );
         },
         tooltip: "Weiter",
         child: const Icon(LucideIcons.arrow_right),
       ),
-      body: hobbies.value.isEmpty
+      body: hobbies.isEmpty
           ? Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -88,9 +86,9 @@ class CreateHobbiesPage extends HookWidget {
               ),
             )
           : ListView.builder(
-              itemCount: hobbies.value.length,
+              itemCount: hobbies.length,
               itemBuilder: (context, index) {
-                final hobby = hobbies.value[index];
+                final hobby = hobbies[index];
 
                 return HobbyListTile(
                   hobby: hobby,
@@ -105,13 +103,9 @@ class CreateHobbiesPage extends HookWidget {
                     );
 
                     if (result != null) {
-                      // Remove the old hobby and replace it
-                      hobbies.value = hobbies.value
-                        ..removeAt(index)
-                        ..insert(index, result);
-
-                      // Update the state
-                      hobbies.value = [...hobbies.value];
+                      ref.read(createHobbiesProvider.notifier).editHobby(
+                            result,
+                          );
                     }
                   },
                   onDelete: () async {
@@ -125,10 +119,9 @@ class CreateHobbiesPage extends HookWidget {
 
                     if (result == true) {
                       //  Delete the hobby
-                      List<Hobby> newHobbies = List<Hobby>.from(hobbies.value);
-                      newHobbies.removeAt(index);
-
-                      hobbies.value = newHobbies;
+                      ref
+                          .read(createHobbiesProvider.notifier)
+                          .deleteHobby(hobby);
                     }
                   },
                 );

@@ -3,6 +3,7 @@ import 'package:schulplaner/features/auth/data/data_source/auth_data_source.dart
 import 'package:schulplaner/features/auth/domain/repositories/auth_repository.dart';
 import 'package:schulplaner/shared/exeptions/auth_exeptions.dart';
 import 'package:schulplaner/shared/models/either.dart';
+import 'package:schulplaner/shared/models/hobby.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 
 class AuthRepositoryImpl extends AuthRepository {
@@ -18,12 +19,14 @@ class AuthRepositoryImpl extends AuthRepository {
     required String password,
     required String displayName,
     required WeeklyScheduleData weeklyScheduleData,
+    required List<Hobby> hobbies,
   }) async {
     return dataSource.signUpWithEmailPassword(
       email: email,
       password: password,
       displayName: displayName,
       weeklyScheduleData: weeklyScheduleData,
+      hobbies: hobbies,
     );
   }
 

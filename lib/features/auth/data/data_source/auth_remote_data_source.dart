@@ -3,6 +3,7 @@ import 'package:schulplaner/config/constants/logger.dart';
 import 'package:schulplaner/features/auth/data/data_source/auth_data_source.dart';
 import 'package:schulplaner/shared/exeptions/auth_exeptions.dart';
 import 'package:schulplaner/shared/models/either.dart';
+import 'package:schulplaner/shared/models/hobby.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/shared/services/database_service.dart';
 
@@ -13,6 +14,7 @@ class AuthRemoteDataSource implements AuthDataSource {
     required String password,
     required String displayName,
     required WeeklyScheduleData weeklyScheduleData,
+    required List<Hobby> hobbies,
   }) async {
     try {
       // Create the account
@@ -28,6 +30,11 @@ class AuthRemoteDataSource implements AuthDataSource {
       // Upload the weekly schedule data
       await DatabaseService.uploadWeeklySchedule(
         weeklyScheduleData: weeklyScheduleData,
+      );
+
+      // Upload the hobbies
+      await DatabaseService.uploadHobbies(
+        hobbies: hobbies,
       );
 
       return Right(credential);
