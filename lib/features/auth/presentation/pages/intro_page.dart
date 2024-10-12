@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/config/routes/router.gr.dart';
-import 'package:schulplaner/features/auth/widgets/account_creation_layout.dart';
+import 'package:schulplaner/features/auth/presentation/widgets/account_creation_layout.dart';
 
 @RoutePage()
 class IntroPage extends StatelessWidget {

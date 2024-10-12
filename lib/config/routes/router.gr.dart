@@ -12,11 +12,11 @@ import 'package:auto_route/auto_route.dart' as _i10;
 import 'package:flutter/material.dart' as _i11;
 import 'package:schulplaner/features/app_navigation/app_navigation_page.dart'
     as _i1;
-import 'package:schulplaner/features/auth/pages/configure_hobbies_page.dart'
+import 'package:schulplaner/features/auth/presentation/pages/configure_hobbies_page.dart'
     as _i3;
-import 'package:schulplaner/features/auth/pages/configure_weekly_schedule_page.dart'
+import 'package:schulplaner/features/auth/presentation/pages/configure_weekly_schedule_page.dart'
     as _i4;
-import 'package:schulplaner/features/auth/pages/intro_page.dart' as _i6;
+import 'package:schulplaner/features/auth/presentation/pages/intro_page.dart' as _i6;
 import 'package:schulplaner/features/auth/presentation/pages/sign_up_sign_in_page.dart'
     as _i8;
 import 'package:schulplaner/features/calendar/calendar_page.dart' as _i2;
