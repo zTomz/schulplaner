@@ -10,23 +10,21 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i10;
 import 'package:flutter/material.dart' as _i11;
-import 'package:schulplaner/common/models/hobby.dart' as _i13;
-import 'package:schulplaner/common/models/weekly_schedule.dart' as _i12;
-import 'package:schulplaner/features/account_creation/pages/configure_hobbies_page.dart'
-    as _i3;
-import 'package:schulplaner/features/account_creation/pages/configure_weekly_schedule_page.dart'
-    as _i4;
-import 'package:schulplaner/features/account_creation/pages/intro_page.dart'
-    as _i6;
-import 'package:schulplaner/features/account_creation/pages/sign_up_sign_in_page.dart'
-    as _i8;
 import 'package:schulplaner/features/app_navigation/app_navigation_page.dart'
     as _i1;
+import 'package:schulplaner/features/auth/pages/configure_hobbies_page.dart'
+    as _i3;
+import 'package:schulplaner/features/auth/pages/configure_weekly_schedule_page.dart'
+    as _i4;
+import 'package:schulplaner/features/auth/pages/intro_page.dart' as _i6;
+import 'package:schulplaner/features/auth/presentation/pages/sign_up_sign_in_page.dart'
+    as _i8;
 import 'package:schulplaner/features/calendar/calendar_page.dart' as _i2;
 import 'package:schulplaner/features/hobbies/hobbies_page.dart' as _i5;
 import 'package:schulplaner/features/overview/overview_page.dart' as _i7;
 import 'package:schulplaner/features/weekly_schedule/weekly_schedule_page.dart'
     as _i9;
+import 'package:schulplaner/shared/models/hobby.dart' as _i12;
 
 /// generated route for
 /// [_i1.AppNavigationPage]
@@ -68,21 +66,10 @@ class CalendarRoute extends _i10.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i3.ConfigureHobbyPage]
-class ConfigureHobbyRoute extends _i10.PageRouteInfo<ConfigureHobbyRouteArgs> {
-  ConfigureHobbyRoute({
-    _i11.Key? key,
-    _i12.WeeklyScheduleData? weeklyScheduleData,
-    List<_i12.Teacher>? teachers,
-    List<_i12.Subject>? subjects,
-    List<_i10.PageRouteInfo>? children,
-  }) : super(
+class ConfigureHobbyRoute extends _i10.PageRouteInfo<void> {
+  const ConfigureHobbyRoute({List<_i10.PageRouteInfo>? children})
+      : super(
           ConfigureHobbyRoute.name,
-          args: ConfigureHobbyRouteArgs(
-            key: key,
-            weeklyScheduleData: weeklyScheduleData,
-            teachers: teachers,
-            subjects: subjects,
-          ),
           initialChildren: children,
         );
 
@@ -91,38 +78,9 @@ class ConfigureHobbyRoute extends _i10.PageRouteInfo<ConfigureHobbyRouteArgs> {
   static _i10.PageInfo page = _i10.PageInfo(
     name,
     builder: (data) {
-      final args = data.argsAs<ConfigureHobbyRouteArgs>(
-          orElse: () => const ConfigureHobbyRouteArgs());
-      return _i3.ConfigureHobbyPage(
-        key: args.key,
-        weeklyScheduleData: args.weeklyScheduleData,
-        teachers: args.teachers,
-        subjects: args.subjects,
-      );
+      return const _i3.ConfigureHobbyPage();
     },
   );
-}
-
-class ConfigureHobbyRouteArgs {
-  const ConfigureHobbyRouteArgs({
-    this.key,
-    this.weeklyScheduleData,
-    this.teachers,
-    this.subjects,
-  });
-
-  final _i11.Key? key;
-
-  final _i12.WeeklyScheduleData? weeklyScheduleData;
-
-  final List<_i12.Teacher>? teachers;
-
-  final List<_i12.Subject>? subjects;
-
-  @override
-  String toString() {
-    return 'ConfigureHobbyRouteArgs{key: $key, weeklyScheduleData: $weeklyScheduleData, teachers: $teachers, subjects: $subjects}';
-  }
 }
 
 /// generated route for
@@ -206,19 +164,13 @@ class OverviewRoute extends _i10.PageRouteInfo<void> {
 class SignUpSignInRoute extends _i10.PageRouteInfo<SignUpSignInRouteArgs> {
   SignUpSignInRoute({
     _i11.Key? key,
-    _i12.WeeklyScheduleData? weeklyScheduleData,
-    List<_i12.Teacher>? teachers,
-    List<_i12.Subject>? subjects,
-    List<_i13.Hobby>? hobbies,
+    List<_i12.Hobby>? hobbies,
     bool alreadyHasAnAccount = false,
     List<_i10.PageRouteInfo>? children,
   }) : super(
           SignUpSignInRoute.name,
           args: SignUpSignInRouteArgs(
             key: key,
-            weeklyScheduleData: weeklyScheduleData,
-            teachers: teachers,
-            subjects: subjects,
             hobbies: hobbies,
             alreadyHasAnAccount: alreadyHasAnAccount,
           ),
@@ -234,9 +186,6 @@ class SignUpSignInRoute extends _i10.PageRouteInfo<SignUpSignInRouteArgs> {
           orElse: () => const SignUpSignInRouteArgs());
       return _i8.SignUpSignInPage(
         key: args.key,
-        weeklyScheduleData: args.weeklyScheduleData,
-        teachers: args.teachers,
-        subjects: args.subjects,
         hobbies: args.hobbies,
         alreadyHasAnAccount: args.alreadyHasAnAccount,
       );
@@ -247,28 +196,19 @@ class SignUpSignInRoute extends _i10.PageRouteInfo<SignUpSignInRouteArgs> {
 class SignUpSignInRouteArgs {
   const SignUpSignInRouteArgs({
     this.key,
-    this.weeklyScheduleData,
-    this.teachers,
-    this.subjects,
     this.hobbies,
     this.alreadyHasAnAccount = false,
   });
 
   final _i11.Key? key;
 
-  final _i12.WeeklyScheduleData? weeklyScheduleData;
-
-  final List<_i12.Teacher>? teachers;
-
-  final List<_i12.Subject>? subjects;
-
-  final List<_i13.Hobby>? hobbies;
+  final List<_i12.Hobby>? hobbies;
 
   final bool alreadyHasAnAccount;
 
   @override
   String toString() {
-    return 'SignUpSignInRouteArgs{key: $key, weeklyScheduleData: $weeklyScheduleData, teachers: $teachers, subjects: $subjects, hobbies: $hobbies, alreadyHasAnAccount: $alreadyHasAnAccount}';
+    return 'SignUpSignInRouteArgs{key: $key, hobbies: $hobbies, alreadyHasAnAccount: $alreadyHasAnAccount}';
   }
 }
 

@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
-import 'package:schulplaner/common/extensions/date_time_extension.dart';
-import 'package:schulplaner/common/functions/get_events_for_day.dart';
-import 'package:schulplaner/common/models/event.dart';
-import 'package:schulplaner/common/models/time.dart';
-import 'package:schulplaner/common/models/weekly_schedule.dart';
+import 'package:schulplaner/shared/extensions/date_time_extension.dart';
+import 'package:schulplaner/shared/functions/get_events_for_day.dart';
+import 'package:schulplaner/shared/models/event.dart';
+import 'package:schulplaner/shared/models/time.dart';
+import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/features/calendar/functions/get_color_for_event.dart';
 
 class CalendarView extends HookWidget {

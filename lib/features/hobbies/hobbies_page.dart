@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:schulplaner/common/provider/hobbies_provider.dart';
-import 'package:schulplaner/common/services/exeption_handler_service.dart';
-import 'package:schulplaner/common/widgets/data_state_widgets.dart';
+import 'package:schulplaner/shared/provider/hobbies_provider.dart';
+import 'package:schulplaner/shared/services/exeption_handler_service.dart';
+import 'package:schulplaner/shared/widgets/data_state_widgets.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/config/constants/svg_pictures.dart';
-import 'package:schulplaner/common/dialogs/custom_dialog.dart';
-import 'package:schulplaner/common/dialogs/hobby/edit_hobby_dialog.dart';
-import 'package:schulplaner/common/models/hobby.dart';
-import 'package:schulplaner/common/services/database_service.dart';
-import 'package:schulplaner/common/widgets/custom_app_bar.dart';
-import 'package:schulplaner/common/widgets/hobby_list_tile.dart';
+import 'package:schulplaner/shared/dialogs/custom_dialog.dart';
+import 'package:schulplaner/shared/dialogs/hobby/edit_hobby_dialog.dart';
+import 'package:schulplaner/shared/models/hobby.dart';
+import 'package:schulplaner/shared/services/database_service.dart';
+import 'package:schulplaner/shared/widgets/custom_app_bar.dart';
+import 'package:schulplaner/shared/widgets/hobby_list_tile.dart';
 
 @RoutePage()
 class HobbiesPage extends ConsumerWidget {

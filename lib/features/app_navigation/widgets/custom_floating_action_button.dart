@@ -3,13 +3,13 @@ import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:schulplaner/common/dialogs/events/edit_homework_dialog.dart';
-import 'package:schulplaner/common/dialogs/events/edit_fixed_event_dialog.dart';
-import 'package:schulplaner/common/dialogs/events/edit_test_dialog.dart';
-import 'package:schulplaner/common/models/event.dart';
-import 'package:schulplaner/common/provider/events_provider.dart';
-import 'package:schulplaner/common/services/database_service.dart';
-import 'package:schulplaner/common/services/exeption_handler_service.dart';
+import 'package:schulplaner/shared/dialogs/events/edit_homework_dialog.dart';
+import 'package:schulplaner/shared/dialogs/events/edit_fixed_event_dialog.dart';
+import 'package:schulplaner/shared/dialogs/events/edit_test_dialog.dart';
+import 'package:schulplaner/shared/models/event.dart';
+import 'package:schulplaner/shared/provider/events_provider.dart';
+import 'package:schulplaner/shared/services/database_service.dart';
+import 'package:schulplaner/shared/services/exeption_handler_service.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 
 class CustomFloatingActionButton extends HookConsumerWidget {

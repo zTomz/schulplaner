@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
-import 'package:schulplaner/common/dialogs/events/edit_fixed_event_dialog.dart';
-import 'package:schulplaner/common/dialogs/events/edit_test_dialog.dart';
-import 'package:schulplaner/common/extensions/date_time_extension.dart';
-import 'package:schulplaner/common/functions/close_all_dialogs.dart';
-import 'package:schulplaner/common/functions/first_where_or_null.dart';
-import 'package:schulplaner/common/services/exeption_handler_service.dart';
-import 'package:schulplaner/common/services/snack_bar_service.dart';
+import 'package:schulplaner/shared/dialogs/events/edit_fixed_event_dialog.dart';
+import 'package:schulplaner/shared/dialogs/events/edit_test_dialog.dart';
+import 'package:schulplaner/shared/extensions/date_time_extension.dart';
+import 'package:schulplaner/shared/functions/close_all_dialogs.dart';
+import 'package:schulplaner/shared/functions/first_where_or_null.dart';
+import 'package:schulplaner/shared/services/exeption_handler_service.dart';
+import 'package:schulplaner/shared/services/snack_bar_service.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
-import 'package:schulplaner/common/dialogs/events/edit_homework_dialog.dart';
-import 'package:schulplaner/common/models/event.dart';
-import 'package:schulplaner/common/models/weekly_schedule.dart';
-import 'package:schulplaner/common/services/database_service.dart';
+import 'package:schulplaner/shared/dialogs/events/edit_homework_dialog.dart';
+import 'package:schulplaner/shared/models/event.dart';
+import 'package:schulplaner/shared/models/weekly_schedule.dart';
+import 'package:schulplaner/shared/services/database_service.dart';
 import 'package:schulplaner/features/calendar/functions/get_color_for_event.dart';
 
 class EventInfoBox extends StatelessWidget {

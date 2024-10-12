@@ -3,21 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:schulplaner/common/services/exeption_handler_service.dart';
+import 'package:schulplaner/shared/services/exeption_handler_service.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
-import 'package:schulplaner/common/dialogs/custom_dialog.dart';
-import 'package:schulplaner/common/dialogs/edit_time_span_dialog.dart';
-import 'package:schulplaner/common/dialogs/weekly_schedule/edit_lesson_dialog.dart';
-import 'package:schulplaner/common/functions/close_all_dialogs.dart';
-import 'package:schulplaner/common/functions/handle_state_change_database.dart';
-import 'package:schulplaner/common/models/time.dart';
-import 'package:schulplaner/common/models/weekly_schedule.dart';
-import 'package:schulplaner/common/provider/weekly_schedule_provider.dart';
-import 'package:schulplaner/common/services/database_service.dart';
-import 'package:schulplaner/common/services/snack_bar_service.dart';
-import 'package:schulplaner/common/widgets/custom_app_bar.dart';
-import 'package:schulplaner/common/widgets/data_state_widgets.dart';
-import 'package:schulplaner/common/widgets/weekly_schedule/weekly_schedule.dart';
+import 'package:schulplaner/shared/dialogs/custom_dialog.dart';
+import 'package:schulplaner/shared/dialogs/edit_time_span_dialog.dart';
+import 'package:schulplaner/shared/dialogs/weekly_schedule/edit_lesson_dialog.dart';
+import 'package:schulplaner/shared/functions/close_all_dialogs.dart';
+import 'package:schulplaner/shared/functions/handle_state_change_database.dart';
+import 'package:schulplaner/shared/models/time.dart';
+import 'package:schulplaner/shared/models/weekly_schedule.dart';
+import 'package:schulplaner/shared/provider/weekly_schedule_provider.dart';
+import 'package:schulplaner/shared/services/database_service.dart';
+import 'package:schulplaner/shared/services/snack_bar_service.dart';
+import 'package:schulplaner/shared/widgets/custom_app_bar.dart';
+import 'package:schulplaner/shared/widgets/data_state_widgets.dart';
+import 'package:schulplaner/shared/widgets/weekly_schedule/weekly_schedule.dart';
 
 @RoutePage()
 class WeeklySchedulePage extends HookConsumerWidget {
@@ -57,6 +57,8 @@ class WeeklySchedulePage extends HookConsumerWidget {
                         weeklyScheduleData: WeeklyScheduleData(
                           timeSpans: {...timeSpans, result},
                           lessons: lessons,
+                          teachers: teachers,
+                          subjects: subjects,
                         ),
                       );
                     } catch (error) {
@@ -98,6 +100,8 @@ class WeeklySchedulePage extends HookConsumerWidget {
                               weeklyScheduleData: WeeklyScheduleData(
                                 timeSpans: timeSpans,
                                 lessons: updatedLessons,
+                                teachers: teachers,
+                                subjects: subjects,
                               ),
                             );
                           } catch (error) {
@@ -142,6 +146,8 @@ class WeeklySchedulePage extends HookConsumerWidget {
                       weeklyScheduleData: WeeklyScheduleData(
                         timeSpans: timeSpans,
                         lessons: lessons,
+                        teachers: teachers,
+                        subjects: subjects,
                       ),
                     );
                   } catch (error) {
@@ -181,6 +187,8 @@ class WeeklySchedulePage extends HookConsumerWidget {
                       weeklyScheduleData: WeeklyScheduleData(
                         timeSpans: timeSpans,
                         lessons: lessons,
+                        teachers: teachers,
+                        subjects: subjects,
                       ),
                     );
                   } catch (error) {
@@ -198,10 +206,12 @@ class WeeklySchedulePage extends HookConsumerWidget {
                         : schoolTimeCell;
               },
               selectedSchoolTimeCell: selectedSchoolTimeCell.value,
-              timeSpans: timeSpans,
-              teachers: teachers,
-              subjects: subjects,
-              lessons: lessons,
+              data: WeeklyScheduleData(
+                timeSpans: timeSpans,
+                lessons: lessons,
+                teachers: teachers,
+                subjects: subjects,
+              ),
               week: week.value,
             ),
           ),
@@ -242,6 +252,8 @@ Future<T?> _showEditLessonDialog<T>(
                   weeklyScheduleData: WeeklyScheduleData(
                     timeSpans: timeSpans,
                     lessons: lessons,
+                    subjects: subjects,
+                    teachers: teachers,
                   ),
                 );
               } catch (error) {
@@ -268,9 +280,13 @@ Future<T?> _showEditLessonDialog<T>(
               }
             }
           : null,
-      onSubjectChanged: (subject) =>
+      onSubjectCreated: (subject) =>
           onSubjectChanged(context, subject, subjects),
-      onTeacherChanged: (teacher) =>
+      onSubjectEdited: (subject) =>
+          onSubjectChanged(context, subject, subjects),
+      onTeacherCreated: (teacher) =>
+          onTeacherChanged(context, teacher, teachers),
+      onTeacherEdited: (teacher) =>
           onTeacherChanged(context, teacher, teachers),
     ),
   );
