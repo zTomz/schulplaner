@@ -17,6 +17,7 @@ class WeeklyScheduleTimeCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TableCell(
+      verticalAlignment: TableCellVerticalAlignment.intrinsicHeight,
       child: Material(
         type: MaterialType.transparency,
         child: InkWell(
