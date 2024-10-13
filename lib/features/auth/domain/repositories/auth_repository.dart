@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:schulplaner/shared/models/either.dart';
-import 'package:schulplaner/shared/exeptions/auth_exeptions.dart';
+import 'package:schulplaner/shared/exceptions/auth_exceptions.dart';
 import 'package:schulplaner/shared/models/hobby.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 

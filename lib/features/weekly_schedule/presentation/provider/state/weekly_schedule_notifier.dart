@@ -1,6 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/features/weekly_schedule/domain/repositories/weekly_schedule_repository.dart';
-import 'package:schulplaner/shared/exeptions/weekly_schedule_exceptions.dart';
+import 'package:schulplaner/shared/exceptions/weekly_schedule_exceptions.dart';
 import 'package:schulplaner/shared/models/either.dart';
 import 'package:schulplaner/shared/models/time.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';

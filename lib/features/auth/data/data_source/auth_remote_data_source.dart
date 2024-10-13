@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:schulplaner/config/constants/logger.dart';
 import 'package:schulplaner/features/auth/data/data_source/auth_data_source.dart';
-import 'package:schulplaner/shared/exeptions/auth_exeptions.dart';
+import 'package:schulplaner/shared/exceptions/auth_exceptions.dart';
 import 'package:schulplaner/shared/models/either.dart';
 import 'package:schulplaner/shared/models/hobby.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';

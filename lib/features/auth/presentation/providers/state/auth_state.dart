@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:schulplaner/shared/exeptions/auth_exeptions.dart';
+import 'package:schulplaner/shared/exceptions/auth_exceptions.dart';
 
 class AuthStateWrapper extends Equatable {
   final AuthState state;

@@ -3,15 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:schulplaner/shared/provider/hobbies_provider.dart';
-import 'package:schulplaner/shared/services/exeption_handler_service.dart';
+import 'package:schulplaner/features/hobbies/presentation/provider/hobbies_provider.dart';
 import 'package:schulplaner/shared/widgets/data_state_widgets.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/config/constants/svg_pictures.dart';
 import 'package:schulplaner/shared/dialogs/custom_dialog.dart';
 import 'package:schulplaner/shared/dialogs/hobby/edit_hobby_dialog.dart';
 import 'package:schulplaner/shared/models/hobby.dart';
-import 'package:schulplaner/shared/services/database_service.dart';
 import 'package:schulplaner/shared/widgets/custom_app_bar.dart';
 import 'package:schulplaner/shared/widgets/hobby_list_tile.dart';
 
@@ -39,15 +37,7 @@ class HobbiesPage extends ConsumerWidget {
               );
 
               if (result != null) {
-                try {
-                  await DatabaseService.uploadHobbies(
-                    hobbies: [result],
-                  );
-                } catch (error) {
-                  if (context.mounted) {
-                    ExeptionHandlerService.handleExeption(context, error);
-                  }
-                }
+                ref.read(hobbiesProvider.notifier).addHobby(hobby: result);
               }
             },
             icon: const Icon(
@@ -59,8 +49,9 @@ class HobbiesPage extends ConsumerWidget {
           const SizedBox(width: Spacing.medium),
         ],
       ),
-      body: hobbiesData.when(
-        data: (hobbies) {
+      body: hobbiesData.fold(
+        (failure) => const DataErrorWidget(),
+        (hobbies) {
           if (hobbies.isEmpty) {
             return Center(
               child: Column(
@@ -106,15 +97,7 @@ class HobbiesPage extends ConsumerWidget {
                   );
 
                   if (result != null) {
-                    try {
-                      await DatabaseService.uploadHobbies(
-                        hobbies: [result],
-                      );
-                    } catch (error) {
-                      if (context.mounted) {
-                        ExeptionHandlerService.handleExeption(context, error);
-                      }
-                    }
+                    ref.read(hobbiesProvider.notifier).editHobby(hobby: result);
                   }
                 },
                 onDelete: () async {
@@ -127,25 +110,15 @@ class HobbiesPage extends ConsumerWidget {
                   );
 
                   if (result == true) {
-                    try {
-                      await DatabaseService.deleteHobbies(
-                        hobbies: [currentHobby],
-                      );
-                    } catch (error) {
-                      if (context.mounted) {
-                        ExeptionHandlerService.handleExeption(context, error);
-                      }
-                    }
+                    ref
+                        .read(hobbiesProvider.notifier)
+                        .deleteHobby(hobby: currentHobby);
                   }
                 },
               );
             },
           );
         },
-        error: (_, __) {
-          return const DataErrorWidget();
-        },
-        loading: () => const DataLoadingWidget(),
       ),
     );
   }

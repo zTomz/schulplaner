@@ -3,16 +3,16 @@ import 'package:schulplaner/shared/models/hobby.dart';
 import 'package:schulplaner/shared/provider/user_provider.dart';
 import 'package:schulplaner/shared/services/database_service.dart';
 
-final hobbiesProvider = StreamProvider<List<Hobby>>(
+final hobbiesStreamProvider = StreamProvider<List<Hobby>>(
   (ref) {
     final userStream = ref.watch(userProvider);
 
     if (userStream.value != null) {
-      return DatabaseService.hobbiesCollection.snapshots().map(
-            (value) => value.docs
+      return DatabaseService.hobbiesCollection.doc("data").snapshots().map(
+            (value) => (value.data()?.entries ?? [])
                 .map(
-                  (doc) => Hobby.fromMap(
-                    doc.data(),
+                  (hobbyUuid) => Hobby.fromMap(
+                    value.data()![hobbyUuid.key] as Map<String, dynamic>,
                   ),
                 )
                 .toList(),

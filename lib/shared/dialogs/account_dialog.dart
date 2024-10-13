@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
-import 'package:schulplaner/shared/exeptions/auth_exeptions.dart';
+import 'package:schulplaner/shared/exceptions/auth_exceptions.dart';
 import 'package:schulplaner/shared/functions/close_all_dialogs.dart';
 import 'package:schulplaner/shared/services/exeption_handler_service.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
