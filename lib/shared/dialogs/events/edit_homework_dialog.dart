@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:schulplaner/features/weekly_schedule/presentation/provider/weekly_schedule_provider.dart';
 import 'package:schulplaner/shared/dialogs/events/event_date_dialog.dart';
 import 'package:schulplaner/shared/functions/build_body_part.dart';
 import 'package:schulplaner/shared/models/time.dart';
@@ -19,10 +20,8 @@ import 'package:schulplaner/shared/dialogs/weekly_schedule/subject_dialogs.dart'
 import 'package:schulplaner/shared/extensions/date_time_extension.dart';
 import 'package:schulplaner/shared/functions/first_where_or_null.dart';
 import 'package:schulplaner/shared/functions/get_value_or_null.dart';
-import 'package:schulplaner/shared/functions/handle_state_change_database.dart';
 import 'package:schulplaner/shared/models/event.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
-import 'package:schulplaner/shared/provider/weekly_schedule_stream_provider.dart';
 import 'package:schulplaner/shared/widgets/custom_button.dart';
 import 'package:schulplaner/shared/widgets/custom_text_field.dart';
 import 'package:schulplaner/shared/widgets/required_field.dart';
@@ -41,11 +40,10 @@ class EditHomeworkDialog extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final weeklyScheduleStream = ref.watch(weeklyScheduleStreamProvider);
-    final weeklyScheduleData = weeklyScheduleStream.valueOrNull;
-    final lessons = weeklyScheduleData?.lessons ?? [];
-    final teachers = weeklyScheduleData?.teachers ?? [];
-    final subjects = weeklyScheduleData?.subjects ?? [];
+    final weeklyScheduleData = ref.watch(weeklyScheduleProvider);
+    final subjects = weeklyScheduleData.right?.subjects ?? [];
+    final teachers = weeklyScheduleData.right?.teachers ?? [];
+    final lessons = weeklyScheduleData.right?.lessons ?? [];
 
     final nameController = useTextEditingController(
       text: homeworkEvent?.name,
@@ -54,12 +52,10 @@ class EditHomeworkDialog extends HookConsumerWidget {
       text: homeworkEvent?.description,
     );
     final subject = useState<Subject?>(
-      weeklyScheduleStream.hasValue
-          ? firstWhereOrNull(
-              subjects,
-              (s) => s.uuid == homeworkEvent?.subjectUuid,
-            )
-          : null,
+      firstWhereOrNull(
+        weeklyScheduleData.right?.subjects ?? [],
+        (s) => s.uuid == homeworkEvent?.subjectUuid,
+      ),
     );
     final date = useState<DateTime?>(homeworkEvent?.date);
     final processingDate = useState<ProcessingDate?>(
@@ -73,9 +69,8 @@ class EditHomeworkDialog extends HookConsumerWidget {
         "Hausaufgaben ${homeworkEvent == null ? "hinzufügen" : "bearbeiten"}",
       ),
       icon: const Icon(LucideIcons.book_open_text),
-      loading: weeklyScheduleStream.isLoading,
-      fatalError: weeklyScheduleStream.hasError
-          ? Text(weeklyScheduleStream.error.toString())
+      fatalError: weeklyScheduleData.isLeft()
+          ? Text(weeklyScheduleData.left.toString()) // TODO: Better errors
           : null,
       content: Form(
         key: formKey,
@@ -98,26 +93,26 @@ class EditHomeworkDialog extends HookConsumerWidget {
                     builder: (context) => SubjectDialog(
                       subjects: subjects,
                       teachers: teachers,
-                      onSubjectCreated: (subject) => onSubjectChanged(
-                        context,
-                        subject,
-                        subjects,
-                      ),
-                      onSubjectEdited: (subject) => onSubjectChanged(
-                        context,
-                        subject,
-                        subjects,
-                      ),
-                      onTeacherCreated: (teacher) => onTeacherChanged(
-                        context,
-                        teacher,
-                        teachers,
-                      ),
-                      onTeacherEdited: (teacher) => onTeacherChanged(
-                        context,
-                        teacher,
-                        teachers,
-                      ),
+                      onSubjectCreated: (subject) async {
+                        await ref
+                            .read(weeklyScheduleProvider.notifier)
+                            .addSubject(subject: subject);
+                      },
+                      onSubjectEdited: (subject) async {
+                        await ref
+                            .read(weeklyScheduleProvider.notifier)
+                            .editSubject(subject: subject);
+                      },
+                      onTeacherCreated: (teacher) async {
+                        await ref
+                            .read(weeklyScheduleProvider.notifier)
+                            .addTeacher(teacher: teacher);
+                      },
+                      onTeacherEdited: (teacher) async {
+                        await ref
+                            .read(weeklyScheduleProvider.notifier)
+                            .editTeacher(teacher: teacher);
+                      },
                     ),
                   );
 
@@ -185,13 +180,13 @@ class EditHomeworkDialog extends HookConsumerWidget {
                 IconButton(
                   onPressed: subject.value != null &&
                           date.value != null &&
-                          weeklyScheduleData != null
+                          weeklyScheduleData.isRight()
                       ? () async {
                           final result = await showDialog(
                             context: context,
                             builder: (context) =>
                                 GenerateProcessingDateWithAiDialog(
-                              weeklyScheduleData: weeklyScheduleData,
+                              weeklyScheduleData: weeklyScheduleData.right!,
                               subject: subject.value!,
                               deadline: date.value!,
                             ),
