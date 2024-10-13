@@ -22,7 +22,7 @@ import 'package:schulplaner/features/auth/presentation/pages/sign_up_sign_in_pag
 import 'package:schulplaner/features/calendar/calendar_page.dart' as _i2;
 import 'package:schulplaner/features/hobbies/hobbies_page.dart' as _i5;
 import 'package:schulplaner/features/overview/overview_page.dart' as _i7;
-import 'package:schulplaner/features/weekly_schedule/weekly_schedule_page.dart'
+import 'package:schulplaner/features/weekly_schedule/presentation/pages/weekly_schedule_page.dart'
     as _i9;
 
 /// generated route for

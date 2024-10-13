@@ -1,10 +1,8 @@
 class UnauthenticatedExeption implements Exception {
-  UnauthenticatedExeption();
+  final String message;
 
-  @override
-  String toString() {
-    return "Sie müssen angemeldet sein, um diese Aktion auszuführen.";
-  }
+  UnauthenticatedExeption()
+      : message = "Sie müssen angemeldet sein, um diese Aktion auszuführen.";
 }
 
 class AuthExeption implements Exception {

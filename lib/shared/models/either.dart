@@ -12,6 +12,15 @@ sealed class Either<L, R> {
         Right() => false,
       };
   bool isRight() => !isLeft();
+
+  L? get left => switch (this) {
+        Left(:final value) => value,
+        Right() => null,
+      };
+  R? get right => switch (this) {
+        Left() => null,
+        Right(:final value) => value,
+      };
 }
 
 class Left<L, R> extends Either<L, R> {

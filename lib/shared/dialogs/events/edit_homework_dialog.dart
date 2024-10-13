@@ -22,7 +22,7 @@ import 'package:schulplaner/shared/functions/get_value_or_null.dart';
 import 'package:schulplaner/shared/functions/handle_state_change_database.dart';
 import 'package:schulplaner/shared/models/event.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
-import 'package:schulplaner/shared/provider/weekly_schedule_provider.dart';
+import 'package:schulplaner/shared/provider/weekly_schedule_stream_provider.dart';
 import 'package:schulplaner/shared/widgets/custom_button.dart';
 import 'package:schulplaner/shared/widgets/custom_text_field.dart';
 import 'package:schulplaner/shared/widgets/required_field.dart';
@@ -41,8 +41,8 @@ class EditHomeworkDialog extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final weeklyScheduleDataProvider = ref.watch(weeklyScheduleProvider);
-    final weeklyScheduleData = weeklyScheduleDataProvider.valueOrNull;
+    final weeklyScheduleStream = ref.watch(weeklyScheduleStreamProvider);
+    final weeklyScheduleData = weeklyScheduleStream.valueOrNull;
     final lessons = weeklyScheduleData?.lessons ?? [];
     final teachers = weeklyScheduleData?.teachers ?? [];
     final subjects = weeklyScheduleData?.subjects ?? [];
@@ -54,7 +54,7 @@ class EditHomeworkDialog extends HookConsumerWidget {
       text: homeworkEvent?.description,
     );
     final subject = useState<Subject?>(
-      weeklyScheduleDataProvider.hasValue
+      weeklyScheduleStream.hasValue
           ? firstWhereOrNull(
               subjects,
               (s) => s.uuid == homeworkEvent?.subjectUuid,
@@ -73,9 +73,9 @@ class EditHomeworkDialog extends HookConsumerWidget {
         "Hausaufgaben ${homeworkEvent == null ? "hinzufügen" : "bearbeiten"}",
       ),
       icon: const Icon(LucideIcons.book_open_text),
-      loading: weeklyScheduleDataProvider.isLoading,
-      fatalError: weeklyScheduleDataProvider.hasError
-          ? Text(weeklyScheduleDataProvider.error.toString())
+      loading: weeklyScheduleStream.isLoading,
+      fatalError: weeklyScheduleStream.hasError
+          ? Text(weeklyScheduleStream.error.toString())
           : null,
       content: Form(
         key: formKey,

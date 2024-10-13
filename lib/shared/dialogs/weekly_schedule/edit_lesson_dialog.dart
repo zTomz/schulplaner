@@ -150,6 +150,7 @@ class EditLessonDialog extends HookWidget {
 
               if (result == true && context.mounted) {
                 onLessonDeleted!(lesson!);
+                Navigator.of(context).pop();
               }
             },
             style: ElevatedButton.styleFrom(

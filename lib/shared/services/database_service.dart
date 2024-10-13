@@ -12,6 +12,9 @@ abstract class DatabaseService {
       get weeklyScheduleCollection =>
           currentUserDocument.collection("weekly_schedule");
 
+  static DocumentReference<Map<String, dynamic>> get weeklyScheduleDocument =>
+      weeklyScheduleCollection.doc("data");
+
   /// The hobbies collection from Firestore for the current user
   static CollectionReference<Map<String, dynamic>> get hobbiesCollection =>
       currentUserDocument.collection("hobbies");

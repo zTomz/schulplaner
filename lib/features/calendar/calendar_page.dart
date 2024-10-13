@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/shared/functions/get_events_for_day.dart';
 import 'package:schulplaner/shared/provider/events_provider.dart';
-import 'package:schulplaner/shared/provider/weekly_schedule_provider.dart';
+import 'package:schulplaner/shared/provider/weekly_schedule_stream_provider.dart';
 import 'package:schulplaner/shared/widgets/custom_app_bar.dart';
 import 'package:schulplaner/shared/widgets/data_state_widgets.dart';
 import 'package:schulplaner/features/calendar/widgets/calendar_view.dart';
@@ -19,7 +19,7 @@ class CalendarPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedDate = useState<DateTime>(DateTime.now());
-    final weeklyScheduleData = ref.watch(weeklyScheduleProvider);
+    final weeklyScheduleData = ref.watch(weeklyScheduleStreamProvider);
     final eventsData = ref.watch(eventsProvider);
 
     // final testTeacher = Teacher(

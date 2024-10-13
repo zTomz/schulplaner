@@ -5,7 +5,7 @@ import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/shared/provider/user_provider.dart';
 import 'package:schulplaner/shared/services/database_service.dart';
 
-final weeklyScheduleProvider = StreamProvider<WeeklyScheduleData>(
+final weeklyScheduleStreamProvider = StreamProvider<WeeklyScheduleData>(
   (ref) {
     final userStream = ref.watch(userProvider);
 
