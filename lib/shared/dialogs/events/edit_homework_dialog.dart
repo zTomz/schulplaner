@@ -363,22 +363,22 @@ class GenerateProcessingDateWithAiDialog extends HookConsumerWidget {
 
             // Create a map, containing the already created events in a good way
             Map<String, dynamic> events = {
-              "homework": eventsTuple!.$1.map(
+              "homework": eventsTuple!.homeworkEvents.map(
                 (event) => event.getCompleteMap(
                   weeklyScheduleData.subjects,
                   weeklyScheduleData.teachers,
                 ),
               ),
-              "tests": eventsTuple.$2.map(
+              "tests": eventsTuple.testEvents.map(
                 (event) => event.getCompleteMap(
                   weeklyScheduleData.subjects,
                   weeklyScheduleData.teachers,
                 ),
               ),
-              "reminders": eventsTuple.$3.map(
+              "reminders": eventsTuple.reminderEvents.map(
                 (event) => event.toMap(),
               ),
-              "repeating_events": eventsTuple.$4.map(
+              "repeating_events": eventsTuple.repeatingEvents.map(
                 (event) => event.toMap(),
               ),
             };

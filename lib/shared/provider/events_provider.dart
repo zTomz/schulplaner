@@ -4,13 +4,7 @@ import 'package:schulplaner/shared/models/event.dart';
 import 'package:schulplaner/shared/provider/user_provider.dart';
 import 'package:schulplaner/shared/services/database_service.dart';
 
-final eventsProvider = StreamProvider<
-    (
-      List<HomeworkEvent> homeworkEvents,
-      List<TestEvent> testEvents,
-      List<ReminderEvent> reminderEvents,
-      List<RepeatingEvent> repeatingEvents
-    )>(
+final eventsProvider = StreamProvider<EventData>(
   (ref) {
     final userStream = ref.watch(userProvider);
 
@@ -26,12 +20,7 @@ final eventsProvider = StreamProvider<
   },
 );
 
-(
-  List<HomeworkEvent> homeworkEvents,
-  List<TestEvent> testEvents,
-  List<ReminderEvent> reminderEvents,
-  List<RepeatingEvent> repeatingEvents
-) _convertEventsSnapshotToData({
+EventData _convertEventsSnapshotToData({
   required QuerySnapshot<Map<String, dynamic>> data,
 }) {
   List<HomeworkEvent> homeworkEvents = [];
@@ -91,5 +80,10 @@ final eventsProvider = StreamProvider<
 
   // TODO: Handle the other events here and convert them
 
-  return (homeworkEvents, testEvents, reminderEvents, repeatingEvents);
+  return EventData(
+    homeworkEvents: homeworkEvents,
+    testEvents: testEvents,
+    reminderEvents: reminderEvents,
+    repeatingEvents: repeatingEvents,
+  );
 }

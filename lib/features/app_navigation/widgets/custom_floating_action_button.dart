@@ -24,8 +24,6 @@ class CustomFloatingActionButton extends HookConsumerWidget {
 
     return eventData.when(
       data: (data) {
-        final events = [...data.$1, ...data.$2, ...data.$3, ...data.$4];
-
         return ExpandableFab(
           key: expandebleFabKey,
           type: ExpandableFabType.up,
@@ -57,7 +55,7 @@ class CustomFloatingActionButton extends HookConsumerWidget {
                 if (result != null) {
                   try {
                     await DatabaseService.uploadEvents(
-                      events: [...events, result],
+                      events: [...data.events, result],
                     );
                   } catch (error) {
                     if (context.mounted) {
@@ -80,7 +78,7 @@ class CustomFloatingActionButton extends HookConsumerWidget {
                 if (result != null) {
                   try {
                     await DatabaseService.uploadEvents(
-                      events: [...events, result],
+                      events: [...data.events, result],
                     );
                   } catch (error) {
                     if (context.mounted) {
@@ -104,7 +102,7 @@ class CustomFloatingActionButton extends HookConsumerWidget {
                 if (result != null) {
                   try {
                     await DatabaseService.uploadEvents(
-                      events: [...events, result],
+                      events: [...data.events, result],
                     );
                   } catch (error) {
                     if (context.mounted) {

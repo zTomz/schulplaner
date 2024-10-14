@@ -32,6 +32,28 @@ abstract class Event {
   });
 }
 
+/// Containing a list for each type of event
+class EventData {
+  final List<HomeworkEvent> homeworkEvents;
+  final List<TestEvent> testEvents;
+  final List<ReminderEvent> reminderEvents;
+  final List<RepeatingEvent> repeatingEvents;
+
+  EventData({
+    required this.homeworkEvents,
+    required this.testEvents,
+    required this.reminderEvents,
+    required this.repeatingEvents,
+  });
+
+  List<Event> get events => [
+        ...homeworkEvents,
+        ...testEvents,
+        ...reminderEvents,
+        ...repeatingEvents,
+      ];
+}
+
 // TODO: Add homework and other classes here. These should be subclasses of [Event]
 
 /// A homework event

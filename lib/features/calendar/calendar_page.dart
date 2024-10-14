@@ -92,12 +92,7 @@ class CalendarPage extends HookConsumerWidget {
 
     return eventsData.when(
       data: (events) {
-        final combinedEvents = [
-          ...events.$1,
-          ...events.$2,
-          ...events.$3,
-          ...events.$4,
-        ];
+        final combinedEvents = events.events;
 
         final eventsForDay = getEventsForDay(
           selectedDate.value,

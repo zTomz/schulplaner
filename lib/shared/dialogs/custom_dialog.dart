@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
@@ -183,9 +182,9 @@ class CustomDialog extends StatelessWidget {
               ),
             ),
             if (loading || fatalError != null)
-             LoadingOverlay(
-              error: fatalError,
-             ),
+              LoadingOverlay(
+                error: fatalError,
+              ),
             if (loading || fatalError != null)
               Positioned(
                 top: Spacing.medium,
