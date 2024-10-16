@@ -1,4 +1,4 @@
-import 'package:schulplaner/features/weekly_schedule/data/datasources/weekly_schedule_data_source.dart';
+import 'package:schulplaner/features/weekly_schedule/data/data_sources/weekly_schedule_data_source.dart';
 import 'package:schulplaner/features/weekly_schedule/domain/repositories/weekly_schedule_repository.dart';
 import 'package:schulplaner/shared/exceptions/auth_exceptions.dart';
 import 'package:schulplaner/shared/models/either.dart';

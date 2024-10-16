@@ -1,4 +1,4 @@
-import 'package:schulplaner/features/hobbies/data/data_source/hobby_data_source.dart';
+import 'package:schulplaner/features/hobbies/data/data_sources/hobby_data_source.dart';
 import 'package:schulplaner/features/hobbies/domain/repositories/hobbies_repository.dart';
 import 'package:schulplaner/shared/exceptions/auth_exceptions.dart';
 import 'package:schulplaner/shared/models/either.dart';

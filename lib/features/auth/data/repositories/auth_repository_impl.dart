@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:schulplaner/features/auth/data/data_source/auth_data_source.dart';
+import 'package:schulplaner/features/auth/data/data_sources/auth_data_source.dart';
 import 'package:schulplaner/features/auth/domain/repositories/auth_repository.dart';
 import 'package:schulplaner/shared/exceptions/auth_exceptions.dart';
 import 'package:schulplaner/shared/models/either.dart';

@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:schulplaner/config/constants/logger.dart';
-import 'package:schulplaner/features/hobbies/data/data_source/hobby_data_source.dart';
+import 'package:schulplaner/features/hobbies/data/data_sources/hobby_data_source.dart';
 import 'package:schulplaner/shared/exceptions/auth_exceptions.dart';
 import 'package:schulplaner/shared/models/either.dart';
 import 'package:schulplaner/shared/models/hobby.dart';

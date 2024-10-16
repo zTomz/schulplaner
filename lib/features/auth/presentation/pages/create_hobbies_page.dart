@@ -4,7 +4,7 @@ import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/config/constants/svg_pictures.dart';
-import 'package:schulplaner/features/auth/presentation/providers/create_hobbies_provider.dart';
+import 'package:schulplaner/features/auth/presentation/provider/create_hobbies_provider.dart';
 import 'package:schulplaner/shared/dialogs/custom_dialog.dart';
 import 'package:schulplaner/shared/dialogs/hobby/edit_hobby_dialog.dart';
 import 'package:schulplaner/shared/models/hobby.dart';

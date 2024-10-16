@@ -5,10 +5,10 @@ import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/config/constants/logger.dart';
 import 'package:schulplaner/config/routes/router.gr.dart';
-import 'package:schulplaner/features/auth/presentation/providers/auth_provider.dart';
-import 'package:schulplaner/features/auth/presentation/providers/create_hobbies_provider.dart';
-import 'package:schulplaner/features/auth/presentation/providers/create_weekly_schedule_provider.dart';
-import 'package:schulplaner/features/auth/presentation/providers/state/auth_state.dart';
+import 'package:schulplaner/features/auth/presentation/provider/auth_provider.dart';
+import 'package:schulplaner/features/auth/presentation/provider/create_hobbies_provider.dart';
+import 'package:schulplaner/features/auth/presentation/provider/create_weekly_schedule_provider.dart';
+import 'package:schulplaner/features/auth/presentation/provider/state/auth_state.dart';
 import 'package:schulplaner/shared/services/snack_bar_service.dart';
 import 'package:schulplaner/shared/widgets/custom_button.dart';
 import 'package:schulplaner/shared/widgets/custom_text_field.dart';
@@ -155,35 +155,6 @@ class SignUpSignInPage extends HookConsumerWidget {
       ),
     );
   }
-
-  // Future<void> _createUserData(BuildContext context) async {
-  //   try {
-  //     if (weeklyScheduleData != null) {
-  //       await DatabaseService.uploadWeeklySchedule(
-  //         weeklyScheduleData: weeklyScheduleData!,
-  //       );
-  //     }
-  //     if (teachers != null && teachers!.isNotEmpty && context.mounted) {
-  //       await DatabaseService.uploadTeachers(
-  //         teachers: teachers!,
-  //       );
-  //     }
-  //     if (subjects != null && teachers!.isNotEmpty && context.mounted) {
-  //       await DatabaseService.uploadSubjects(
-  //         subjects: subjects!,
-  //       );
-  //     }
-  //     if (hobbies != null && context.mounted) {
-  //       await DatabaseService.uploadHobbies(
-  //         hobbies: hobbies!,
-  //       );
-  //     }
-  //   } catch (error) {
-  //     if (context.mounted) {
-  //       ExeptionHandlerService.handleExeption(context, error);
-  //     }
-  //   }
-  // }
 
   Widget _buildBox({
     required GlobalKey<FormState> formKey,

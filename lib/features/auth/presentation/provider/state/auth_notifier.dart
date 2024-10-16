@@ -1,6 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/features/auth/domain/repositories/auth_repository.dart';
-import 'package:schulplaner/features/auth/presentation/providers/state/auth_state.dart';
+import 'package:schulplaner/features/auth/presentation/provider/state/auth_state.dart';
 import 'package:schulplaner/shared/models/hobby.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 

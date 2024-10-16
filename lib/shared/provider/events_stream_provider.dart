@@ -4,7 +4,7 @@ import 'package:schulplaner/shared/models/event.dart';
 import 'package:schulplaner/shared/provider/user_provider.dart';
 import 'package:schulplaner/shared/services/database_service.dart';
 
-final eventsProvider = StreamProvider<EventData>(
+final eventsStreamProvider = StreamProvider<EventData>(
   (ref) {
     final userStream = ref.watch(userProvider);
 

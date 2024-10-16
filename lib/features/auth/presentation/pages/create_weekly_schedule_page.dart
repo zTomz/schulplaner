@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:schulplaner/features/auth/presentation/providers/create_weekly_schedule_provider.dart';
+import 'package:schulplaner/features/auth/presentation/provider/create_weekly_schedule_provider.dart';
 import 'package:schulplaner/shared/dialogs/custom_dialog.dart';
 import 'package:schulplaner/shared/dialogs/weekly_schedule/edit_lesson_dialog.dart';
 import 'package:schulplaner/shared/dialogs/edit_time_span_dialog.dart';

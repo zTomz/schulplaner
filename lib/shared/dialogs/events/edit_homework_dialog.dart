@@ -9,7 +9,7 @@ import 'package:schulplaner/features/weekly_schedule/presentation/provider/weekl
 import 'package:schulplaner/shared/dialogs/events/event_date_dialog.dart';
 import 'package:schulplaner/shared/functions/build_body_part.dart';
 import 'package:schulplaner/shared/models/time.dart';
-import 'package:schulplaner/shared/provider/events_provider.dart';
+import 'package:schulplaner/shared/provider/events_stream_provider.dart';
 import 'package:schulplaner/shared/provider/hobbies_stream_provider.dart';
 import 'package:schulplaner/shared/widgets/time_picker_modal_bottom_sheet.dart';
 import 'package:schulplaner/config/constants/logger.dart';
@@ -285,7 +285,7 @@ class GenerateProcessingDateWithAiDialog extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final eventData = ref.watch(eventsProvider);
+    final eventData = ref.watch(eventsStreamProvider);
     final eventsTuple = eventData.valueOrNull;
 
     final hobbiesData = ref.watch(hobbiesStreamProvider);
