@@ -91,6 +91,8 @@ class CalendarPage extends HookConsumerWidget {
                                         .deleteEvent(
                                           event: event,
                                         );
+
+                                    // TODO: Add undo feature with SnackBar
                                   },
                                   onHomeworkToggled: (event, newState) async {
                                     await ref

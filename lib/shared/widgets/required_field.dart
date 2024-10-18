@@ -5,20 +5,27 @@ class RequiredField<T> extends FormField {
   final Widget child;
   final String errorText;
   final T? value;
+  final BorderRadiusGeometry? borderRadius;
 
   RequiredField({
     super.key,
     required this.errorText,
     required this.value,
     required this.child,
+    this.borderRadius = const BorderRadius.all(Radii.small),
   }) : super(
           validator: (_) {
             if (value == null) {
               return errorText;
             }
-            
+
             // Handle lists, which are empty, but not [null]
             if (value is List && (value as List).isEmpty) {
+              return errorText;
+            }
+
+            // Handle sets, which are empty, but not [null]
+            if (value is Set && (value as Set).isEmpty) {
               return errorText;
             }
 
@@ -32,7 +39,7 @@ class RequiredField<T> extends FormField {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(Radii.small),
+                        borderRadius: borderRadius,
                         border: Border.all(
                           color: Theme.of(context).colorScheme.error,
                           strokeAlign: BorderSide.strokeAlignInside,

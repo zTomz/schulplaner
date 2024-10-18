@@ -12,9 +12,6 @@ abstract class DatabaseService {
       get weeklyScheduleCollection =>
           currentUserDocument.collection("weekly_schedule");
 
-  static DocumentReference<Map<String, dynamic>> get weeklyScheduleDocument =>
-      weeklyScheduleCollection.doc("data");
-
   /// The hobbies collection from Firestore for the current user
   static CollectionReference<Map<String, dynamic>> get hobbiesCollection =>
       currentUserDocument.collection("hobbies");
@@ -31,6 +28,7 @@ abstract class DatabaseService {
   static DocumentReference<Map<String, dynamic>> get currentUserDocument =>
       userCollection.doc(FirebaseAuth.instance.currentUser!.uid);
 
+  /// Upload the weekly schedule to firestore
   static Future<void> uploadWeeklySchedule({
     required WeeklyScheduleData weeklyScheduleData,
   }) async {
@@ -45,40 +43,6 @@ abstract class DatabaseService {
         );
   }
 
-  static Future<void> uploadTeachers({
-    required List<Teacher> teachers,
-  }) async {
-    if (FirebaseAuth.instance.currentUser == null) {
-      logger.e("The user need to be signed in to upload his teachers.");
-      throw UnauthenticatedExeption();
-    }
-
-    // Create a map to store the data and then sync the data to Firestore
-    final data = <String, dynamic>{};
-    for (final teacher in teachers) {
-      data[teacher.uuid] = teacher.toMap();
-    }
-
-    await weeklyScheduleCollection.doc("teachers").set(data);
-  }
-
-  static Future<void> uploadSubjects({
-    required List<Subject> subjects,
-  }) async {
-    if (FirebaseAuth.instance.currentUser == null) {
-      logger.e("The user need to be signed in to upload his subjects.");
-      throw UnauthenticatedExeption();
-    }
-
-    // Create a map to store the data and then sync the data to firestore
-    final data = <String, dynamic>{};
-    for (final subject in subjects) {
-      data[subject.uuid] = subject.toMap();
-    }
-
-    await weeklyScheduleCollection.doc("subjects").set(data);
-  }
-
   /// Upload a single or multiple hobbies to firestore. If a user edits an hobby we just overwrite it with this function.
   static Future<void> uploadHobbies({
     required List<Hobby> hobbies,
@@ -88,26 +52,14 @@ abstract class DatabaseService {
       throw UnauthenticatedExeption();
     }
 
-    for (final hobby in hobbies) {
-      // Create a seperate doc for each hobby. The doc id is the hobby uuid
-      await hobbiesCollection.doc(hobby.uuid).set(hobby.toMap());
-    }
+    await DatabaseService.hobbiesCollection.doc("data").set(
+      {
+        for (final hobby in hobbies) hobby.uuid: hobby.toMap(),
+      },
+    );
   }
 
-  /// Delete a single or multiple hobbies from firestore
-  static Future<void> deleteHobbies({
-    required List<Hobby> hobbies,
-  }) async {
-    if (FirebaseAuth.instance.currentUser == null) {
-      logger.e("The user need to be signed in to delete his hobbies.");
-      throw UnauthenticatedExeption();
-    }
-
-    for (final hobby in hobbies) {
-      await hobbiesCollection.doc(hobby.uuid).delete();
-    }
-  }
-
+  /// Upload a list of events to firestore
   static Future<void> uploadEvents({
     required List<Event> events,
   }) async {

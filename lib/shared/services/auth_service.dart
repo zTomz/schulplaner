@@ -1,73 +1,47 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:schulplaner/config/constants/logger.dart';
+import 'package:schulplaner/shared/models/hobby.dart';
+import 'package:schulplaner/shared/models/weekly_schedule.dart';
+import 'package:schulplaner/shared/services/database_service.dart';
 
 abstract class AuthService {
-  /// Create a new account. This will create a new Firebase user and update the display name.
-  /// If an error occurs, it will log it and then rethrown
-  static Future<UserCredential?> createAccount({
-    required String name,
+  static Future<UserCredential> signUpWithEmailPassword({
     required String email,
     required String password,
+    required String displayName,
+    required WeeklyScheduleData weeklyScheduleData,
+    required List<Hobby> hobbies,
   }) async {
-    UserCredential? userCredential;
+    // Create the account
+    final credential =
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      email: email.trim(),
+      password: password.trim(),
+    );
 
-    try {
-      // Create the account
-      userCredential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email.trim(),
-        password: password.trim(),
-      );
-    } on FirebaseAuthException catch (e) {
-      logger.e(
-        "Error while creation the account.",
-        error: e,
-      );
-      rethrow;
-    } catch (e) {
-      logger.e(
-        "Unknown error occurred, while creating the account.",
-        error: e,
-      );
+    // Update the display name
+    await credential.user!.updateDisplayName(displayName);
 
-      rethrow;
-    }
+    // Upload the weekly schedule data
+    await DatabaseService.uploadWeeklySchedule(
+      weeklyScheduleData: weeklyScheduleData,
+    );
 
-    // Update the name
-    await FirebaseAuth.instance.currentUser!.updateDisplayName(name.trim());
+    // Upload the hobbies
+    await DatabaseService.uploadHobbies(
+      hobbies: hobbies,
+    );
 
-    return userCredential;
+    return credential;
   }
 
-  /// Sign the user in and return the user credential. If an error occurs, it will log it and
-  /// then rethrown
-  static Future<UserCredential?> signIn({
+  static Future<UserCredential> signInWithEmailPassword({
     required String email,
     required String password,
   }) async {
-    UserCredential? userCredential;
-
-    try {
-      userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email.trim(),
-        password: password.trim(),
-      );
-    } on FirebaseAuthException catch (e) {
-      logger.e(
-        "Error while signing in.",
-        error: e,
-      );
-
-      rethrow;
-    } catch (e) {
-      logger.e(
-        "Unknown error occurred, while signing in.",
-        error: e,
-      );
-
-      rethrow;
-    }
-
-    return userCredential;
+    // Sign the user in
+    return await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: email.trim(),
+      password: password.trim(),
+    );
   }
 }

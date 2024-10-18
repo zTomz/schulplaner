@@ -5,7 +5,7 @@ import 'package:schulplaner/shared/exceptions/auth_exceptions.dart';
 import 'package:schulplaner/shared/models/either.dart';
 import 'package:schulplaner/shared/models/hobby.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
-import 'package:schulplaner/shared/services/database_service.dart';
+import 'package:schulplaner/shared/services/auth_service.dart';
 
 class AuthRemoteDataSource implements AuthDataSource {
   @override
@@ -17,27 +17,15 @@ class AuthRemoteDataSource implements AuthDataSource {
     required List<Hobby> hobbies,
   }) async {
     try {
-      // Create the account
-      final credential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email.trim(),
-        password: password.trim(),
+      return Right(
+        await AuthService.signUpWithEmailPassword(
+          email: email,
+          password: password,
+          displayName: displayName,
+          weeklyScheduleData: weeklyScheduleData,
+          hobbies: hobbies,
+        ),
       );
-
-      // Update the display name
-      await credential.user!.updateDisplayName(displayName);
-
-      // Upload the weekly schedule data
-      await DatabaseService.uploadWeeklySchedule(
-        weeklyScheduleData: weeklyScheduleData,
-      );
-
-      // Upload the hobbies
-      await DatabaseService.uploadHobbies(
-        hobbies: hobbies,
-      );
-
-      return Right(credential);
     } on FirebaseAuthException catch (e) {
       logger.e(
         "Error while creation the account.",
@@ -63,9 +51,9 @@ class AuthRemoteDataSource implements AuthDataSource {
     try {
       // Sign the user in
       return Right(
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: email.trim(),
-          password: password.trim(),
+        await AuthService.signInWithEmailPassword(
+          email: email,
+          password: password,
         ),
       );
     } on FirebaseAuthException catch (e) {

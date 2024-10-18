@@ -17,11 +17,7 @@ class HobbiesRemoteDataSource implements HobbiesDataSource {
     }
 
     // Upload the data to Firestore
-    await DatabaseService.hobbiesCollection.doc("data").set(
-      {
-        for (final hobby in hobbies) hobby.uuid: hobby.toMap(),
-      },
-    );
+    await DatabaseService.uploadHobbies(hobbies: hobbies);
 
     return const Right(null);
   }

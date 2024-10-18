@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:schulplaner/shared/exceptions/auth_exceptions.dart';
 import 'package:schulplaner/config/constants/logger.dart';
@@ -83,31 +82,31 @@ abstract class UserService {
   }
 
   /// Update the FCM token
-  static Future<void> updateFCMToken({
-    required String fcmToken,
-  }) async {
-    if (FirebaseAuth.instance.currentUser == null) {
-      logger.e("The user need to be signed in to update his FCM token.");
-      throw UnauthenticatedExeption();
-    }
+  // static Future<void> updateFCMToken({
+  //   required String fcmToken,
+  // }) async {
+  //   if (FirebaseAuth.instance.currentUser == null) {
+  //     logger.e("The user need to be signed in to update his FCM token.");
+  //     throw UnauthenticatedExeption();
+  //   }
 
-    final doc = await FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get();
+  //   final doc = await FirebaseFirestore.instance
+  //       .collection("users")
+  //       .doc(FirebaseAuth.instance.currentUser!.uid)
+  //       .get();
 
-    if (doc.exists) {
-      await FirebaseFirestore.instance
-          .collection("users")
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .update({"fcmToken": fcmToken});
-    } else {
-      await FirebaseFirestore.instance
-          .collection("users")
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .set({"fcmToken": fcmToken});
-    }
-  }
+  //   if (doc.exists) {
+  //     await FirebaseFirestore.instance
+  //         .collection("users")
+  //         .doc(FirebaseAuth.instance.currentUser!.uid)
+  //         .update({"fcmToken": fcmToken});
+  //   } else {
+  //     await FirebaseFirestore.instance
+  //         .collection("users")
+  //         .doc(FirebaseAuth.instance.currentUser!.uid)
+  //         .set({"fcmToken": fcmToken});
+  //   }
+  // }
 
   /// Delete the user and handle the errors
   static Future<void> deleteAccount() async {

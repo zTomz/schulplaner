@@ -19,9 +19,14 @@ class EditDayDialog extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final weekdays = useState<Set<Weekday?>>({
-      timeInDay?.day,
-    });
+    final weekdays = useState<Set<Weekday?>>(
+      timeInDay == null
+          ? {}
+          : {
+              timeInDay!.day,
+            },
+    );
+
     final timeSpan = useState<TimeSpan?>(timeInDay?.timeSpan);
 
     final formKey = useMemoized(() => GlobalKey<FormState>());
@@ -34,11 +39,12 @@ class EditDayDialog extends HookWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            RequiredField(
-              errorText: "Ein Wochentag ist erforderlich.",
-              value: weekdays.value,
-              child: buildBodyPart(
-                title: const Text("Wochentag(e)"),
+            buildBodyPart(
+              title: const Text("Wochentag(e)"),
+              child: RequiredField(
+                errorText: "Mindestens ein Wochentag ist erforderlich.",
+                value: weekdays.value,
+                borderRadius: BorderRadius.circular(360),
                 child: SegmentedButton<Weekday?>(
                   segments: Weekday.values
                       .map(
@@ -52,6 +58,7 @@ class EditDayDialog extends HookWidget {
                       )
                       .toList(),
                   selected: weekdays.value,
+                  emptySelectionAllowed: true,
                   multiSelectionEnabled: true,
                   onSelectionChanged: (value) {
                     weekdays.value = value;

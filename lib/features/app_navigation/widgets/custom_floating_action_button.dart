@@ -108,6 +108,7 @@ class CustomFloatingActionButton extends HookConsumerWidget {
             ),
             const SizedBox(width: Spacing.medium),
             FloatingActionButton.small(
+              heroTag: null,
               onPressed: onPressed,
               child: icon,
             ),

@@ -94,7 +94,7 @@ class EditHobbyDialog extends HookWidget {
                         days.value = [...days.value, ...result];
                       }
                     },
-                    child: const Text("Tag hinzufügen"),
+                    child: const Text("Tag(e) hinzufügen"),
                   ),
                 ),
               ),
