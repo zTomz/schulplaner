@@ -5,16 +5,17 @@ import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/shared/provider/user_provider.dart';
 import 'package:schulplaner/shared/services/database_service.dart';
 
-final weeklyScheduleStreamProvider = StreamProvider<WeeklyScheduleData>(
-  (ref) {
+final weeklyScheduleFutureProvider = FutureProvider<WeeklyScheduleData>(
+  (ref) async {
     final userStream = ref.watch(userProvider);
 
     if (userStream.value != null) {
-      return DatabaseService.weeklyScheduleCollection.snapshots().map(
-            (value) => _convertWeeklyScheduleSnapshotToData(data: value),
-          );
+      final rawWeeklyScheduleData =
+          await DatabaseService.weeklyScheduleCollection.get();
+
+      return _convertWeeklyScheduleSnapshotToData(data: rawWeeklyScheduleData);
     } else {
-      return Stream.error(
+      return Future.error(
         "Sie benötigen einen Account um diese Aktion auszuführen.",
       );
     }

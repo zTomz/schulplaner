@@ -10,8 +10,8 @@ class HobbiesStateNotifier
 
   HobbiesStateNotifier({
     required this.hobbiesRepository,
-    required Either<Exception, List<Hobby>> data,
-  }) : super(data);
+    required Either<Exception, List<Hobby>> initialData,
+  }) : super(initialData);
 
   /// Syncs the current state with the database. If the state has an exeption
   /// it will return and will not sync the data

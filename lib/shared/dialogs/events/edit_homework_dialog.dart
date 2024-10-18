@@ -10,7 +10,7 @@ import 'package:schulplaner/features/weekly_schedule/presentation/provider/weekl
 import 'package:schulplaner/shared/dialogs/events/event_date_dialog.dart';
 import 'package:schulplaner/shared/functions/build_body_part.dart';
 import 'package:schulplaner/shared/models/time.dart';
-import 'package:schulplaner/shared/provider/hobbies_stream_provider.dart';
+import 'package:schulplaner/features/hobbies/presentation/provider/hobbies_future_provider.dart';
 import 'package:schulplaner/shared/widgets/time_picker_modal_bottom_sheet.dart';
 import 'package:schulplaner/config/constants/logger.dart';
 import 'package:schulplaner/config/constants/strings.dart';

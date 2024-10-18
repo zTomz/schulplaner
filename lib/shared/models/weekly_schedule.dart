@@ -22,6 +22,12 @@ class WeeklyScheduleData {
     required this.teachers,
   });
 
+  WeeklyScheduleData.empty()
+      : timeSpans = <TimeSpan>{},
+        lessons = [],
+        subjects = [],
+        teachers = [];
+
   WeeklyScheduleData copyWith({
     Set<TimeSpan>? timeSpans,
     List<Lesson>? lessons,
@@ -36,8 +42,6 @@ class WeeklyScheduleData {
     );
   }
 
-  
-
   Map<String, dynamic> toMap() {
     return {
       'timeSpans': timeSpans.map((x) => x.toMap()).toList(),
@@ -49,10 +53,13 @@ class WeeklyScheduleData {
 
   factory WeeklyScheduleData.fromMap(Map<String, dynamic> map) {
     return WeeklyScheduleData(
-      timeSpans: Set<TimeSpan>.from(map['timeSpans']?.map((x) => TimeSpan.fromMap(x))),
+      timeSpans:
+          Set<TimeSpan>.from(map['timeSpans']?.map((x) => TimeSpan.fromMap(x))),
       lessons: List<Lesson>.from(map['lessons']?.map((x) => Lesson.fromMap(x))),
-      subjects: List<Subject>.from(map['subjects']?.map((x) => Subject.fromMap(x))),
-      teachers: List<Teacher>.from(map['teachers']?.map((x) => Teacher.fromMap(x))),
+      subjects:
+          List<Subject>.from(map['subjects']?.map((x) => Subject.fromMap(x))),
+      teachers:
+          List<Teacher>.from(map['teachers']?.map((x) => Teacher.fromMap(x))),
     );
   }
 }

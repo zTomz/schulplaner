@@ -3,17 +3,21 @@ import 'package:schulplaner/features/weekly_schedule/domain/provider/weekly_sche
 import 'package:schulplaner/features/weekly_schedule/presentation/provider/state/weekly_schedule_notifier.dart';
 import 'package:schulplaner/shared/models/either.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
-import 'package:schulplaner/shared/provider/weekly_schedule_stream_provider.dart';
+import 'package:schulplaner/features/weekly_schedule/presentation/provider/weekly_schedule_future_provider.dart';
 
 final weeklyScheduleProvider = StateNotifierProvider<WeeklyScheduleNotifier,
     Either<Exception, WeeklyScheduleData>>((ref) {
   final weeklyScheduleRepository = ref.watch(weeklyScheduleRepositoryProvider);
-  final weeklyScheduleStream = ref.watch(weeklyScheduleStreamProvider);
+  final weeklyScheduleFuture = ref.watch(weeklyScheduleFutureProvider);
 
   return WeeklyScheduleNotifier(
-    weeklyScheduleRepository,
-    data: weeklyScheduleStream.hasValue
-        ? Right(weeklyScheduleStream.value!)
-        : Left(Exception(weeklyScheduleStream.error)),
+    weeklyScheduleRepository: weeklyScheduleRepository,
+    initialData: weeklyScheduleFuture.hasValue || weeklyScheduleFuture.isLoading
+        ? Right(
+            weeklyScheduleFuture.isLoading
+                ? WeeklyScheduleData.empty()
+                : weeklyScheduleFuture.value!,
+          )
+        : Left(Exception('Der Stundentplan konnte nicht geladen werden')),
   );
 });

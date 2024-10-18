@@ -9,10 +9,10 @@ class WeeklyScheduleNotifier
     extends StateNotifier<Either<Exception, WeeklyScheduleData>> {
   final WeeklyScheduleRepository weeklyScheduleRepository;
 
-  WeeklyScheduleNotifier(
-    this.weeklyScheduleRepository, {
-    required Either<Exception, WeeklyScheduleData> data,
-  }) : super(data);
+  WeeklyScheduleNotifier({
+    required this.weeklyScheduleRepository,
+    required Either<Exception, WeeklyScheduleData> initialData,
+  }) : super(initialData);
 
   /// Syncs the current state with the database. If the state has an exeption
   /// it will return and will not sync the data
