@@ -1,10 +1,49 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:schulplaner/config/constants/logger.dart';
 
 import 'package:schulplaner/shared/extensions/duration_extension.dart';
 import 'package:schulplaner/shared/functions/first_where_or_null.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
+import 'package:uuid/uuid.dart';
+
+typedef EventData = List<Event>;
+
+extension EventDataExtension on EventData {
+  (
+    List<HomeworkEvent> homeworkEvents,
+    List<TestEvent> testEvents,
+    List<ReminderEvent> reminderEvents,
+    List<RepeatingEvent> repeatingEvents
+  ) get sortedEvents {
+    List<HomeworkEvent> homeworkEvents = [];
+    List<TestEvent> testEvents = [];
+    List<ReminderEvent> reminderEvents = [];
+    List<RepeatingEvent> repeatingEvents = [];
+
+    for (Event event in this) {
+      switch (event.type) {
+        case EventTypes.homework:
+          homeworkEvents.add(event as HomeworkEvent);
+          break;
+        case EventTypes.test:
+          testEvents.add(event as TestEvent);
+          break;
+        case EventTypes.reminder:
+          reminderEvents.add(event as ReminderEvent);
+          break;
+        case EventTypes.repeating:
+          repeatingEvents.add(event as RepeatingEvent);
+          break;
+        default:
+          logger.w("Unknown event type: ${event.type}");
+      }
+    }
+
+    return (homeworkEvents, testEvents, reminderEvents, repeatingEvents);
+  }
+}
 
 /// An event in the calendar
 abstract class Event {
@@ -30,31 +69,33 @@ abstract class Event {
     required this.type,
     required this.uuid,
   });
+
+  factory Event.fromMap(Map<String, dynamic> map) {
+    switch (map['type']) {
+      case 'homework':
+        return HomeworkEvent.fromMap(map);
+      case 'test':
+        return TestEvent.fromMap(map);
+      case 'reminder':
+        return ReminderEvent.fromMap(map);
+      case 'repeating':
+        return RepeatingEvent.fromMap(map);
+      default:
+        logger.w("Unknown event type: ${map['type']}");
+        return UnimplementedEvent();
+    }
+  }
 }
 
-/// Containing a list for each type of event
-class EventData {
-  final List<HomeworkEvent> homeworkEvents;
-  final List<TestEvent> testEvents;
-  final List<ReminderEvent> reminderEvents;
-  final List<RepeatingEvent> repeatingEvents;
-
-  EventData({
-    required this.homeworkEvents,
-    required this.testEvents,
-    required this.reminderEvents,
-    required this.repeatingEvents,
-  });
-
-  List<Event> get events => [
-        ...homeworkEvents,
-        ...testEvents,
-        ...reminderEvents,
-        ...repeatingEvents,
-      ];
+class UnimplementedEvent extends Event {
+  UnimplementedEvent()
+      : super(
+          type: EventTypes.unimplemented,
+          name: "Unimplemented Event",
+          date: DateTime.now(),
+          uuid: const Uuid().v4(),
+        );
 }
-
-// TODO: Add homework and other classes here. These should be subclasses of [Event]
 
 /// A homework event
 class HomeworkEvent extends Event {
@@ -80,6 +121,7 @@ class HomeworkEvent extends Event {
   Map<String, dynamic> toMap() {
     return {
       'name': name,
+      'type': 'homework',
       'date': Timestamp.fromDate(date),
       'processingDate': processingDate.toMap(),
       'subjectUuid': subjectUuid,
@@ -132,6 +174,7 @@ class HomeworkEvent extends Event {
 
     return {
       'name': name,
+      'type': 'homework',
       'date': date.millisecondsSinceEpoch,
       'processingDate': processingDate.toMap(),
       'subject': subject?.getCompleteMap(teachers),
@@ -162,6 +205,7 @@ class TestEvent extends Event {
   Map<String, dynamic> toMap() {
     return {
       'name': name,
+      'type': 'test',
       'description': description,
       'date': date.millisecondsSinceEpoch,
       'praticeDates': praticeDates.map((x) => x.toMap()).toList(),
@@ -196,6 +240,7 @@ class TestEvent extends Event {
 
     return {
       'name': name,
+      'type': 'test',
       'description': description,
       'date': date.millisecondsSinceEpoch,
       'praticeDates': praticeDates.map((x) => x.toMap()).toList(),
@@ -224,6 +269,7 @@ class ReminderEvent extends Event {
   Map<String, dynamic> toMap() {
     return {
       'name': name,
+      'type': 'reminder',
       'description': description,
       'place': place,
       'color': color.value,
@@ -263,6 +309,7 @@ class RepeatingEvent extends Event {
   Map<String, dynamic> toMap() {
     return {
       'name': name,
+      'type': 'repeating',
       'description': description,
       'date': Timestamp.fromDate(date),
       'repeatingEventType': repeatingEventType.toMap(),
@@ -346,6 +393,7 @@ enum EventTypes {
   test,
   reminder,
   repeating,
+  unimplemented;
 }
 
 enum Difficulty {

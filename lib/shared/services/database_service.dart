@@ -116,67 +116,24 @@ abstract class DatabaseService {
       throw UnauthenticatedExeption();
     }
 
-    List<HomeworkEvent> homeworkEvents = [];
-    List<TestEvent> testEvents = [];
-    List<ReminderEvent> reminderEvents = [];
-    List<RepeatingEvent> repeatingEvents = [];
-
-    for (final event in events) {
-      switch (event) {
-        case HomeworkEvent homeworkEvent:
-          homeworkEvents.add(homeworkEvent);
-          break;
-        case TestEvent testEvent:
-          testEvents.add(testEvent);
-          break;
-        case ReminderEvent reminderEvent:
-          reminderEvents.add(reminderEvent);
-          break;
-        case RepeatingEvent repeatingEvent:
-          repeatingEvents.add(repeatingEvent);
-          break;
-      }
-    }
-
-    // Create a map to store the data and then sync the data to firestore
-    final homeworkMap = <String, dynamic>{};
-    for (final homework in homeworkEvents) {
-      homeworkMap[homework.uuid] = homework.toMap();
-    }
-
-    if (homeworkMap.isEmpty) {
-      await eventsCollection.doc("homework").delete();
-    } else {
-      await eventsCollection.doc("homework").set(homeworkMap);
-    }
-
-    // Upload test events
-    final testMap = <String, dynamic>{};
-    for (final test in testEvents) {
-      testMap[test.uuid] = test.toMap();
-    }
-
-    if (testMap.isEmpty) {
-      await eventsCollection.doc("tests").delete();
-    } else {
-      await eventsCollection.doc("tests").set(testMap);
-    }
-
-    // Upload ReminderEvent events
-    final reminderEventsMap = <String, dynamic>{};
-    for (final reminderEvent in reminderEvents) {
-      reminderEventsMap[reminderEvent.uuid] = reminderEvent.toMap();
-    }
-
-    if (reminderEventsMap.isEmpty) {
-      await eventsCollection.doc("reminder").delete();
-    } else {
-      await eventsCollection.doc("reminder").set(reminderEventsMap);
-    }
-
-    // TODO: Handle other event uploads here
-    // await eventsCollection.doc("repeating").set({
-    //   "repeating": repeatingEvents.map((e) => e.toMap()).toList(),
-    // });
+    eventsCollection.doc('data').set(
+      {
+        for (final event in events.where(
+          (event) => event.type != EventTypes.unimplemented,
+        ))
+          event.uuid: switch (event.type) {
+            EventTypes.homework => (event as HomeworkEvent).toMap(),
+            EventTypes.test => (event as TestEvent).toMap(),
+            EventTypes.reminder => (event as ReminderEvent).toMap(),
+            EventTypes.repeating => (event as RepeatingEvent).toMap(),
+            EventTypes.unimplemented => () {
+                // This should not happen, because we filter the events before
+                logger.e(
+                  "Got an unimplemented event type! This should not happen at this point.",
+                );
+              },
+          },
+      },
+    );
   }
 }

@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:schulplaner/features/calendar/presentation/provider/events_provider.dart';
 import 'package:schulplaner/features/weekly_schedule/presentation/provider/weekly_schedule_provider.dart';
 import 'package:schulplaner/shared/dialogs/events/event_date_dialog.dart';
 import 'package:schulplaner/shared/functions/build_body_part.dart';
 import 'package:schulplaner/shared/models/time.dart';
-import 'package:schulplaner/shared/provider/events_stream_provider.dart';
 import 'package:schulplaner/shared/provider/hobbies_stream_provider.dart';
 import 'package:schulplaner/shared/widgets/time_picker_modal_bottom_sheet.dart';
 import 'package:schulplaner/config/constants/logger.dart';
@@ -228,6 +228,7 @@ class EditHomeworkDialog extends HookConsumerWidget {
 
               if (result != null && context.mounted) {
                 onHomeworkDeleted?.call();
+                Navigator.of(context).pop();
               }
             },
             style: ElevatedButton.styleFrom(
@@ -285,8 +286,7 @@ class GenerateProcessingDateWithAiDialog extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final eventData = ref.watch(eventsStreamProvider);
-    final eventsTuple = eventData.valueOrNull;
+    final eventData = ref.watch(eventsProvider);
 
     final hobbiesData = ref.watch(hobbiesStreamProvider);
     final hobbiesList = hobbiesData.valueOrNull;
@@ -299,9 +299,12 @@ class GenerateProcessingDateWithAiDialog extends HookConsumerWidget {
     return CustomDialog(
       icon: const Icon(LucideIcons.sparkles),
       title: const Text("Datum und Zeitspanne generieren"),
-      loading: !eventData.hasValue || !hobbiesData.hasValue || loading.value,
-      fatalError: eventData.hasError || hobbiesData.hasError
-          ? Text((eventData.error ?? hobbiesData.error!).toString())
+      loading:
+          eventData.right == null || !hobbiesData.hasValue || loading.value,
+      fatalError: hobbiesData.hasError
+          ? Text(
+              hobbiesData.error!.toString(),
+            )
           : null,
       error: errorMessage.value != null ? Text(errorMessage.value ?? "") : null,
       content: buildBodyPart(
@@ -361,24 +364,26 @@ class GenerateProcessingDateWithAiDialog extends HookConsumerWidget {
                   .toList(),
             };
 
+            final sortedEvents = eventData.right!.sortedEvents;
+
             // Create a map, containing the already created events in a good way
             Map<String, dynamic> events = {
-              "homework": eventsTuple!.homeworkEvents.map(
+              "homework": sortedEvents.$1.map(
                 (event) => event.getCompleteMap(
                   weeklyScheduleData.subjects,
                   weeklyScheduleData.teachers,
                 ),
               ),
-              "tests": eventsTuple.testEvents.map(
+              "tests": sortedEvents.$2.map(
                 (event) => event.getCompleteMap(
                   weeklyScheduleData.subjects,
                   weeklyScheduleData.teachers,
                 ),
               ),
-              "reminders": eventsTuple.reminderEvents.map(
+              "reminders": sortedEvents.$3.map(
                 (event) => event.toMap(),
               ),
-              "repeating_events": eventsTuple.repeatingEvents.map(
+              "repeating_events": sortedEvents.$4.map(
                 (event) => event.toMap(),
               ),
             };

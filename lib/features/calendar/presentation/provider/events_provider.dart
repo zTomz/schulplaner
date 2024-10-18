@@ -1,21 +1,24 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/features/calendar/domain/provider/events_provider.dart';
+import 'package:schulplaner/features/calendar/presentation/provider/events_future_provider.dart';
 import 'package:schulplaner/features/calendar/presentation/provider/state/events_notifier.dart';
+import 'package:schulplaner/shared/exceptions/auth_exceptions.dart';
 import 'package:schulplaner/shared/models/either.dart';
 import 'package:schulplaner/shared/models/event.dart';
-import 'package:schulplaner/shared/provider/events_stream_provider.dart';
 
 final eventsProvider =
     StateNotifierProvider<EventsNotifier, Either<Exception, EventData>>(
-      (ref) {
-        final eventsRepository = ref.watch(eventsRepositoryProvider);
-        final eventsStream = ref.watch(eventsStreamProvider);
+  (ref) {
+    final eventsRepository = ref.watch(eventsRepositoryProvider);
+    final eventsFuture = ref.watch(eventsFutureProvider);
 
-        return EventsNotifier(
-          eventsRepository: eventsRepository,
-          initialData: eventsStream.hasValue
-              ? Right(eventsStream.value!)
-              : Left(Exception(eventsStream.error)),
-        );
-      },
+    return EventsNotifier(
+      eventsRepository: eventsRepository,
+      initialData: eventsFuture.hasValue || eventsFuture.isLoading
+          ? Right(
+              eventsFuture.isLoading ? [] : eventsFuture.value!,
+            )
+          : Left(UnauthenticatedExeption()),
     );
+  },
+);

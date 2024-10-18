@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
-import 'package:schulplaner/shared/dialogs/events/edit_fixed_event_dialog.dart';
+import 'package:schulplaner/shared/dialogs/events/edit_reminder_dialog.dart';
 import 'package:schulplaner/shared/dialogs/events/edit_test_dialog.dart';
 import 'package:schulplaner/shared/extensions/date_time_extension.dart';
-import 'package:schulplaner/shared/functions/close_all_dialogs.dart';
-import 'package:schulplaner/shared/functions/first_where_or_null.dart';
-import 'package:schulplaner/shared/services/exeption_handler_service.dart';
-import 'package:schulplaner/shared/services/snack_bar_service.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/shared/dialogs/events/edit_homework_dialog.dart';
 import 'package:schulplaner/shared/models/event.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
-import 'package:schulplaner/shared/services/database_service.dart';
 import 'package:schulplaner/features/calendar/functions/get_color_for_event.dart';
 
 class EventInfoBox extends StatelessWidget {
@@ -27,12 +22,24 @@ class EventInfoBox extends StatelessWidget {
   /// A list of all subjects
   final List<Subject> subjects;
 
+  /// This function is called, when a event is edited
+  final void Function(Event event) onEventEdited;
+
+  /// This function is called, when a event is deleted
+  final void Function(Event event) onEventDeleted;
+
+  /// This function is called, when a homework is toggled
+  final void Function(HomeworkEvent event, bool newState) onHomeworkToggled;
+
   const EventInfoBox({
     super.key,
     required this.event,
     required this.day,
     required this.events,
     required this.subjects,
+    required this.onEventEdited,
+    required this.onEventDeleted,
+    required this.onHomeworkToggled,
   });
 
   @override
@@ -47,59 +54,12 @@ class EventInfoBox extends StatelessWidget {
                 context: context,
                 builder: (context) => EditHomeworkDialog(
                   homeworkEvent: event as HomeworkEvent,
-                  onHomeworkDeleted: () async {
-                    List<Event> eventsList = List<Event>.from(events);
-                    eventsList.removeWhere((e) => e.uuid == event.uuid);
-
-                    try {
-                      await DatabaseService.uploadEvents(
-                        events: eventsList,
-                      );
-                    } catch (error) {
-                      if (context.mounted) {
-                        await closeAllDialogs(context);
-                      }
-                      if (context.mounted) {
-                        ExeptionHandlerService.handleExeption(context, error);
-                      }
-                      return;
-                    }
-
-                    if (context.mounted) {
-                      await closeAllDialogs(context);
-                    }
-                    if (context.mounted) {
-                      final eventSubject = firstWhereOrNull(
-                        subjects,
-                        (subject) =>
-                            subject.uuid ==
-                            (event as HomeworkEvent).subjectUuid,
-                      );
-                      SnackBarService.show(
-                        context: context,
-                        content: Text(
-                          "Die Hausaufgabe für ${eventSubject?.name ?? "das angegebenen Fach"} wurde gelöscht.",
-                        ),
-                        type: CustomSnackbarType.info,
-                      );
-                    }
-                  },
+                  onHomeworkDeleted: () => onEventDeleted(event),
                 ),
               );
 
               if (result != null) {
-                List<Event> eventsList = List<Event>.from(events);
-                eventsList.removeWhere((e) => e.uuid == result.uuid);
-
-                try {
-                  await DatabaseService.uploadEvents(
-                    events: [...eventsList, result],
-                  );
-                } catch (error) {
-                  if (context.mounted) {
-                    ExeptionHandlerService.handleExeption(context, error);
-                  }
-                }
+                onEventEdited(result);
               }
               break;
             case EventTypes.test:
@@ -107,119 +67,25 @@ class EventInfoBox extends StatelessWidget {
                 context: context,
                 builder: (context) => EditTestDialog(
                   testEvent: event as TestEvent,
-                  onTestDeleted: () async {
-                    List<Event> eventsList = List<Event>.from(events);
-                    eventsList.removeWhere((e) => e.uuid == event.uuid);
-
-                    try {
-                      await DatabaseService.uploadEvents(
-                        events: eventsList,
-                      );
-                    } catch (error) {
-                      if (context.mounted) {
-                        await closeAllDialogs(context);
-                      }
-                      if (context.mounted) {
-                        ExeptionHandlerService.handleExeption(context, error);
-                      }
-                      return;
-                    }
-
-                    if (context.mounted) {
-                      await closeAllDialogs(context);
-                    }
-                    if (context.mounted) {
-                      final eventSubject = firstWhereOrNull(
-                        subjects,
-                        (subject) =>
-                            subject.uuid ==
-                            (event as HomeworkEvent).subjectUuid,
-                      );
-                      SnackBarService.show(
-                        context: context,
-                        content: Text(
-                          "Die Hausaufgabe für ${eventSubject?.name ?? "das angegebenen Fach"} wurde gelöscht.",
-                        ),
-                        type: CustomSnackbarType.info,
-                      );
-                    }
-                  },
+                  onTestDeleted: () => onEventDeleted(event),
                 ),
               );
 
               if (result != null) {
-                List<Event> eventsList = List<Event>.from(events);
-                eventsList.removeWhere((e) => e.uuid == result.uuid);
-
-                try {
-                  await DatabaseService.uploadEvents(
-                    events: [...eventsList, result],
-                  );
-                } catch (error) {
-                  if (context.mounted) {
-                    ExeptionHandlerService.handleExeption(context, error);
-                  }
-                }
+                onEventEdited(result);
               }
               break;
             case EventTypes.reminder:
               final result = await showDialog<ReminderEvent>(
                 context: context,
-                builder: (context) => EditReminderEventDialog(
+                builder: (context) => EditReminderDialog(
                   reminderEvent: event as ReminderEvent,
-                  onReminderEventDeleted: () async {
-                    List<Event> eventsList = List<Event>.from(events);
-                    eventsList.removeWhere((e) => e.uuid == event.uuid);
-
-                    try {
-                      await DatabaseService.uploadEvents(
-                        events: eventsList,
-                      );
-                    } catch (error) {
-                      if (context.mounted) {
-                        await closeAllDialogs(context);
-                      }
-                      if (context.mounted) {
-                        ExeptionHandlerService.handleExeption(context, error);
-                      }
-                      return;
-                    }
-
-                    if (context.mounted) {
-                      await closeAllDialogs(context);
-                    }
-                    if (context.mounted) {
-                      final eventSubject = firstWhereOrNull(
-                        subjects,
-                        (subject) =>
-                            subject.uuid ==
-                            (event as HomeworkEvent).subjectUuid,
-                      );
-                      SnackBarService.show(
-                        context: context,
-                        content: Text(
-                          "Die Hausaufgabe für ${eventSubject?.name ?? "das angegebenen Fach"} wurde gelöscht.",
-                        ),
-                        type: CustomSnackbarType.info,
-                      );
-                    }
-                  },
+                  onReminderDeleted: () => onEventDeleted(event),
                 ),
               );
 
               if (result != null) {
-                List<Event> eventsList = List<Event>.from(events);
-                eventsList.removeWhere((e) => e.uuid == result.uuid);
-
-                try {
-                  await DatabaseService.uploadEvents(
-                    events: [...eventsList, result],
-                  );
-                } catch (error) {
-                  if (context.mounted) {
-                    ExeptionHandlerService.handleExeption(context, error);
-                  }
-                }
+                onEventEdited(result);
               }
               break;
             // TODO: Implement editing other events here
@@ -248,7 +114,7 @@ class EventInfoBox extends StatelessWidget {
                 children: [
                   Text(
                     event.date.compareWithoutTime(day)
-                        ? "${_getDeadlineTextBeforeName(event)}: ${event.name}"
+                        ? "${_getDeadlineTextBeforeName(event)}${event.name}"
                         : event.name,
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
@@ -282,20 +148,8 @@ class EventInfoBox extends StatelessWidget {
                 value: (event as HomeworkEvent).isDone,
                 onChanged: (value) async {
                   // Update the homework [isDone] status
-                  List<Event> eventsList = List<Event>.from(events);
-                  eventsList.removeWhere((e) => e.uuid == event.uuid);
-                  eventsList.add(
-                    (event as HomeworkEvent).copyWith(isDone: value ?? false),
-                  );
-
-                  try {
-                    await DatabaseService.uploadEvents(
-                      events: eventsList,
-                    );
-                  } catch (error) {
-                    if (context.mounted) {
-                      ExeptionHandlerService.handleExeption(context, error);
-                    }
+                  if (value != null) {
+                    onHomeworkToggled(event as HomeworkEvent, value);
                   }
                 },
               ),
@@ -308,10 +162,12 @@ class EventInfoBox extends StatelessWidget {
   String _getDeadlineTextBeforeName(Event event) {
     switch (event.type) {
       case EventTypes.homework:
-        return "Abgabe";
+        return "Abgabe: ";
       case EventTypes.test:
-        return "Prüfungstermin";
-      case EventTypes.reminder || EventTypes.repeating:
+        return "Prüfungstermin: ";
+      case EventTypes.reminder ||
+            EventTypes.repeating ||
+            EventTypes.unimplemented:
         return "";
     }
   }

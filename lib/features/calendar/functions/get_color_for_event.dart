@@ -21,5 +21,7 @@ Color getColorForEvent(Event event, List<Subject> subjects) {
       return (event as ReminderEvent).color;
     case EventTypes.repeating:
       return (event as RepeatingEvent).color;
+    case EventTypes.unimplemented:
+      return Colors.red;
   }
 }

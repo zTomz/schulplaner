@@ -12,14 +12,14 @@ import 'package:schulplaner/shared/widgets/required_field.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:uuid/uuid.dart';
 
-class EditReminderEventDialog extends HookWidget {
+class EditReminderDialog extends HookWidget {
   final ReminderEvent? reminderEvent;
-  final void Function()? onReminderEventDeleted;
+  final void Function()? onReminderDeleted;
 
-  const EditReminderEventDialog({
+  const EditReminderDialog({
     super.key,
     this.reminderEvent,
-    this.onReminderEventDeleted,
+    this.onReminderDeleted,
   });
 
   @override
@@ -96,7 +96,7 @@ class EditReminderEventDialog extends HookWidget {
         ),
       ),
       actions: [
-        if (reminderEvent != null && onReminderEventDeleted != null) ...[
+        if (reminderEvent != null && onReminderDeleted != null) ...[
           ElevatedButton.icon(
             onPressed: () async {
               final result = await showDialog<bool>(
@@ -109,7 +109,8 @@ class EditReminderEventDialog extends HookWidget {
               );
 
               if (result != null && context.mounted) {
-                onReminderEventDeleted?.call();
+                onReminderDeleted?.call();
+                Navigator.of(context).pop();
               }
             },
             style: ElevatedButton.styleFrom(

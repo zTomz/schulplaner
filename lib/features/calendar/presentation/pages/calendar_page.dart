@@ -25,11 +25,9 @@ class CalendarPage extends HookConsumerWidget {
     return eventsData.fold(
       (failure) => const DataErrorWidget(),
       (events) {
-        final combinedEvents = events.events;
-
         final eventsForDay = getEventsForDay(
           selectedDate.value,
-          events: combinedEvents,
+          events: events,
         );
 
         return weeklyScheduleData.fold(
@@ -54,7 +52,7 @@ class CalendarPage extends HookConsumerWidget {
                       onDaySelected: (date) {
                         selectedDate.value = date;
                       },
-                      events: combinedEvents,
+                      events: events,
                       subjects: weeklyScheduleData.subjects,
                     ),
                   ),
@@ -78,8 +76,31 @@ class CalendarPage extends HookConsumerWidget {
                                 return EventInfoBox(
                                   event: event,
                                   day: selectedDate.value,
-                                  events: combinedEvents,
+                                  events: events,
                                   subjects: weeklyScheduleData.subjects,
+                                  onEventEdited: (event) async {
+                                    await ref
+                                        .read(eventsProvider.notifier)
+                                        .editEvent(
+                                          event: event,
+                                        );
+                                  },
+                                  onEventDeleted: (event) async {
+                                    await ref
+                                        .read(eventsProvider.notifier)
+                                        .deleteEvent(
+                                          event: event,
+                                        );
+                                  },
+                                  onHomeworkToggled: (event, newState) async {
+                                    await ref
+                                        .read(eventsProvider.notifier)
+                                        .editEvent(
+                                          event: event.copyWith(
+                                            isDone: newState,
+                                          ),
+                                        );
+                                  },
                                 );
                               },
                             ),

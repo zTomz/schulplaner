@@ -161,6 +161,7 @@ class EditTestDialog extends HookConsumerWidget {
 
               if (result != null && context.mounted) {
                 onTestDeleted?.call();
+                Navigator.of(context).pop();
               }
             },
             style: ElevatedButton.styleFrom(

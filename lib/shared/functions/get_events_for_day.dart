@@ -45,6 +45,9 @@ List<Event> getEventsForDay(
           return day.compareWithoutTime(
             event.date,
           );
+      
+        case EventTypes.unimplemented:
+          return false;
       }
     },
   ).toList(growable: false);
