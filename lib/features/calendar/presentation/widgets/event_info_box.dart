@@ -4,7 +4,7 @@ import 'package:schulplaner/shared/dialogs/events/edit_reminder_dialog.dart';
 import 'package:schulplaner/shared/dialogs/events/edit_test_dialog.dart';
 import 'package:schulplaner/shared/extensions/date_time_extension.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
-import 'package:schulplaner/shared/dialogs/events/edit_homework_dialog.dart';
+import 'package:schulplaner/shared/dialogs/events/homework/edit_homework_dialog.dart';
 import 'package:schulplaner/shared/models/event.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/features/calendar/functions/get_color_for_event.dart';

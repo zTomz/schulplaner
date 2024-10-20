@@ -64,7 +64,7 @@ class AppNavigationPage extends HookWidget {
                   ),
                   CustomNavigationDestination(
                     label: "Hobbies",
-                    icon: Icon(LucideIcons.tent),
+                    icon: Icon(LucideIcons.target),
                   ),
                 ],
               ),

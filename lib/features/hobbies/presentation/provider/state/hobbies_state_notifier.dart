@@ -5,12 +5,12 @@ import 'package:schulplaner/shared/models/either.dart';
 import 'package:schulplaner/shared/models/hobby.dart';
 
 class HobbiesStateNotifier
-    extends StateNotifier<Either<Exception, List<Hobby>>> {
+    extends StateNotifier<Either<Exception, HobbiesData>> {
   final HobbiesRepository hobbiesRepository;
 
   HobbiesStateNotifier({
     required this.hobbiesRepository,
-    required Either<Exception, List<Hobby>> initialData,
+    required Either<Exception, HobbiesData> initialData,
   }) : super(initialData);
 
   /// Syncs the current state with the database. If the state has an exeption
@@ -58,7 +58,8 @@ class HobbiesStateNotifier
     required Hobby hobby,
   }) async {
     // Remove the hobby from the state
-    state = Right(state.right!.where((element) => element.uuid != hobby.uuid).toList());
+    state = Right(
+        state.right!.where((element) => element.uuid != hobby.uuid).toList());
 
     await _syncStateWithDatabase();
   }

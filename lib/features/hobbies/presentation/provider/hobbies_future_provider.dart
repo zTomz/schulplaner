@@ -4,7 +4,7 @@ import 'package:schulplaner/shared/models/hobby.dart';
 import 'package:schulplaner/shared/provider/user_provider.dart';
 import 'package:schulplaner/shared/services/database_service.dart';
 
-final hobbiesFutureProvider = FutureProvider<List<Hobby>>(
+final hobbiesFutureProvider = FutureProvider<HobbiesData>(
   (ref) async {
     final userStream = ref.watch(userProvider);
 
@@ -14,13 +14,13 @@ final hobbiesFutureProvider = FutureProvider<List<Hobby>>(
       return _convertHobbiesSnapshotToData(data: rawHobbiesData);
     } else {
       return Future.error(
-        "Sie benötigen einen Account um diese Aktion auszuführen.",
+        "Sie benötigen ein Konto um diese Aktion auszuführen.",
       );
     }
   },
 );
 
-List<Hobby> _convertHobbiesSnapshotToData({
+HobbiesData _convertHobbiesSnapshotToData({
   required QuerySnapshot<Map<String, dynamic>> data,
 }) {
   List<Hobby> hobbies = [];

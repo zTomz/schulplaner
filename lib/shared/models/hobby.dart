@@ -2,6 +2,17 @@ import 'package:flutter/material.dart';
 
 import 'package:schulplaner/shared/models/time.dart';
 
+typedef HobbiesData = List<Hobby>;
+
+extension HobbiesDataExtension on HobbiesData {
+  Map<String, dynamic> get formattedMap => {
+        "hobbies": map(
+              (hobby) => hobby.toMap(),
+            )
+            .toList(),
+      };
+}
+
 class Hobby {
   /// The name of the hobby
   final String name;

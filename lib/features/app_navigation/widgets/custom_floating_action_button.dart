@@ -4,7 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/features/calendar/presentation/provider/events_provider.dart';
-import 'package:schulplaner/shared/dialogs/events/edit_homework_dialog.dart';
+import 'package:schulplaner/shared/dialogs/events/homework/edit_homework_dialog.dart';
 import 'package:schulplaner/shared/dialogs/events/edit_reminder_dialog.dart';
 import 'package:schulplaner/shared/dialogs/events/edit_test_dialog.dart';
 import 'package:schulplaner/shared/models/event.dart';

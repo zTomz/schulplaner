@@ -43,6 +43,31 @@ extension EventDataExtension on EventData {
 
     return (homeworkEvents, testEvents, reminderEvents, repeatingEvents);
   }
+
+  /// Get a formatted json. This is used when generating something with AI.
+  Map<String, dynamic> getFormattedMap({
+    required WeeklyScheduleData weeklyScheduleData,
+  }) =>
+      {
+        "homework": sortedEvents.$1.map(
+          (event) => event.getCompleteMap(
+            weeklyScheduleData.subjects,
+            weeklyScheduleData.teachers,
+          ),
+        ),
+        "tests": sortedEvents.$2.map(
+          (event) => event.getCompleteMap(
+            weeklyScheduleData.subjects,
+            weeklyScheduleData.teachers,
+          ),
+        ),
+        "reminders": sortedEvents.$3.map(
+          (event) => event.toMap(),
+        ),
+        "repeating_events": sortedEvents.$4.map(
+          (event) => event.toMap(),
+        ),
+      };
 }
 
 /// An event in the calendar

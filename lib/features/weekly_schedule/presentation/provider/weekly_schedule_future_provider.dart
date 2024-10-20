@@ -16,7 +16,7 @@ final weeklyScheduleFutureProvider = FutureProvider<WeeklyScheduleData>(
       return _convertWeeklyScheduleSnapshotToData(data: rawWeeklyScheduleData);
     } else {
       return Future.error(
-        "Sie benötigen einen Account um diese Aktion auszuführen.",
+        "Sie benötigen ein Konto um diese Aktion auszuführen.",
       );
     }
   },

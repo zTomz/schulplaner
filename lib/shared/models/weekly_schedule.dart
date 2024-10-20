@@ -62,6 +62,33 @@ class WeeklyScheduleData {
           List<Teacher>.from(map['teachers']?.map((x) => Teacher.fromMap(x))),
     );
   }
+
+  /// Get a formatted json. This is used when generating something with AI.
+  Map<String, dynamic> get formattedMap => {
+              'weekdays': Weekday.mondayToFriday
+                  .map(
+                    (day) => {
+                      'day': day.name,
+                      'time_spans': timeSpans.map(
+                        (timeSpan) => {
+                          'time_span': timeSpan.toMap(),
+                          'lessons': lessons
+                              .where((lesson) =>
+                                  lesson.weekday == day &&
+                                  lesson.timeSpan == timeSpan)
+                              .map(
+                                (lesson) => lesson.getCompleteMap(
+                                  subjects,
+                                  teachers,
+                                ),
+                              )
+                              .toList(),
+                        },
+                      ),
+                    },
+                  )
+                  .toList(),
+            };
 }
 
 /// Represents a lesson in the weekly schedule

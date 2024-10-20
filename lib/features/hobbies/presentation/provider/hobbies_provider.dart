@@ -6,7 +6,7 @@ import 'package:schulplaner/shared/models/hobby.dart';
 import 'package:schulplaner/features/hobbies/presentation/provider/hobbies_future_provider.dart';
 
 final hobbiesProvider =
-    StateNotifierProvider<HobbiesStateNotifier, Either<Exception, List<Hobby>>>(
+    StateNotifierProvider<HobbiesStateNotifier, Either<Exception, HobbiesData>>(
   (ref) {
     final hobbyRepository = ref.watch(hobbiesRepositryProvider);
     final hobbiesStream = ref.watch(hobbiesFutureProvider);
