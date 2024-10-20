@@ -55,7 +55,19 @@ The answer should be in JSON like this: {
 }""",
       ),
     ];
-    final response = await model.generateContent(prompt);
+
+    GenerateContentResponse response;
+    try {
+      response = await model.generateContent(prompt);
+    } catch (e) {
+      logger.e("Error generating proccesing date with ai: $e");
+
+      return Left(
+        AiGeneratingException(
+          message: "Leider ist ein Fehler beim generieren aufgetreten.",
+        ),
+      );
+    }
 
     logger.i("Generated ProcessingDate: ${response.text}");
 
