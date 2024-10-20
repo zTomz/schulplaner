@@ -156,7 +156,9 @@ class EditHomeworkDialog extends HookConsumerWidget {
                       onPressed: () async {
                         final result = await showDialog(
                           context: context,
-                          builder: (context) => const ProcessingDateDialog(),
+                          builder: (context) => ProcessingDateDialog(
+                            processingDate: processingDate.value,
+                          ),
                         );
 
                         if (result != null) {

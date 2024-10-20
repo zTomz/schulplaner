@@ -160,7 +160,8 @@ class TimePickerModalBottomSheet extends StatelessWidget {
                     } else {
                       nextLesson = firstWhereOrNull<Lesson>(
                         sortedLessons
-                            .sublist(lessonsBeforeTheCurrentWeekday + 1),
+                            .sublist(lessonsBeforeTheCurrentWeekday + 1), // FIXME: The following RangeError was thrown while handling a gesture:
+                                                                          // RangeError (start): Invalid value: Not in inclusive range 0..2: 3
                         (lesson) =>
                             lesson.subjectUuid == subject!.uuid &&
                             lesson.weekday.weekdayAsInt >

@@ -9,7 +9,32 @@ import 'package:schulplaner/shared/models/hobby.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 
 abstract class AiService {
-  static const String aiModelName = 'gemini-1.5-flash';
+  static const String _aiModelName = 'gemini-1.5-pro';
+
+  /// Get the generative model used by the service with the correct configuration and a system instruction which holds the needed information.
+  static GenerativeModel _getGenrativeModel({
+    required WeeklyScheduleData weeklyScheduleData,
+    required EventData events,
+    required HobbiesData hobbies,
+  }) {
+    final systemInstructionText =
+        """ You are an AI assistant for pupils in a school planner app. The user can manage their timetable and hobbies in the app.
+They can also create appointments such as homework, assignments or just reminders.
+- The current date and time is: ${DateTime.now()}
+- Events that the user has already created: ${events.getFormattedMap(weeklyScheduleData: weeklyScheduleData)}
+- The user's timetable: ${weeklyScheduleData.formattedMap}
+- The user's hobbies: ${hobbies.formattedMap}""";
+
+    logger.i(systemInstructionText);
+
+    return FirebaseVertexAI.instance.generativeModel(
+      model: _aiModelName,
+      generationConfig: GenerationConfig(
+        responseMimeType: "application/json",
+      ),
+      systemInstruction: Content.system(systemInstructionText),
+    );
+  }
 
   static Future<Either<AiException, ProcessingDate>>
       generateHomeworkProcessingDateWithAi({
@@ -20,40 +45,41 @@ abstract class AiService {
     required Subject subject,
     required DateTime deadline,
   }) async {
-    final systemInstructionText =
-        """You are an AI assistant in a school planner app. The user can add events such as homework, assignments and reminders. He also has a timetable and his hobbies stored in the app. Here is some basic information you need.
-- The current date is: ${DateTime.now()}
-- Events that the user has already created: ${events.getFormattedMap(weeklyScheduleData: weeklyScheduleData)}
-- The user's timetable: ${weeklyScheduleData.formattedMap}
-- The user's hobbies: ${hobbies.formattedMap}""";
-    final model = FirebaseVertexAI.instance.generativeModel(
-      model: aiModelName,
-      generationConfig: GenerationConfig(
-        responseMimeType: "application/json",
-      ),
-      systemInstruction: Content.system(
-        systemInstructionText,
-      ),
+    final model = _getGenrativeModel(
+      weeklyScheduleData: weeklyScheduleData,
+      events: events,
+      hobbies: hobbies,
     );
     final prompt = [
       Content.text(
-        """The homework is in the subject: ${subject.getCompleteMap(weeklyScheduleData.teachers)}.
-The deadline is: $deadline.
-The user thinks, the task will be: ${difficulty.englishName}.
-When do you think, the user should do the homework and how long do you think the user will need to do it? When generating the homework, please make sure that it does not interfere with lesson time or other events that have already been created. The user should also have time to relax and not have to work without a break.
-A simple task will take around 45 minutes, a medium task will take around 1 and a half hour and a long task will take around 2 hours.
-The answer should be in JSON like this: {
-      'date': (a Iso8601 String),
-      'duration': {
-        'days': (int),
-        'hours': int,
-        'minutes': (int),
-        'seconds': (int),
-        'milliseconds': (int),
-        'microseconds': (int),
-    }
-}""",
-      ),
+          """Your task is to generate a date when a homework assignment should be completed. There is a deadline, namely the following date: $deadline.
+The homework must be completed by this date. The homework is to be completed in the subject ${subject.getCompleteMap(weeklyScheduleData.teachers)} and the user thinks that 
+it will be ${difficulty.englishName}.
+
+
+The answer should be in JSON like the following:
+{
+  'date': (a ISO 8601 string),
+  'timeSpan': {
+    'from': {
+      hour: (int),
+      minute: (int),
+    },
+    'to': {
+      hour: (int),
+      minute: (int),
+    },
+  },
+}
+
+ 
+A time span has a start time and an end time. The start time is the time when the homework is to be completed and the end time is the time when the homework is to be completed,
+when the homework is to be completed. The start time must be before the end time.
+
+When generating, please ensure that the processing date does not coincide with another date or other events. And if possible, the user should not
+too many tasks on the same day and be able to take a break in between. An easy task takes approx. 45 minutes to complete, a medium task approx. 90 minutes and
+a difficult one about 120 minutes.
+"""),
     ];
 
     GenerateContentResponse response;
@@ -73,9 +99,16 @@ The answer should be in JSON like this: {
 
     if (response.text != null) {
       try {
+        final generatedProcessingDate = ProcessingDate.fromMap(
+          jsonDecode(response.text.toString()) as Map<String, dynamic>,
+        );
         return Right(
-          ProcessingDate.fromMap(
-            jsonDecode(response.text.toString()) as Map<String, dynamic>,
+          // Used to set the time of the date to the start of the time span
+          generatedProcessingDate.copyWith(
+            date: generatedProcessingDate.date.copyWith(
+              hour: generatedProcessingDate.timeSpan.from.hour,
+              minute: generatedProcessingDate.timeSpan.from.minute,
+            ),
           ),
         );
       } catch (e) {

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:schulplaner/config/constants/logger.dart';
 
-import 'package:schulplaner/shared/extensions/duration_extension.dart';
 import 'package:schulplaner/shared/functions/first_where_or_null.dart';
+import 'package:schulplaner/shared/models/time.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:uuid/uuid.dart';
 
@@ -62,10 +62,10 @@ extension EventDataExtension on EventData {
           ),
         ),
         "reminders": sortedEvents.$3.map(
-          (event) => event.toMap(),
+          (event) => event.getCompleteMap(),
         ),
         "repeating_events": sortedEvents.$4.map(
-          (event) => event.toMap(),
+          (event) => event.getCompleteMap(),
         ),
       };
 }
@@ -148,7 +148,7 @@ class HomeworkEvent extends Event {
       'name': name,
       'type': 'homework',
       'date': Timestamp.fromDate(date),
-      'processingDate': processingDate.toMap(),
+      'processingDate': processingDate.getCompleteMap(),
       'subjectUuid': subjectUuid,
       'description': description,
       'isDone': isDone,
@@ -200,8 +200,8 @@ class HomeworkEvent extends Event {
     return {
       'name': name,
       'type': 'homework',
-      'date': date.millisecondsSinceEpoch,
-      'processingDate': processingDate.toMap(),
+      'date': date,
+      'processingDate': processingDate.getCompleteMap(),
       'subject': subject?.getCompleteMap(teachers),
       'description': description,
       'isDone': isDone,
@@ -265,9 +265,9 @@ class TestEvent extends Event {
 
     return {
       'name': name,
+      'date': date,
       'type': 'test',
       'description': description,
-      'date': date.millisecondsSinceEpoch,
       'praticeDates': praticeDates.map((x) => x.toMap()).toList(),
       'subject': subject?.getCompleteMap(teachers),
       'uuid': uuid,
@@ -313,6 +313,16 @@ class ReminderEvent extends Event {
       uuid: map['uuid'],
     );
   }
+
+  Map<String, dynamic> getCompleteMap() => {
+    'name': name,
+    'date': date,
+    'type': 'reminder',
+    'description': description,
+    'place': place,
+    'color': color.value,
+    'uuid': uuid,
+  };
 }
 
 class RepeatingEvent extends Event {
@@ -353,6 +363,16 @@ class RepeatingEvent extends Event {
       uuid: map['uuid'],
     );
   }
+
+  Map<String, dynamic> getCompleteMap() => {
+    'name': name,
+    'date': date,
+    'type': 'repeating',
+    'description': description,
+    'repeatingEventType': repeatingEventType.toMap(),
+    'color': color.value,
+    'uuid': uuid,
+  };
 }
 
 /// A date with a duration.
@@ -366,12 +386,22 @@ class ProcessingDate {
   final DateTime date;
 
   /// How long the event lasts
-  final Duration duration;
+  final TimeSpan timeSpan;
 
   ProcessingDate({
     required this.date,
-    required this.duration,
+    required this.timeSpan,
   });
+
+  ProcessingDate copyWith({
+    DateTime? date,
+    TimeSpan? timeSpan,
+  }) {
+    return ProcessingDate(
+      date: date ?? this.date,
+      timeSpan: timeSpan ?? this.timeSpan,
+    );
+  }
 
   String get formattedDate =>
       "${date.hour.toString().padLeft(2, "0")}:${date.minute.toString().padLeft(2, "0")} Uhr, ${date.day}.${date.month}.${date.year}";
@@ -379,7 +409,7 @@ class ProcessingDate {
   Map<String, dynamic> toMap() {
     return {
       'date': Timestamp.fromDate(date),
-      'duration': duration.toMap(),
+      'timeSpan': timeSpan.toMap(),
     };
   }
 
@@ -388,9 +418,14 @@ class ProcessingDate {
       date: map['date'] is String
           ? DateTime.parse(map['date'])
           : (map['date'] as Timestamp).toDate(),
-      duration: durationFromMap(map['duration']),
+      timeSpan: TimeSpan.fromMap(map['timeSpan']),
     );
   }
+
+  Map<String, dynamic> getCompleteMap() => {
+        'date': date,
+        'timeSpan': timeSpan.toMap(),
+      };
 }
 
 /// The type of repeating event. E. g. daily, weekly, monthly, yearly

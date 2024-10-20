@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:schulplaner/shared/functions/first_where_or_null.dart';
 import 'package:schulplaner/shared/models/hobby.dart';
 import 'package:schulplaner/shared/provider/user_provider.dart';
 import 'package:schulplaner/shared/services/database_service.dart';
@@ -25,10 +26,10 @@ HobbiesData _convertHobbiesSnapshotToData({
 }) {
   List<Hobby> hobbies = [];
 
-  final dataDoc = data.docs.where((doc) => doc.id == "data").firstOrNull;
+  final dataDoc = firstWhereOrNull(data.docs, (doc) => doc.id == "data");
 
   if (dataDoc != null) {
-    for (final entry in dataDoc.data().entries) {
+    for (final MapEntry entry in dataDoc.data().entries) {
       final hobby = Hobby.fromMap(entry.value as Map<String, dynamic>);
       hobbies.add(hobby);
     }

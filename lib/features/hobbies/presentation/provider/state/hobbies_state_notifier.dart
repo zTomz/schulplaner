@@ -37,6 +37,10 @@ class HobbiesStateNotifier
   Future<void> addHobby({
     required Hobby hobby,
   }) async {
+    if (state.isLeft()) {
+      return;
+    }
+
     // Add a new hobby to the state
     state = Right([...state.right!, hobby]);
 
@@ -46,6 +50,10 @@ class HobbiesStateNotifier
   Future<void> editHobby({
     required Hobby hobby,
   }) async {
+    if (state.isLeft()) {
+      return;
+    }
+
     // Edit an existing hobby
     state = Right(
       state.right!.map((e) => e.uuid == hobby.uuid ? hobby : e).toList(),
@@ -57,6 +65,10 @@ class HobbiesStateNotifier
   Future<void> deleteHobby({
     required Hobby hobby,
   }) async {
+    if (state.isLeft()) {
+      return;
+    }
+
     // Remove the hobby from the state
     state = Right(
         state.right!.where((element) => element.uuid != hobby.uuid).toList());

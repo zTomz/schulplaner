@@ -15,15 +15,15 @@ extension TimeOfDayExtension on TimeOfDay {
 
   Map<String, dynamic> toMap() {
     return {
-      'minute': minute,
       'hour': hour,
+      'minute': minute,
     };
   }
 }
 
 TimeOfDay timeOfDayFromMap(Map<String, dynamic> map) {
   return TimeOfDay(
-    minute: int.tryParse(map['minute'].toString()) ?? 0,
     hour: int.tryParse(map['hour'].toString()) ?? 0,
+    minute: int.tryParse(map['minute'].toString()) ?? 0,
   );
 }
