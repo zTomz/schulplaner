@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/config/routes/router.dart';
 import 'package:schulplaner/config/theme/app_theme.dart';
 import 'package:schulplaner/firebase_options.dart';
+import 'package:schulplaner/shared/provider/custom_provider_observer.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,6 +40,9 @@ Future<void> main() async {
 
   runApp(
     ProviderScope(
+      observers: [
+        CustomProviderObserver(),
+      ],
       child: MainApp(),
     ),
   );
