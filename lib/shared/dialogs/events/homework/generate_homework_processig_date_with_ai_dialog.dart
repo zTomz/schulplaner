@@ -6,7 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/features/calendar/presentation/provider/events_provider.dart';
 import 'package:schulplaner/features/hobbies/presentation/provider/hobbies_provider.dart';
-import 'package:schulplaner/features/overview/widgets/generate_with_ai_button.dart';
+import 'package:schulplaner/shared/widgets/generate_with_ai_button.dart';
 import 'package:schulplaner/shared/dialogs/custom_dialog.dart';
 import 'package:schulplaner/shared/functions/build_body_part.dart';
 import 'package:schulplaner/shared/models/event.dart';

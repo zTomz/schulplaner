@@ -18,14 +18,12 @@ abstract class AiService {
     required HobbiesData hobbies,
   }) {
     final systemInstructionText =
-        """ You are an AI assistant for pupils in a school planner app. The user can manage their timetable and hobbies in the app.
+        """You are an AI assistant for pupils in a school planner app. The user can manage their timetable and hobbies in the app.
 They can also create appointments such as homework, assignments or just reminders.
 - The current date and time is: ${DateTime.now()}
 - Events that the user has already created: ${events.getFormattedMap(weeklyScheduleData: weeklyScheduleData)}
 - The user's timetable: ${weeklyScheduleData.formattedMap}
 - The user's hobbies: ${hobbies.formattedMap}""";
-
-    logger.i(systemInstructionText);
 
     return FirebaseVertexAI.instance.generativeModel(
       model: _aiModelName,

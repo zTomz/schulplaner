@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
-import 'package:schulplaner/shared/functions/first_where_or_null.dart';
-import 'package:schulplaner/shared/models/time.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 
-class TimePickerModalBottomSheet extends StatelessWidget {
+class TimePickerModalBottomSheet extends HookWidget {
   final Subject? subject;
-  final List<Lesson> lessons;
+  final WeeklyScheduleData weeklyScheduleData;
 
   const TimePickerModalBottomSheet({
     super.key,
     required this.subject,
-    required this.lessons,
+    required this.weeklyScheduleData,
   });
 
   @override
   Widget build(BuildContext context) {
+    final errorMessage = useState<String?>(null);
+
     return Container(
-      height: 250,
+      height: errorMessage.value == null ? 250 : 275,
       padding: const EdgeInsets.symmetric(
         horizontal: Spacing.medium,
       ),
@@ -34,80 +35,32 @@ class TimePickerModalBottomSheet extends StatelessWidget {
               borderRadius: BorderRadius.circular(360),
             ),
           ),
+          if (errorMessage.value != null) ...[
+            Text(
+              errorMessage.value!,
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+            ),
+            const SizedBox(height: Spacing.small),
+          ],
           _buildCustomButton(
             label: "Nächste Stunde",
             icon: const Icon(LucideIcons.calendar_plus),
             onPressed: subject == null
                 ? null
                 : () {
-                    final currentWeekday = Weekday.fromDateTime(DateTime.now());
-
-                    // Get all lesson for the provided subject
-                    List<Lesson> sortedLessons = List<Lesson>.from(lessons);
-                    sortedLessons.removeWhere(
-                      (lesson) => lesson.subjectUuid != subject?.uuid,
+                    final nextLessonDate = weeklyScheduleData.getNextLessonDate(
+                      subject!,
+                      offset: 1,
                     );
 
-                    // If the lessons do not have at least one lesson of the provided subject we return
-                    if (sortedLessons.isEmpty) {
-                      Navigator.of(context).pop(null);
-                      return;
-                    }
-
-                    // Sort the lessons by weekday
-                    sortedLessons.sort(
-                      (a, b) => a.weekday < b.weekday ? -1 : 1,
-                    );
-
-                    // Get the next lesson. Try to get a lesson where the weekday is larger than the current weekday.
-                    // If no lesson is found, than set [lessonIsInSameWeek] to false and try it again without the weekday
-                    // comparison
-                    bool lessonIsInSameWeek = true;
-                    bool lessonWeekdayIsBeforeCurrentWeekday = true;
-                    Lesson? nextLesson = firstWhereOrNull<Lesson>(
-                      sortedLessons,
-                      (lesson) =>
-                          lesson.subjectUuid == subject!.uuid &&
-                          lesson.weekday.weekdayAsInt >
-                              currentWeekday.weekdayAsInt,
-                    );
-
-                    if (nextLesson == null) {
-                      lessonIsInSameWeek = false;
-                      nextLesson = firstWhereOrNull<Lesson>(
-                        sortedLessons,
-                        (lesson) => lesson.subjectUuid == subject!.uuid,
-                      );
-
-                      if (nextLesson != null &&
-                          nextLesson.weekday.weekdayAsInt >=
-                              currentWeekday.weekdayAsInt) {
-                        lessonWeekdayIsBeforeCurrentWeekday = false;
-                      }
-                    }
-
-                    // If the next lesson is still null, it is not in the weekly schedule. Theoretically this should
-                    // never happen
-                    if (nextLesson == null) {
-                      Navigator.of(context).pop(null);
-                      return;
-                    }
-
-                    // Get the difference between the current weekday and the next lesson weekday
-                    int difference =
-                        currentWeekday.getDifference(nextLesson.weekday);
-
-                    // Add a week, because the lesson is on the same day. Now it will be on the same day, but one
-                    // week later
-                    if (!lessonIsInSameWeek &&
-                        lessonWeekdayIsBeforeCurrentWeekday != true) {
-                      difference += 7;
+                    if (nextLessonDate.isLeft()) {
+                      errorMessage.value = nextLessonDate.left!.message;
                     }
 
                     Navigator.of(context).pop(
-                      DateTime.now().add(
-                        Duration(days: difference),
-                      ),
+                      nextLessonDate.right!,
                     );
                   },
           ),
@@ -118,96 +71,17 @@ class TimePickerModalBottomSheet extends StatelessWidget {
             onPressed: subject == null
                 ? null
                 : () {
-                    final currentWeekday = Weekday.fromDateTime(DateTime.now());
-
-                    // Get all lesson for the provided subject
-                    List<Lesson> sortedLessons = List<Lesson>.from(lessons);
-                    sortedLessons.removeWhere(
-                      (lesson) => lesson.subjectUuid != subject?.uuid,
+                    final nextButOneLessonDate =
+                        weeklyScheduleData.getNextLessonDate(
+                      subject!,
+                      offset: 2,
                     );
 
-                    // If the lessons do not have at least one lesson of the provided subject we return
-                    if (sortedLessons.isEmpty) {
-                      Navigator.of(context).pop(null);
-                      return;
+                    if (nextButOneLessonDate.isLeft()) {
+                      errorMessage.value = nextButOneLessonDate.left!.message;
                     }
-
-                    // Sort the lessons by weekday
-                    sortedLessons.sort(
-                      (a, b) => a.weekday < b.weekday ? -1 : 1,
-                    );
-
-                    // Get the next but one lesson. Try to get a lesson where the weekday is larger than the current weekday.
-                    // If no lesson is found, than set [lessonIsInSameWeek] to false and try it again without the weekday
-                    // comparison
-                    Lesson? nextLesson;
-                    bool lessonIsInSameWeek = true;
-                    bool onlyOneLessonOfSubjectInWeek = false;
-
-                    int lessonsBeforeTheCurrentWeekday = lessons
-                        .where((l) =>
-                            l.weekday.weekdayAsInt <=
-                            currentWeekday.weekdayAsInt)
-                        .length;
-
-                    if (sortedLessons.length == 1) {
-                      onlyOneLessonOfSubjectInWeek = true;
-
-                      nextLesson = firstWhereOrNull<Lesson>(
-                        sortedLessons,
-                        (lesson) => lesson.subjectUuid == subject!.uuid,
-                      );
-                    } else {
-                      nextLesson = firstWhereOrNull<Lesson>(
-                        sortedLessons
-                            .sublist(lessonsBeforeTheCurrentWeekday + 1), // FIXME: The following RangeError was thrown while handling a gesture:
-                                                                          // RangeError (start): Invalid value: Not in inclusive range 0..2: 3
-                        (lesson) =>
-                            lesson.subjectUuid == subject!.uuid &&
-                            lesson.weekday.weekdayAsInt >
-                                currentWeekday.weekdayAsInt,
-                      );
-                    }
-
-                    if (nextLesson == null) {
-                      lessonIsInSameWeek = false;
-                      nextLesson = firstWhereOrNull<Lesson>(
-                        sortedLessons,
-                        (lesson) => lesson.subjectUuid == subject!.uuid,
-                      );
-                    }
-
-                    // If the next lesson is still null, it is not in the weekly schedule. Theoretically this should
-                    // never happen
-                    if (nextLesson == null) {
-                      Navigator.of(context).pop(null);
-                      return;
-                    }
-
-                    // Get the difference between the current weekday and the next lesson weekday
-                    int difference = currentWeekday.getDifference(
-                      nextLesson.weekday,
-                    );
-
-                    // Add 7, because we want the next but one lesson. So we need to add one week, if there is only one lesson of the provided subject in the week
-                    if (onlyOneLessonOfSubjectInWeek) {
-                      difference += 7;
-                    }
-
-                    // Add a week, because the lesson is on the same day. Now it will be on the same day, but one
-                    // week later
-                    if (!lessonIsInSameWeek && onlyOneLessonOfSubjectInWeek) {
-                      difference += 7;
-                    }
-
-                    if (nextLesson.weekday == currentWeekday) {
-                      difference += 7;
-                    }
-
                     Navigator.of(context).pop(
-                      DateTime.now().add(
-                        Duration(days: difference),
-                      ),
+                      nextButOneLessonDate.right!,
                     );
                   },
           ),

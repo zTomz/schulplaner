@@ -34,7 +34,6 @@ class EditHomeworkDialog extends HookConsumerWidget {
     final weeklyScheduleData = ref.watch(weeklyScheduleProvider);
     final subjects = weeklyScheduleData.right?.subjects ?? [];
     final teachers = weeklyScheduleData.right?.teachers ?? [];
-    final lessons = weeklyScheduleData.right?.lessons ?? [];
 
     final nameController = useTextEditingController(
       text: homeworkEvent?.name,
@@ -132,7 +131,8 @@ class EditHomeworkDialog extends HookConsumerWidget {
                     builder: (BuildContext context) {
                       return TimePickerModalBottomSheet(
                         subject: subject.value,
-                        lessons: lessons,
+                        weeklyScheduleData: weeklyScheduleData.right ??
+                            WeeklyScheduleData.empty(),
                       );
                     },
                   );

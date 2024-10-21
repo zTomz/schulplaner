@@ -3,8 +3,10 @@
 import 'dart:ui';
 
 import 'package:equatable/equatable.dart';
+import 'package:schulplaner/shared/exceptions/weekly_schedule_exceptions.dart';
 
 import 'package:schulplaner/shared/functions/first_where_or_null.dart';
+import 'package:schulplaner/shared/models/either.dart';
 import 'package:schulplaner/shared/models/time.dart';
 import 'package:schulplaner/shared/widgets/weekly_schedule/models.dart';
 
@@ -65,30 +67,101 @@ class WeeklyScheduleData {
 
   /// Get a formatted json. This is used when generating something with AI.
   Map<String, dynamic> get formattedMap => {
-              'weekdays': Weekday.mondayToFriday
-                  .map(
-                    (day) => {
-                      'day': day.name,
-                      'time_spans': timeSpans.map(
-                        (timeSpan) => {
-                          'time_span': timeSpan.toMap(),
-                          'lessons': lessons
-                              .where((lesson) =>
-                                  lesson.weekday == day &&
-                                  lesson.timeSpan == timeSpan)
-                              .map(
-                                (lesson) => lesson.getCompleteMap(
-                                  subjects,
-                                  teachers,
-                                ),
-                              )
-                              .toList(),
-                        },
-                      ),
-                    },
-                  )
-                  .toList(),
-            };
+        'weekdays': Weekday.mondayToFriday
+            .map(
+              (day) => {
+                'day': day.name,
+                'time_spans': timeSpans.map(
+                  (timeSpan) => {
+                    'time_span': timeSpan.toMap(),
+                    'lessons': lessons
+                        .where((lesson) =>
+                            lesson.weekday == day &&
+                            lesson.timeSpan == timeSpan)
+                        .map(
+                          (lesson) => lesson.getCompleteMap(
+                            subjects,
+                            teachers,
+                          ),
+                        )
+                        .toList(),
+                  },
+                ),
+              },
+            )
+            .toList(),
+      };
+
+  /// Get the date of the next lesson of the provided subject
+  Either<WeeklyScheduleException, DateTime> getNextLessonDate(
+    Subject subject, {
+    required int offset,
+  }) {
+    final currentWeekday = Weekday.fromDateTime(DateTime.now());
+
+    // Get all lesson for the provided subject
+    List<Lesson> sortedLessons = List<Lesson>.from(lessons);
+    sortedLessons.removeWhere(
+      (lesson) => lesson.subjectUuid != subject.uuid,
+    );
+
+    // If the lessons do not have at least one lesson of the provided subject we return
+    if (sortedLessons.isEmpty) {
+      return const Left(
+        LessonDoesNotExistException(),
+      );
+    }
+
+    // Sort the lessons by the weekday
+    sortedLessons.sort(
+      (a, b) => a.weekday.index.compareTo(b.weekday.index),
+    );
+
+    // Move the days before the current weekday and the current weekday itself at the end
+    final lessonsBeforeCurrentWeekday = sortedLessons
+        .where((lesson) =>
+            lesson.weekday.weekdayAsInt <= currentWeekday.weekdayAsInt)
+        .toList();
+    sortedLessons.addAll(lessonsBeforeCurrentWeekday);
+    sortedLessons.removeRange(0, lessonsBeforeCurrentWeekday.length);
+
+    // Getting the date by iteration over the now sorted lessons
+    DateTime currentDate = DateTime.now();
+    int iteration = 0;
+    Lesson currentLesson = sortedLessons.first;
+    while (iteration < offset) {
+      iteration++;
+
+      final differenceToCurrentWeekday =
+          Weekday.fromDateTime(currentDate).getDifference(
+        currentLesson.weekday,
+      );
+
+      // Update the current date to the new one
+      currentDate = currentDate.add(
+        Duration(
+          days: differenceToCurrentWeekday,
+        ),
+      );
+
+      // Assign the current lesson to the next lesson in the list, if it is
+      // out of range, start from the beginning
+      final indexOfNextLesson = sortedLessons.indexWhere(
+            (lesson) => lesson.uuid == currentLesson.uuid,
+          ) +
+          1;
+
+      if (indexOfNextLesson >= sortedLessons.length) {
+        currentLesson = sortedLessons.first;
+      } else {
+        currentLesson = sortedLessons[indexOfNextLesson];
+      }
+    }
+
+    // Throw an exception, that the next lesson date is not implemented yet
+    // throw UnimplementedError();
+    return Right(currentDate);
+  }
 }
 
 /// Represents a lesson in the weekly schedule
