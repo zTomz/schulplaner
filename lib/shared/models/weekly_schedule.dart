@@ -132,10 +132,16 @@ class WeeklyScheduleData {
     while (iteration < offset) {
       iteration++;
 
-      final differenceToCurrentWeekday =
+      int differenceToCurrentWeekday =
           Weekday.fromDateTime(currentDate).getDifference(
         currentLesson.weekday,
       );
+
+      // If we only have one lesson per week, the difference will be 0. For that,
+      // we need to add one week
+      if (differenceToCurrentWeekday == 0 && sortedLessons.length == 1) {
+        differenceToCurrentWeekday += 7;
+      }
 
       // Update the current date to the new one
       currentDate = currentDate.add(
@@ -158,8 +164,6 @@ class WeeklyScheduleData {
       }
     }
 
-    // Throw an exception, that the next lesson date is not implemented yet
-    // throw UnimplementedError();
     return Right(currentDate);
   }
 }

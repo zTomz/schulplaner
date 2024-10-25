@@ -52,7 +52,7 @@ They can also create appointments such as homework, assignments or just reminder
       Content.text(
           """Your task is to generate a date when a homework assignment should be completed. There is a deadline, namely the following date: $deadline.
 The homework must be completed by this date. The homework is to be completed in the subject ${subject.getCompleteMap(weeklyScheduleData.teachers)} and the user thinks that 
-it will be ${difficulty.englishName}.
+it will be ${difficulty.englishName}. Prefer the weekend to the week. In addition, the sooner the better.
 
 
 The answer should be in JSON like the following:

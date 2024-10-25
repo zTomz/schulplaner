@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:schulplaner/shared/extensions/date_time_extension.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 
@@ -45,7 +46,15 @@ class TimePickerModalBottomSheet extends HookWidget {
             const SizedBox(height: Spacing.small),
           ],
           _buildCustomButton(
+            context,
             label: "Nächste Stunde",
+            indicator: subject == null ? null : weeklyScheduleData
+                .getNextLessonDate(
+                  subject!,
+                  offset: 1,
+                )
+                .right
+                ?.formattedDate,
             icon: const Icon(LucideIcons.calendar_plus),
             onPressed: subject == null
                 ? null
@@ -66,7 +75,15 @@ class TimePickerModalBottomSheet extends HookWidget {
           ),
           const SizedBox(height: Spacing.small),
           _buildCustomButton(
+            context,
             label: "Übernächste Stunde",
+            indicator: subject == null ? null : weeklyScheduleData
+                .getNextLessonDate(
+                  subject!,
+                  offset: 2,
+                )
+                .right
+                ?.formattedDate,
             icon: const Icon(LucideIcons.calendar_plus_2),
             onPressed: subject == null
                 ? null
@@ -87,6 +104,7 @@ class TimePickerModalBottomSheet extends HookWidget {
           ),
           const SizedBox(height: Spacing.small),
           _buildCustomButton(
+            context,
             label: "Datum auswählen",
             icon: const Icon(LucideIcons.calendar_days),
             onPressed: () async {
@@ -110,8 +128,10 @@ class TimePickerModalBottomSheet extends HookWidget {
     );
   }
 
-  Widget _buildCustomButton({
+  Widget _buildCustomButton(
+    BuildContext context, {
     required String label,
+    String? indicator,
     required Widget icon,
     required void Function()? onPressed,
   }) {
@@ -129,9 +149,18 @@ class TimePickerModalBottomSheet extends HookWidget {
         ),
       ),
       icon: icon,
-      label: Align(
-        alignment: Alignment.centerLeft,
-        child: Text(label),
+      label: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(label),
+          Text(
+            indicator ?? "",
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+        ],
       ),
     );
   }
