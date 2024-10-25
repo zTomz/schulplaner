@@ -39,11 +39,17 @@ class EditLessonDialog extends HookWidget {
   /// A function that is called, when a subject gets edited
   final void Function(Subject subject) onSubjectEdited;
 
+  /// A function that is called, when a subject gets deleted
+  final void Function(Subject subject) onSubjectDeleted;
+
   /// A function that is called, when a teacher gets created
   final void Function(Teacher teacher) onTeacherCreated;
 
   /// A function that is called, when a teacher gets edited
   final void Function(Teacher teacher) onTeacherEdited;
+
+  /// A function that is called, when a teacher gets deleted
+  final void Function(Teacher teacher) onTeacherDeleted;
 
   const EditLessonDialog({
     super.key,
@@ -54,8 +60,10 @@ class EditLessonDialog extends HookWidget {
     required this.onLessonDeleted,
     required this.onSubjectCreated,
     required this.onSubjectEdited,
+    required this.onSubjectDeleted,
     required this.onTeacherCreated,
     required this.onTeacherEdited,
+    required this.onTeacherDeleted,
   });
 
   @override
@@ -120,8 +128,10 @@ class EditLessonDialog extends HookWidget {
                       teachers: teachers,
                       onSubjectCreated: onSubjectCreated,
                       onSubjectEdited: onSubjectEdited,
+                      onSubjectDeleted: onSubjectDeleted,
                       onTeacherCreated: onTeacherCreated,
                       onTeacherEdited: onTeacherEdited,
+                      onTeacherDeleted: onTeacherDeleted,
                     ),
                   );
 

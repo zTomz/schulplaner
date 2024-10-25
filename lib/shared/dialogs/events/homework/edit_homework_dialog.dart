@@ -93,6 +93,11 @@ class EditHomeworkDialog extends HookConsumerWidget {
                             .read(weeklyScheduleProvider.notifier)
                             .editSubject(subject: subject);
                       },
+                      onSubjectDeleted: (subject) async {
+                        await ref
+                            .read(weeklyScheduleProvider.notifier)
+                            .deleteSubject(subject: subject);
+                      },
                       onTeacherCreated: (teacher) async {
                         await ref
                             .read(weeklyScheduleProvider.notifier)
@@ -102,6 +107,11 @@ class EditHomeworkDialog extends HookConsumerWidget {
                         await ref
                             .read(weeklyScheduleProvider.notifier)
                             .editTeacher(teacher: teacher);
+                      },
+                      onTeacherDeleted: (teacher) async {
+                        await ref
+                            .read(weeklyScheduleProvider.notifier)
+                            .deleteTeacher(teacher: teacher);
                       },
                     ),
                   );

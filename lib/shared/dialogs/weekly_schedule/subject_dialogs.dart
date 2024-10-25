@@ -8,6 +8,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/shared/dialogs/custom_dialog.dart';
 import 'package:schulplaner/shared/dialogs/weekly_schedule/teacher_dialogs.dart';
+import 'package:schulplaner/shared/dialogs/weekly_schedule/widgets/item_popup_button.dart';
 import 'package:schulplaner/shared/functions/first_where_or_null.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/shared/widgets/color_choose_list_tile.dart';
@@ -30,11 +31,17 @@ class SubjectDialog extends StatelessWidget {
   /// A function that is called, when a subject gets edited
   final void Function(Subject subject) onSubjectEdited;
 
+  /// A function that is called, when a subject gets deleted
+  final void Function(Subject subject) onSubjectDeleted;
+
   /// A function that is called, when a teacher gets created
   final void Function(Teacher teacher) onTeacherCreated;
 
   /// A function that is called, when a teacher gets edited
   final void Function(Teacher teacher) onTeacherEdited;
+
+  /// A function that is called, when a teacher gets deleted
+  final void Function(Teacher teacher) onTeacherDeleted;
 
   /// If the subjects are onyl selectable. This means, there is no option to edit them or to add new subjects.
   /// Default is `false`
@@ -46,8 +53,10 @@ class SubjectDialog extends StatelessWidget {
     required this.teachers,
     required this.onSubjectCreated,
     required this.onSubjectEdited,
+    required this.onSubjectDeleted,
     required this.onTeacherCreated,
     required this.onTeacherEdited,
+    required this.onTeacherDeleted,
     this.onlySelectable = false,
   });
 
@@ -69,8 +78,8 @@ class SubjectDialog extends StatelessWidget {
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radii.small),
                 ),
-                trailing: IconButton(
-                  onPressed: () async {
+                trailing: ItemPopupButton(
+                  onEdit: () async {
                     final result = await showDialog<Subject>(
                       context: context,
                       builder: (context) => EditSubjectDialog(
@@ -78,6 +87,7 @@ class SubjectDialog extends StatelessWidget {
                         teachers: teachers,
                         onTeacherCreated: onTeacherCreated,
                         onTeacherEdited: onTeacherEdited,
+                        onTeacherDeleted: onTeacherDeleted,
                       ),
                     );
 
@@ -86,7 +96,21 @@ class SubjectDialog extends StatelessWidget {
                       Navigator.of(context).pop(result);
                     }
                   },
-                  icon: const Icon(LucideIcons.ellipsis_vertical),
+                  onDelete: () async {
+                    final result = await showDialog(
+                      context: context,
+                      builder: (context) => CustomDialog.confirmation(
+                        title: "Fach löschen",
+                        description:
+                            "Sind Sie sicher, dass Sie dieses Fach löschen möchten? Wenn Sie dies tun, werden automatisch alle Schulstunden, die mit diesen Fach belegt sind, mit gelöscht.",
+                      ),
+                    );
+
+                    if (result == true && context.mounted) {
+                      onSubjectDeleted(currentSubject);
+                      Navigator.of(context).popUntil((route) => route.isFirst);
+                    }
+                  },
                 ),
                 onTap: () {
                   Navigator.of(context).pop(subjects[index]);
@@ -103,6 +127,7 @@ class SubjectDialog extends StatelessWidget {
                   teachers: teachers,
                   onTeacherCreated: onTeacherCreated,
                   onTeacherEdited: onTeacherEdited,
+                  onTeacherDeleted: onTeacherDeleted,
                 ),
               );
 
@@ -132,12 +157,16 @@ class EditSubjectDialog extends HookWidget {
   /// A function that is called, when a teacher gets edited
   final void Function(Teacher teacher) onTeacherEdited;
 
+  /// A function that is called, when a teacher gets deleted
+  final void Function(Teacher teacher) onTeacherDeleted;
+
   const EditSubjectDialog({
     super.key,
     this.subject,
     required this.teachers,
     required this.onTeacherCreated,
     required this.onTeacherEdited,
+    required this.onTeacherDeleted,
   });
 
   @override
@@ -181,6 +210,7 @@ class EditSubjectDialog extends HookWidget {
                       teachers: teachers,
                       onTeacherCreated: onTeacherCreated,
                       onTeacherEdited: onTeacherEdited,
+                      onTeacherDeleted: onTeacherDeleted,
                     ),
                   );
 

@@ -176,6 +176,11 @@ class CreateWeeklySchedulePage extends HookConsumerWidget {
         onSubjectEdited: (subject) {
           ref.read(createWeeklyScheduleProvider.notifier).editSubject(subject);
         },
+        onSubjectDeleted: (subject) {
+          ref
+              .read(createWeeklyScheduleProvider.notifier)
+              .deleteSubject(subject);
+        },
         onTeacherCreated: (teacher) {
           ref
               .read(createWeeklyScheduleProvider.notifier)
@@ -183,6 +188,11 @@ class CreateWeeklySchedulePage extends HookConsumerWidget {
         },
         onTeacherEdited: (teacher) {
           ref.read(createWeeklyScheduleProvider.notifier).editTeacher(teacher);
+        },
+        onTeacherDeleted: (teacher) {
+          ref
+              .read(createWeeklyScheduleProvider.notifier)
+              .deleteTeacher(teacher);
         },
       ),
     );

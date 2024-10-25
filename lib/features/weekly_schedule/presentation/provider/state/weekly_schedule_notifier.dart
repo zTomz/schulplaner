@@ -178,6 +178,30 @@ class WeeklyScheduleNotifier
     await _syncStateWithDatabase();
   }
 
+  Future<void> deleteSubject({
+    required Subject subject,
+  }) async {
+    // If an error exists, we return
+    if (state.isLeft()) {
+      return;
+    }
+
+    // Remove the subject from the list of subjects & all lessons containing
+    // this subject
+    state = Right(state.right!.copyWith(
+      subjects: state.right!.subjects
+          .where(
+            (element) => element.uuid != subject.uuid,
+          )
+          .toList(),
+      lessons: state.right!.lessons
+          .where((lesson) => lesson.subjectUuid != subject.uuid)
+          .toList(),
+    ));
+
+    await _syncStateWithDatabase();
+  }
+
   Future<void> addTeacher({
     required Teacher teacher,
   }) async {
@@ -210,6 +234,40 @@ class WeeklyScheduleNotifier
       teachers: state.right!.teachers
           .map(
             (e) => e.uuid == teacher.uuid ? teacher : e,
+          )
+          .toList(),
+    ));
+
+    await _syncStateWithDatabase();
+  }
+
+  Future<void> deleteTeacher({
+    required Teacher teacher,
+  }) async {
+    // If an error exists, we return
+    if (state.isLeft()) {
+      return;
+    }
+
+    // Remove the teacher from the list of teachers, all subjects containing this
+    // teacher & all lessons containing these subject
+    final subjects = state.right!.subjects;
+
+    state = Right(state.right!.copyWith(
+      teachers: state.right!.teachers
+          .where(
+            (element) => element.uuid != teacher.uuid,
+          )
+          .toList(),
+      subjects: state.right!.subjects
+          .where(
+            (element) => element.teacherUuid != teacher.uuid,
+          )
+          .toList(),
+      lessons: state.right!.lessons
+          .where(
+            (lesson) =>
+                lesson.getSubject(subjects)?.teacherUuid != teacher.uuid,
           )
           .toList(),
     ));

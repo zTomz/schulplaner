@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/shared/dialogs/custom_dialog.dart';
+import 'package:schulplaner/shared/dialogs/weekly_schedule/widgets/item_popup_button.dart';
 import 'package:schulplaner/shared/functions/build_body_part.dart';
 import 'package:schulplaner/shared/functions/get_value_or_null.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
@@ -26,11 +27,15 @@ class TeacherDialog extends StatelessWidget {
   /// A function that is called, when a teacher gets edited
   final void Function(Teacher teacher) onTeacherEdited;
 
+  /// A function that is called, when a teacher gets deleted
+  final void Function(Teacher teacher) onTeacherDeleted;
+
   const TeacherDialog({
     super.key,
     required this.teachers,
     required this.onTeacherCreated,
     required this.onTeacherEdited,
+    required this.onTeacherDeleted,
   });
 
   @override
@@ -53,21 +58,34 @@ class TeacherDialog extends StatelessWidget {
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radii.small),
                 ),
-                trailing: IconButton(
-                  onPressed: () async {
+                trailing: ItemPopupButton(
+                  onEdit: () async {
                     final result = await showDialog<Teacher>(
                       context: context,
                       builder: (context) => EditTeacherDialog(
                         teacher: currentTeacher,
                       ),
                     );
-
                     if (result != null && context.mounted) {
                       onTeacherEdited(result);
                       Navigator.of(context).pop(result);
                     }
                   },
-                  icon: const Icon(LucideIcons.ellipsis_vertical),
+                  onDelete: () async {
+                    final result = await showDialog(
+                      context: context,
+                      builder: (context) => CustomDialog.confirmation(
+                        title: "Lehrer löschen",
+                        description:
+                            "Sind Sie sicher, dass Sie diesen Leherer löschen möchten? Wenn Sie dies tun, werden automatisch alle Schulstunden und Fächer, die mit diesen Lehrer belegt sind, mit gelöscht.",
+                      ),
+                    );
+
+                    if (result == true && context.mounted) {
+                      onTeacherDeleted(currentTeacher);
+                      Navigator.of(context).popUntil((route) => route.isFirst);
+                    }
+                  },
                 ),
                 onTap: () {
                   Navigator.of(context).pop(teachers[index]);

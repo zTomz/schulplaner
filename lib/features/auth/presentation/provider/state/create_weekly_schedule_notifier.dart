@@ -76,6 +76,20 @@ class CreateWeeklyScheduleNotifier extends StateNotifier<WeeklyScheduleData> {
     );
   }
 
+  /// Delete a subject from the list of subjects
+  void deleteSubject(Subject subject) {
+    state = state.copyWith(
+      subjects: state.subjects
+          .where(
+            (element) => element.uuid != subject.uuid,
+          )
+          .toList(),
+      lessons: state.lessons
+          .where((lesson) => lesson.subjectUuid != subject.uuid)
+          .toList(),
+    );
+  }
+
   /// Create a new teacher and add it to the list of teachers
   void createTeacher(Teacher teacher) {
     state = state.copyWith(
@@ -88,6 +102,30 @@ class CreateWeeklyScheduleNotifier extends StateNotifier<WeeklyScheduleData> {
     state = state.copyWith(
       teachers: state.teachers
           .map((t) => t.uuid == teacher.uuid ? teacher : t)
+          .toList(),
+    );
+  }
+
+  /// Delete a teacher from the list of teachers
+  void deleteTeacher(Teacher teacher) {
+    final subjects = state.subjects;
+
+    state = state.copyWith(
+      teachers: state.teachers
+          .where(
+            (element) => element.uuid != teacher.uuid,
+          )
+          .toList(),
+      subjects: state.subjects
+          .where(
+            (element) => element.teacherUuid != teacher.uuid,
+          )
+          .toList(),
+      lessons: state.lessons
+          .where(
+            (lesson) =>
+                lesson.getSubject(subjects)?.teacherUuid != teacher.uuid,
+          )
           .toList(),
     );
   }
