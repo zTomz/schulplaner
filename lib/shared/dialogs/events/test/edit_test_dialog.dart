@@ -4,6 +4,8 @@ import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/features/weekly_schedule/presentation/provider/weekly_schedule_provider.dart';
 import 'package:schulplaner/shared/dialogs/custom_dialog.dart';
+import 'package:schulplaner/shared/dialogs/events/event_date_dialog.dart';
+import 'package:schulplaner/shared/dialogs/events/test/generate_test_processing_dates_with_ai_dialog.dart';
 import 'package:schulplaner/shared/dialogs/weekly_schedule/subject_dialogs.dart';
 import 'package:schulplaner/shared/extensions/date_time_extension.dart';
 import 'package:schulplaner/shared/functions/first_where_or_null.dart';
@@ -46,6 +48,9 @@ class EditTestDialog extends HookConsumerWidget {
       ),
     );
     final date = useState<DateTime?>(testEvent?.date);
+    final processingDates = useState<List<ProcessingDate>?>(
+      testEvent?.praticeDates,
+    );
 
     final formKey = useMemoized(() => GlobalKey<FormState>());
 
@@ -133,7 +138,8 @@ class EditTestDialog extends HookConsumerWidget {
                     builder: (BuildContext context) {
                       return TimePickerModalBottomSheet(
                         subject: subject.value,
-                        weeklyScheduleData: weeklyScheduleData.right ?? WeeklyScheduleData.empty(),
+                        weeklyScheduleData: weeklyScheduleData.right ??
+                            WeeklyScheduleData.empty(),
                       );
                     },
                   );
@@ -144,6 +150,61 @@ class EditTestDialog extends HookConsumerWidget {
                 },
                 child: const Text("Datum"),
               ),
+            ),
+            const SizedBox(height: Spacing.small),
+            Row(
+              children: [
+                Expanded(
+                  child: RequiredField(
+                    errorText: "Mindestens ein Übungsdatum ist erforderlich.",
+                    value: processingDates.value,
+                    child: CustomButton.selection(
+                      selection: processingDates.value
+                          ?.map(
+                              (processingDate) => processingDate.formattedDate)
+                          .join(", "),
+                      onPressed: () async {
+                        final result = await showDialog<List<ProcessingDate>>(
+                          context: context,
+                          builder: (context) => MultipleProssesingDatesDialog(
+                            processingDates: processingDates.value,
+                          ),
+                        );
+
+                        if (result != null) {
+                          processingDates.value = result;
+                        }
+                      },
+                      child: const Text("Übungsdaten"),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: Spacing.small),
+                IconButton(
+                  onPressed: subject.value != null &&
+                          date.value != null &&
+                          weeklyScheduleData.isRight()
+                      ? () async {
+                          final result = await showDialog<List<ProcessingDate>>(
+                            context: context,
+                            builder: (context) =>
+                                GenerateTestProcessingDatesWithAi(
+                              weeklyScheduleData: weeklyScheduleData.right!,
+                              subject: subject.value!,
+                              deadline: date.value!,
+                            ),
+                          );
+
+                          if (result != null) {
+                            processingDates.value = result;
+                          }
+                        }
+                      : null,
+                  tooltip: "Mit KI generieren",
+                  color: Theme.of(context).colorScheme.tertiary,
+                  icon: const Icon(LucideIcons.sparkles),
+                ),
+              ],
             ),
             const SizedBox(height: Spacing.small),
             CustomTextField(
@@ -200,7 +261,7 @@ class EditTestDialog extends HookConsumerWidget {
                 description: descriptionController.text.getStringOrNull(),
                 subjectUuid: subject.value!.uuid,
                 date: date.value!,
-                praticeDates: [], // TODO: Add practice dates. Maybe with AI
+                praticeDates: processingDates.value ?? [],
                 uuid: testEvent?.uuid ?? const Uuid().v4(),
               ),
             );

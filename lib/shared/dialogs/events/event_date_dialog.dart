@@ -7,6 +7,7 @@ import 'package:schulplaner/shared/extensions/date_time_extension.dart';
 import 'package:schulplaner/shared/extensions/time_of_day_extension.dart';
 import 'package:schulplaner/shared/models/event.dart';
 import 'package:schulplaner/shared/models/time.dart';
+import 'package:schulplaner/shared/widgets/custom_button.dart';
 import 'package:schulplaner/shared/widgets/selection_row.dart';
 import 'package:schulplaner/shared/widgets/time_span_picker.dart';
 
@@ -114,6 +115,84 @@ class ProcessingDateDialog extends HookWidget {
           child: const Text("Hinzufügen"),
         ),
       ],
+    );
+  }
+}
+
+class MultipleProssesingDatesDialog extends HookWidget {
+  final List<ProcessingDate>? processingDates;
+
+  const MultipleProssesingDatesDialog({
+    super.key,
+    this.processingDates,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final processingDates = useState<List<ProcessingDate>>(
+      this.processingDates ?? [],
+    );
+
+    return CustomDialog.expanded(
+      icon: const Icon(LucideIcons.calendar_days),
+      title: const Text("Übungsdaten erstellen"),
+      content: Column(
+        children: [
+          ListView.builder(
+            itemCount: processingDates.value.length,
+            shrinkWrap: true,
+            itemBuilder: (BuildContext context, int index) {
+              final currentProcessingDate = processingDates.value[index];
+
+              return ListTile(
+                title: Text(currentProcessingDate.date.formattedDate),
+                subtitle: Text(
+                  currentProcessingDate.timeSpan.toFormattedString(),
+                ),
+                trailing: IconButton(
+                  onPressed: () {
+                    processingDates.value = processingDates.value
+                        .where((date) => date != currentProcessingDate)
+                        .toList();
+                  },
+                  icon: const Icon(LucideIcons.trash_2),
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: Spacing.medium),
+          Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: CustomButton(
+                  onPressed: () async {
+                    final result = await showDialog<ProcessingDate>(
+                      context: context,
+                      builder: (context) => const ProcessingDateDialog(),
+                    );
+                
+                    if (result != null) {
+                      processingDates.value = [...processingDates.value, result];
+                    }
+                  },
+                  child: const Text("Übungsdatum erstellen"),
+                ),
+              ),
+              const SizedBox(width: Spacing.small),
+              Expanded(
+                flex: 1,
+                child: CustomButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(processingDates.value);
+                  },
+                  child: const Text("Fertig"),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

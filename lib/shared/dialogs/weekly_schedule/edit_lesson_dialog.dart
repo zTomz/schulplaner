@@ -1,5 +1,3 @@
-// TODO: Delete lessons and teachers in the dialogs
-
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';

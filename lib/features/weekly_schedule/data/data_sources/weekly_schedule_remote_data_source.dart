@@ -17,10 +17,14 @@ class WeeklyScheduleRemoteDataSource implements WeeklyScheduleDataSource {
     }
 
     // Upload the data to Firestore
-    await DatabaseService.weeklyScheduleCollection.doc("data").set(
-          weeklyScheduleData.toMap(),
-        );
-
-    return const Right(null);
+    try {
+      await DatabaseService.weeklyScheduleCollection.doc("data").set(
+            weeklyScheduleData.toMap(),
+          );
+      return const Right(null);
+    } catch (e) {
+      logger.e(e);
+      return Left(UnauthenticatedExeption());
+    }
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/shared/dialogs/events/edit_reminder_dialog.dart';
-import 'package:schulplaner/shared/dialogs/events/edit_test_dialog.dart';
+import 'package:schulplaner/shared/dialogs/events/test/edit_test_dialog.dart';
 import 'package:schulplaner/shared/extensions/date_time_extension.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/shared/dialogs/events/homework/edit_homework_dialog.dart';

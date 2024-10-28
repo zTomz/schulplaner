@@ -48,13 +48,15 @@ class TimePickerModalBottomSheet extends HookWidget {
           _buildCustomButton(
             context,
             label: "Nächste Stunde",
-            indicator: subject == null ? null : weeklyScheduleData
-                .getNextLessonDate(
-                  subject!,
-                  offset: 1,
-                )
-                .right
-                ?.formattedDate,
+            indicator: subject == null
+                ? null
+                : weeklyScheduleData
+                    .getNextLessonDate(
+                      subject!,
+                      offset: 1,
+                    )
+                    .right
+                    ?.formattedDate,
             icon: const Icon(LucideIcons.calendar_plus),
             onPressed: subject == null
                 ? null
@@ -66,6 +68,7 @@ class TimePickerModalBottomSheet extends HookWidget {
 
                     if (nextLessonDate.isLeft()) {
                       errorMessage.value = nextLessonDate.left!.message;
+                      return;
                     }
 
                     Navigator.of(context).pop(
@@ -77,13 +80,15 @@ class TimePickerModalBottomSheet extends HookWidget {
           _buildCustomButton(
             context,
             label: "Übernächste Stunde",
-            indicator: subject == null ? null : weeklyScheduleData
-                .getNextLessonDate(
-                  subject!,
-                  offset: 2,
-                )
-                .right
-                ?.formattedDate,
+            indicator: subject == null
+                ? null
+                : weeklyScheduleData
+                    .getNextLessonDate(
+                      subject!,
+                      offset: 2,
+                    )
+                    .right
+                    ?.formattedDate,
             icon: const Icon(LucideIcons.calendar_plus_2),
             onPressed: subject == null
                 ? null
@@ -96,7 +101,9 @@ class TimePickerModalBottomSheet extends HookWidget {
 
                     if (nextButOneLessonDate.isLeft()) {
                       errorMessage.value = nextButOneLessonDate.left!.message;
+                      return;
                     }
+
                     Navigator.of(context).pop(
                       nextButOneLessonDate.right!,
                     );
@@ -157,8 +164,8 @@ class TimePickerModalBottomSheet extends HookWidget {
           Text(
             indicator ?? "",
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-            ),
+                  color: Theme.of(context).colorScheme.primary,
+                ),
           ),
         ],
       ),

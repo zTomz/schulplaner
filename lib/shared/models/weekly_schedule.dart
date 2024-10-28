@@ -108,7 +108,7 @@ class WeeklyScheduleData {
     // If the lessons do not have at least one lesson of the provided subject we return
     if (sortedLessons.isEmpty) {
       return const Left(
-        LessonDoesNotExistException(),
+        SubjectDoesNotExistException(),
       );
     }
 

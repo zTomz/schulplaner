@@ -19,9 +19,9 @@ class WeeklyScheduleSyncPreviousException extends WeeklyScheduleException {
   final Object previousException;
 }
 
-/// If the provided lesson does not exist inside the weekly schedule
-class LessonDoesNotExistException extends WeeklyScheduleException {
-  const LessonDoesNotExistException() : super(
-        message: "Die angegebene Schulstunde existiert nicht im Stundenplan.",
+/// If the provided subject does not exist inside the weekly schedule
+class SubjectDoesNotExistException extends WeeklyScheduleException {
+  const SubjectDoesNotExistException() : super(
+        message: "Das angegebene Fach existiert nicht im Stundenplan.",
       );
 }

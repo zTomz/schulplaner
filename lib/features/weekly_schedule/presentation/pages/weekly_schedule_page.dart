@@ -23,7 +23,7 @@ class WeeklySchedulePage extends HookConsumerWidget {
     final weeklyScheduleData = ref.watch(weeklyScheduleProvider);
 
     final selectedSchoolTimeCell = useState<SchoolTimeCell?>(null);
-    final week = useState<Week>(Week.a);
+    final week = useState<Week>(Week.all);
 
     return weeklyScheduleData.fold(
       (failure) => const DataErrorWidget(),
