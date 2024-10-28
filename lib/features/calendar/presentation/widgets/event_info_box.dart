@@ -113,11 +113,28 @@ class EventInfoBox extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    event.date.compareWithoutTime(day)
-                        ? "${_getDeadlineTextBeforeName(event)}${event.name}"
+                    isEventDeadline
+                        ? "$deadlineTextBeforeName${event.name}"
                         : event.name,
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
+                  // If we have a processing date, show the time span nicely formatted
+                  if (processingDateForDay != null)
+                    Row(
+                      children: [
+                        const Icon(
+                          LucideIcons.clock,
+                          size: 12,
+                        ),
+                        const SizedBox(width: Spacing.extraSmall),
+                        Text(
+                          processingDateForDay!.timeSpan.toFormattedString(),
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
+                  // If it is a reminder event, show the place, where the event takes place
+                  // if a place is set
                   if (event.type == EventTypes.reminder &&
                       (event as ReminderEvent).place != null)
                     Row(
@@ -133,6 +150,7 @@ class EventInfoBox extends StatelessWidget {
                         ),
                       ],
                     ),
+                  // If the event has a description, show it
                   if (event.description != null) ...[
                     const SizedBox(height: Spacing.extraSmall),
                     Text(
@@ -143,6 +161,7 @@ class EventInfoBox extends StatelessWidget {
                 ],
               ),
             ),
+            // If it is a homework event, show a checkbox to toggle the [isDone] status
             if (event.type == EventTypes.homework)
               Checkbox(
                 value: (event as HomeworkEvent).isDone,
@@ -159,7 +178,35 @@ class EventInfoBox extends StatelessWidget {
     );
   }
 
-  String _getDeadlineTextBeforeName(Event event) {
+  /// If it is the deadline of the event and not just a processing date
+  bool get isEventDeadline => event.date.compareWithoutTime(day);
+
+  ProcessingDate? get processingDateForDay {
+    // If the event is a homework event, than check if the date matches with the selected day.
+    // If it does, than return the processing date.
+    if (event.type == EventTypes.homework) {
+      if ((event as HomeworkEvent)
+          .processingDate
+          .date
+          .compareWithoutTime(day)) {
+        return (event as HomeworkEvent).processingDate;
+      }
+    }
+
+    // If the event is a test event, than iterate over all practice dates, if one matches
+    // the selected day, we return it
+    if (event.type == EventTypes.test) {
+      for (final practiceDate in (event as TestEvent).praticeDates) {
+        if (practiceDate.date.compareWithoutTime(day)) {
+          return practiceDate;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  String get deadlineTextBeforeName {
     switch (event.type) {
       case EventTypes.homework:
         return "Abgabe: ";
