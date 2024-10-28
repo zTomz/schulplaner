@@ -44,7 +44,7 @@ class CustomTextField extends HookWidget {
     this.onChanged,
     this.labelText,
     this.hintText,
-    this.prefixIcon,
+    this.prefixIcon = const Icon(LucideIcons.key_round),
     this.keyboardType,
     this.maxLines = 1,
     this.minLines = 1,
@@ -63,7 +63,7 @@ class CustomTextField extends HookWidget {
     this.onChanged,
     this.labelText,
     this.hintText,
-    this.prefixIcon,
+    this.prefixIcon = const Icon(LucideIcons.mail),
     this.keyboardType,
     this.maxLines = 1,
     this.minLines = 1,
@@ -79,8 +79,9 @@ class CustomTextField extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final showPassword = useState<bool>(false);
-    final isNotEmpty =
-        controller != null ? useListenable(controller!).text.trim().isNotEmpty : false;
+    final isNotEmpty = controller != null
+        ? useListenable(controller!).text.trim().isNotEmpty
+        : false;
 
     return TextFormField(
       controller: controller,
@@ -107,7 +108,7 @@ class CustomTextField extends HookWidget {
                     ),
               )
             : null,
-        prefixIcon: _getPrefixIcon(),
+        prefixIcon: prefixIcon,
         suffix: _type == _CustomTextFieldType.password
             ? ConstrainedBox(
                 constraints: const BoxConstraints(maxHeight: 28, maxWidth: 28),
@@ -185,21 +186,6 @@ class CustomTextField extends HookWidget {
 
           return null;
         };
-    }
-  }
-
-  Widget? _getPrefixIcon() {
-    if (prefixIcon != null) {
-      return prefixIcon;
-    }
-
-    switch (_type) {
-      case _CustomTextFieldType.email:
-        return const Icon(LucideIcons.mail);
-      case _CustomTextFieldType.password:
-        return const Icon(LucideIcons.key_round);
-      case _CustomTextFieldType.text:
-        return null;
     }
   }
 }

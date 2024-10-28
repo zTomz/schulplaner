@@ -183,7 +183,7 @@ class ChangePasswordDialog extends HookWidget {
     final formKey = useMemoized(() => GlobalKey<FormState>());
 
     return CustomDialog.expanded(
-      icon: const Icon(LucideIcons.key),
+      icon: const Icon(LucideIcons.key_round),
       title: const Text("Passwort ändern"),
       content: Form(
         key: formKey,
