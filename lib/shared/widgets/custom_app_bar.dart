@@ -16,10 +16,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       automaticallyImplyLeading: false,
       backgroundColor: Colors.transparent,
       elevation: 0,
-      toolbarHeight: 115,
+      toolbarHeight: 75,
       title: DefaultTextStyle(
-        style: Theme.of(context).textTheme.displayLarge!,
-        overflow: TextOverflow.fade,
+        style: Theme.of(context)
+            .textTheme
+            .headlineSmall!
+            .copyWith(fontWeight: FontWeight.w900),
         textAlign: TextAlign.start,
         softWrap: false,
         child: title,
@@ -29,5 +31,5 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(115);
+  Size get preferredSize => const Size.fromHeight(75);
 }

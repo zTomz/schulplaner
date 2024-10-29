@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/features/hobbies/presentation/provider/hobbies_provider.dart';
@@ -11,6 +10,7 @@ import 'package:schulplaner/shared/popups/custom_dialog.dart';
 import 'package:schulplaner/shared/popups/hobby/edit_hobby_dialog.dart';
 import 'package:schulplaner/shared/models/hobby.dart';
 import 'package:schulplaner/shared/widgets/custom_app_bar.dart';
+import 'package:schulplaner/shared/widgets/floating_action_buttons/hobby_floating_action_button.dart';
 import 'package:schulplaner/shared/widgets/hobby_list_tile.dart';
 
 @RoutePage()
@@ -22,32 +22,11 @@ class HobbiesPage extends ConsumerWidget {
     final hobbiesData = ref.watch(hobbiesProvider);
 
     return Scaffold(
-      appBar: CustomAppBar(
-        title: const Text(
+      floatingActionButton: const HobbyFloatingActionButton(),
+      appBar: const CustomAppBar(
+        title: Text(
           "Hobbies",
         ),
-        actions: [
-          ElevatedButton.icon(
-            onPressed: () async {
-              final result = await showDialog<Hobby>(
-                context: context,
-                builder: (context) {
-                  return const EditHobbyDialog();
-                },
-              );
-
-              if (result != null) {
-                ref.read(hobbiesProvider.notifier).addHobby(hobby: result);
-              }
-            },
-            icon: const Icon(
-              LucideIcons.circle_plus,
-              size: 20,
-            ),
-            label: const Text("Hobby hinzufügen"),
-          ),
-          const SizedBox(width: Spacing.medium),
-        ],
       ),
       body: hobbiesData.fold(
         (failure) => const DataErrorWidget(),

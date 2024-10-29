@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
@@ -11,6 +12,7 @@ import 'package:schulplaner/shared/widgets/data_state_widgets.dart';
 import 'package:schulplaner/features/calendar/presentation/widgets/calendar_view.dart';
 import 'package:schulplaner/features/calendar/presentation/widgets/event_info_box.dart';
 import 'package:schulplaner/features/calendar/presentation/widgets/no_events_info.dart';
+import 'package:schulplaner/shared/widgets/floating_action_buttons/event_floating_action_button.dart';
 
 @RoutePage()
 class CalendarPage extends HookConsumerWidget {
@@ -33,6 +35,8 @@ class CalendarPage extends HookConsumerWidget {
         return weeklyScheduleData.fold(
           (failure) => const DataErrorWidget(),
           (weeklyScheduleData) => Scaffold(
+            floatingActionButtonLocation: ExpandableFab.location,
+            floatingActionButton: const EventFloatingActionButton(),
             appBar: const CustomAppBar(
               title: Text("Kalender"),
             ),

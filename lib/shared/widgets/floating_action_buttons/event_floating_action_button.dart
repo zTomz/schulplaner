@@ -8,10 +8,10 @@ import 'package:schulplaner/shared/popups/events/homework/edit_homework_dialog.d
 import 'package:schulplaner/shared/popups/events/edit_reminder_dialog.dart';
 import 'package:schulplaner/shared/popups/events/test/edit_test_dialog.dart';
 import 'package:schulplaner/shared/models/event.dart';
-import 'package:schulplaner/config/constants/numbers.dart';
+import 'package:schulplaner/shared/widgets/floating_action_buttons/custom_floating_action_button.dart';
 
-class CustomFloatingActionButton extends HookConsumerWidget {
-  const CustomFloatingActionButton({super.key});
+class EventFloatingActionButton extends HookConsumerWidget {
+  const EventFloatingActionButton({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,25 +23,11 @@ class CustomFloatingActionButton extends HookConsumerWidget {
     return eventData.fold(
       (failure) => const SizedBox.shrink(),
       (data) {
-        return ExpandableFab(
-          key: expandebleFabKey,
-          type: ExpandableFabType.up,
-          distance: 75,
-          overlayStyle: ExpandableFabOverlayStyle(
-            color: Theme.of(context).colorScheme.surface.withOpacity(0.7),
-            blur: 1,
-          ),
-          openButtonBuilder: RotateFloatingActionButtonBuilder(
-            child: const Icon(LucideIcons.plus),
-            fabSize: ExpandableFabSize.large,
-          ),
-          closeButtonBuilder: RotateFloatingActionButtonBuilder(
-            child: const Icon(LucideIcons.x),
-            fabSize: ExpandableFabSize.regular,
-          ),
+        return CustomFloatingActionButton(
+          expandebleFabKey: expandebleFabKey,
           children: [
-            _buildFabOption(
-              title: "Hausaufgabe",
+            CustomFabOption(
+              title: const Text("Hausaufgabe"),
               icon: const Icon(LucideIcons.book_open_text),
               onPressed: () async {
                 expandebleFabKey.currentState?.toggle();
@@ -56,8 +42,8 @@ class CustomFloatingActionButton extends HookConsumerWidget {
                 }
               },
             ),
-            _buildFabOption(
-              title: "Arbeit",
+            CustomFabOption(
+              title: const Text("Arbeit"),
               icon: const Icon(LucideIcons.briefcase_business),
               onPressed: () async {
                 expandebleFabKey.currentState?.toggle();
@@ -71,8 +57,8 @@ class CustomFloatingActionButton extends HookConsumerWidget {
                 }
               },
             ),
-            _buildFabOption(
-              title: "Erinnerung",
+            CustomFabOption(
+              title: const Text("Erinnerung"),
               icon: const Icon(LucideIcons.bell),
               onPressed: () async {
                 expandebleFabKey.currentState?.toggle();
@@ -86,31 +72,6 @@ class CustomFloatingActionButton extends HookConsumerWidget {
                   ref.read(eventsProvider.notifier).addEvent(event: result);
                 }
               },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildFabOption({
-    required String title,
-    required Icon icon,
-    required void Function()? onPressed,
-  }) {
-    return Builder(
-      builder: (context) {
-        return Row(
-          children: [
-            Text(
-              title,
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-            const SizedBox(width: Spacing.medium),
-            FloatingActionButton.small(
-              heroTag: null,
-              onPressed: onPressed,
-              child: icon,
             ),
           ],
         );

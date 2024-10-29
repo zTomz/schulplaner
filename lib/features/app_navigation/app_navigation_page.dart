@@ -1,11 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/shared/popups/account_dialog.dart';
 import 'package:schulplaner/config/routes/router.gr.dart';
-import 'package:schulplaner/features/app_navigation/widgets/custom_floating_action_button.dart';
 import 'package:schulplaner/features/app_navigation/widgets/custom_navigation_rail.dart';
 
 @RoutePage()
@@ -32,8 +30,6 @@ class AppNavigationPage extends HookWidget {
         final tabsRouter = AutoTabsRouter.of(context);
 
         return Scaffold(
-          floatingActionButtonLocation: ExpandableFab.location,
-          floatingActionButton: const CustomFloatingActionButton(),
           body: Row(
             children: [
               CustomNavigationRail(

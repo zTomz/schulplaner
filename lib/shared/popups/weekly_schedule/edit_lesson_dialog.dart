@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:schulplaner/features/weekly_schedule/presentation/provider/weekly_schedule_provider.dart';
 import 'package:schulplaner/shared/popups/custom_dialog.dart';
 import 'package:schulplaner/shared/popups/weekly_schedule/subject_popups.dart';
 import 'package:schulplaner/shared/functions/build_body_part.dart';
@@ -14,7 +16,7 @@ import 'package:schulplaner/shared/widgets/weekly_schedule/models.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:uuid/uuid.dart';
 
-class EditLessonDialog extends HookWidget {
+class EditLessonDialog extends HookConsumerWidget {
   /// The school time cell the lesson will be created in if no lesson is provided
   final SchoolTimeCell? schoolTimeCell;
 
@@ -22,51 +24,17 @@ class EditLessonDialog extends HookWidget {
   /// edited.
   final Lesson? lesson;
 
-  /// A list of already created subjects
-  final List<Subject> subjects;
-
-  /// A list of already created teachers
-  final List<Teacher> teachers;
-
-  /// If not null, this function is called, when the user tries to delete the
-  /// lesson.
-  final void Function(Lesson lesson)? onLessonDeleted;
-
-  /// A function that is called, when a subject gets created
-  final void Function(Subject subject) onSubjectCreated;
-
-  /// A function that is called, when a subject gets edited
-  final void Function(Subject subject) onSubjectEdited;
-
-  /// A function that is called, when a subject gets deleted
-  final void Function(Subject subject) onSubjectDeleted;
-
-  /// A function that is called, when a teacher gets created
-  final void Function(Teacher teacher) onTeacherCreated;
-
-  /// A function that is called, when a teacher gets edited
-  final void Function(Teacher teacher) onTeacherEdited;
-
-  /// A function that is called, when a teacher gets deleted
-  final void Function(Teacher teacher) onTeacherDeleted;
-
   const EditLessonDialog({
     super.key,
     this.schoolTimeCell,
     this.lesson,
-    required this.subjects,
-    required this.teachers,
-    required this.onLessonDeleted,
-    required this.onSubjectCreated,
-    required this.onSubjectEdited,
-    required this.onSubjectDeleted,
-    required this.onTeacherCreated,
-    required this.onTeacherEdited,
-    required this.onTeacherDeleted,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final weeklyScheduleData = ref.watch(weeklyScheduleProvider);
+    final subjects = weeklyScheduleData.right?.subjects ?? [];
+
     final week = useState<Week>(lesson?.week ?? Week.all);
     final roomController = useTextEditingController(
       text: lesson?.room,
@@ -136,7 +104,7 @@ class EditLessonDialog extends HookWidget {
         ),
       ),
       actions: [
-        if (lesson != null && onLessonDeleted != null) ...[
+        if (lesson != null) ...[
           ElevatedButton.icon(
             onPressed: () async {
               final result = await showDialog<bool>(
@@ -148,9 +116,14 @@ class EditLessonDialog extends HookWidget {
                 ),
               );
 
-              if (result == true && context.mounted) {
-                onLessonDeleted!(lesson!);
-                Navigator.of(context).pop();
+              if (result == true) {
+                await ref
+                    .read(weeklyScheduleProvider.notifier)
+                    .deleteLesson(lesson: lesson!);
+
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                }
               }
             },
             style: ElevatedButton.styleFrom(
