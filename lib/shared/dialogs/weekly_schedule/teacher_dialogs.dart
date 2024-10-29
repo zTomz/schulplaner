@@ -78,7 +78,7 @@ class TeacherDialog extends ConsumerWidget {
                           .read(weeklyScheduleProvider.notifier)
                           .deleteTeacher(teacher: currentTeacher);
 
-                      Navigator.of(context).popUntil((route) => route.isFirst);
+                      Navigator.of(context).pop();
                     }
                   },
                 ),

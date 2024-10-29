@@ -15,7 +15,6 @@ import 'package:schulplaner/shared/functions/first_where_or_null.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/shared/widgets/color_choose_list_tile.dart';
 import 'package:schulplaner/shared/widgets/custom_text_field.dart';
-import 'package:schulplaner/shared/widgets/required_field.dart';
 import 'package:schulplaner/shared/widgets/custom_button.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:uuid/uuid.dart';
@@ -35,7 +34,6 @@ class SubjectDialog extends ConsumerWidget {
     final weeklyScheduleData = ref.watch(weeklyScheduleProvider);
 
     final subjects = weeklyScheduleData.right?.subjects ?? [];
-    final teachers = weeklyScheduleData.right?.teachers ?? [];
 
     return CustomDialog.expanded(
       title: const Text("Wähle ein Fach aus"),
@@ -59,10 +57,6 @@ class SubjectDialog extends ConsumerWidget {
                       context: context,
                       builder: (context) => EditSubjectDialog(
                         subject: currentSubject,
-                        teacher: firstWhereOrNull(
-                          teachers,
-                          (t) => t.uuid == currentSubject.teacherUuid,
-                        ),
                       ),
                     );
 
@@ -123,25 +117,27 @@ class SubjectDialog extends ConsumerWidget {
   }
 }
 
-class EditSubjectDialog extends HookWidget {
+class EditSubjectDialog extends HookConsumerWidget {
   /// The subject to edit. If not provided, the dialog will guide the user to create one
   final Subject? subject;
-
-  /// Optional. A already selected teacher
-  final Teacher? teacher;
 
   const EditSubjectDialog({
     super.key,
     this.subject,
-    this.teacher,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final weeklyScheduleData = ref.watch(weeklyScheduleProvider);
+    final teachers = weeklyScheduleData.right?.teachers ?? [];
+
     final subjectController = useTextEditingController(
       text: subject?.name,
     );
-    final teacher = useState<Teacher?>(this.teacher);
+    final teacher = useState<Teacher?>(subject?.getTeacher(teachers));
+    if (firstWhereOrNull(teachers, (t) => t.uuid == teacher.value?.uuid) == null) {
+      teacher.value = null;
+    }
     final teacherError = useState<String?>(null);
     final color = useState<Color>(subject?.color ?? Colors.blue);
 
@@ -162,24 +158,20 @@ class EditSubjectDialog extends HookWidget {
               validate: true,
             ),
             const SizedBox(height: Spacing.small),
-            RequiredField(
-              errorText: "Ein Lehrer ist erforderlich.",
-              value: teacher.value,
-              child: CustomButton.selection(
-                selection: teacher.value?.salutation,
-                onPressed: () async {
-                  final result = await showDialog<Teacher>(
-                    context: context,
-                    builder: (context) => const TeacherDialog(),
-                  );
+            CustomButton.selection(
+              selection: teacher.value?.salutation,
+              onPressed: () async {
+                final result = await showDialog<Teacher>(
+                  context: context,
+                  builder: (context) => const TeacherDialog(),
+                );
 
-                  if (result != null) {
-                    teacher.value = result;
-                    teacherError.value = null;
-                  }
-                },
-                child: const Text("Lehrer"),
-              ),
+                if (result != null) {
+                  teacher.value = result;
+                  teacherError.value = null;
+                }
+              },
+              child: const Text("Lehrer"),
             ),
             const SizedBox(height: Spacing.small),
             ColorChooseListTile(
@@ -208,7 +200,7 @@ class EditSubjectDialog extends HookWidget {
             Navigator.of(context).pop(
               Subject(
                 name: subjectController.text,
-                teacherUuid: teacher.value!.uuid,
+                teacherUuid: teacher.value?.uuid,
                 color: color.value,
                 uuid: subject?.uuid ?? const Uuid().v4(),
               ),

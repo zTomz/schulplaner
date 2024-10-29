@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:schulplaner/config/constants/logger.dart';
 import 'package:schulplaner/shared/models/time.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
@@ -110,7 +111,8 @@ class SchoolCard extends StatelessWidget {
     final subject = lesson.getSubject(subjects);
     final teacher = subject?.getTeacher(teachers);
 
-    if (subject == null || teacher == null) {
+    if (subject == null) {
+      logger.e("Got a null subject.");
       return const SizedBox.shrink();
     }
 
@@ -172,33 +174,34 @@ class SchoolCard extends StatelessWidget {
                               ),
                             ],
                           ),
-                          Wrap(
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            children: [
-                              const Icon(LucideIcons.graduation_cap),
-                              const SizedBox(width: Spacing.small),
-                              // Doesn't use the lesson.subject.teacher.salutation because, with
-                              // the current solution, the line could be wrapped.
-                              Text(
-                                "${teacher.gender.salutation} ",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(
-                                      color: foregroundColor,
-                                    ),
-                              ),
-                              Text(
-                                teacher.lastName,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(
-                                      color: foregroundColor,
-                                    ),
-                              ),
-                            ],
-                          ),
+                          if (teacher != null)
+                            Wrap(
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: [
+                                const Icon(LucideIcons.graduation_cap),
+                                const SizedBox(width: Spacing.small),
+                                // Doesn't use the lesson.subject.teacher.salutation because, with
+                                // the current solution, the line could be wrapped.
+                                Text(
+                                  "${teacher.gender.salutation} ",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                        color: foregroundColor,
+                                      ),
+                                ),
+                                Text(
+                                  teacher.lastName,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                        color: foregroundColor,
+                                      ),
+                                ),
+                              ],
+                            ),
                         ],
                       );
                     },

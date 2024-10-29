@@ -249,10 +249,6 @@ class WeeklyScheduleNotifier
       return;
     }
 
-    // Remove the teacher from the list of teachers, all subjects containing this
-    // teacher & all lessons containing these subject
-    final subjects = state.right!.subjects;
-
     state = Right(state.right!.copyWith(
       teachers: state.right!.teachers
           .where(
@@ -260,15 +256,11 @@ class WeeklyScheduleNotifier
           )
           .toList(),
       subjects: state.right!.subjects
-          .where(
-            (element) => element.teacherUuid != teacher.uuid,
-          )
-          .toList(),
-      lessons: state.right!.lessons
-          .where(
-            (lesson) =>
-                lesson.getSubject(subjects)?.teacherUuid != teacher.uuid,
-          )
+          .map((subject) => subject.copyWith(
+                teacherUuid: subject.teacherUuid == teacher.uuid
+                    ? null
+                    : subject.teacherUuid,
+              ))
           .toList(),
     ));
 

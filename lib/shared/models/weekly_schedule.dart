@@ -246,7 +246,7 @@ class Subject {
   final String name;
 
   /// The uuid of the teacher of the subject
-  final String teacherUuid;
+  final String? teacherUuid;
 
   /// The color of the subject
   final Color color;
@@ -282,6 +282,20 @@ class Subject {
       teacherUuid: map['teacherUuid'],
       color: Color(map['color']),
       uuid: map['uuid'] ?? '',
+    );
+  }
+
+  Subject copyWith({
+    String? name,
+    String? teacherUuid,
+    Color? color,
+    String? uuid,
+  }) {
+    return Subject(
+      name: name ?? this.name,
+      teacherUuid: teacherUuid ?? this.teacherUuid,
+      color: color ?? this.color,
+      uuid: uuid ?? this.uuid,
     );
   }
 
