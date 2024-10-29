@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
+import 'package:schulplaner/features/overview/widgets/overview_side_panel.dart';
 
 @RoutePage()
 class OverviewPage extends ConsumerWidget {
@@ -9,17 +10,14 @@ class OverviewPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
+    return const Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(Spacing.medium),
+        padding: EdgeInsets.all(Spacing.medium),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 400,
-              color: Colors.blue,
-            ),
-            const Expanded(
+            OverviewSidePanel(),
+            Expanded(
               child: SizedBox.shrink(),
             ),
           ],
