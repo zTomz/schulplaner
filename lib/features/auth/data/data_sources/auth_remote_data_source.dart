@@ -3,9 +3,6 @@ import 'package:schulplaner/config/constants/logger.dart';
 import 'package:schulplaner/features/auth/data/data_sources/auth_data_source.dart';
 import 'package:schulplaner/shared/exceptions/auth_exceptions.dart';
 import 'package:schulplaner/shared/models/either.dart';
-import 'package:schulplaner/shared/models/hobby.dart';
-import 'package:schulplaner/shared/models/weekly_schedule.dart';
-import 'package:schulplaner/shared/services/database_service.dart';
 
 class AuthRemoteDataSource implements AuthDataSource {
   @override
@@ -13,8 +10,6 @@ class AuthRemoteDataSource implements AuthDataSource {
     required String email,
     required String password,
     required String displayName,
-    required WeeklyScheduleData weeklyScheduleData,
-    required List<Hobby> hobbies,
   }) async {
     try {
       // Create the account
@@ -26,16 +21,6 @@ class AuthRemoteDataSource implements AuthDataSource {
 
       // Update the display name
       await credential.user!.updateDisplayName(displayName);
-
-      // Upload the weekly schedule data
-      await DatabaseService.uploadWeeklySchedule(
-        weeklyScheduleData: weeklyScheduleData,
-      );
-
-      // Upload the hobbies
-      await DatabaseService.uploadHobbies(
-        hobbies: hobbies,
-      );
 
       return Right(credential);
     } on FirebaseAuthException catch (e) {

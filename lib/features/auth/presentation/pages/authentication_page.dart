@@ -6,8 +6,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/config/constants/logger.dart';
 import 'package:schulplaner/config/routes/router.gr.dart';
 import 'package:schulplaner/features/auth/presentation/provider/auth_provider.dart';
-import 'package:schulplaner/features/auth/presentation/provider/create_hobbies_provider.dart';
-import 'package:schulplaner/features/auth/presentation/provider/create_weekly_schedule_provider.dart';
 import 'package:schulplaner/features/auth/presentation/provider/state/auth_state.dart';
 import 'package:schulplaner/shared/services/snack_bar_service.dart';
 import 'package:schulplaner/shared/widgets/custom_button.dart';
@@ -17,21 +15,16 @@ import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/shared/widgets/loading_overlay.dart';
 
 @RoutePage()
-class SignUpSignInPage extends HookConsumerWidget {
-  /// Default to `false`. If this is `true`, the isSigningUp variable will be `true` and the user
-  /// will directly asked to sign in. If this is `false`, the user will be asked to sign up.
-  final bool alreadyHasAnAccount;
-
-  const SignUpSignInPage({
+class AuthenticationPage extends HookConsumerWidget {
+  const AuthenticationPage({
     super.key,
-    this.alreadyHasAnAccount = false,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authProvider);
 
-    final isSigningUp = useState<bool>(!alreadyHasAnAccount);
+    final isSigningUp = useState<bool>(false);
 
     final usernameController = useTextEditingController();
     final emailController = useTextEditingController();
@@ -49,15 +42,7 @@ class SignUpSignInPage extends HookConsumerWidget {
             style: Theme.of(context).textTheme.displayLarge,
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: Spacing.small),
-          Text(
-            isSigningUp.value
-                ? "Zuletzt müssen Sie ein Konto erstellen, dann kann es losgehen!"
-                : "Melden Sie sich nun noch bei Ihrem Konto an, um loszulegen.",
-            style: Theme.of(context).textTheme.headlineSmall,
-            textAlign: TextAlign.center,
-            softWrap: true,
-          ),
+         
           const SizedBox(height: Spacing.large),
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 400),
@@ -100,10 +85,6 @@ class SignUpSignInPage extends HookConsumerWidget {
                             email: emailController.text,
                             password: passwordController.text,
                             displayName: usernameController.text,
-                            weeklyScheduleData: ref.read(
-                              createWeeklyScheduleProvider,
-                            ),
-                            hobbies: ref.read(createHobbiesProvider),
                           );
                     } else {
                       // If the users signes in, we do not want to override the current weekly schedule and hobby data

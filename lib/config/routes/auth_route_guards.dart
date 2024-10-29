@@ -15,7 +15,7 @@ class AuthGuard extends AutoRouteGuard {
       // we redirect the user to the intro route
       resolver.next(false);
       resolver.redirect(
-        const IntroRoute(),
+        const AuthenticationRoute(),
       );
     }
   }

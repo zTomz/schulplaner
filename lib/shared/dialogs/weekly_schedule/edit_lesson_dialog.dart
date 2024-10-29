@@ -121,16 +121,7 @@ class EditLessonDialog extends HookWidget {
                 onPressed: () async {
                   final result = await showDialog<Subject>(
                     context: context,
-                    builder: (context) => SubjectDialog(
-                      subjects: subjects,
-                      teachers: teachers,
-                      onSubjectCreated: onSubjectCreated,
-                      onSubjectEdited: onSubjectEdited,
-                      onSubjectDeleted: onSubjectDeleted,
-                      onTeacherCreated: onTeacherCreated,
-                      onTeacherEdited: onTeacherEdited,
-                      onTeacherDeleted: onTeacherDeleted,
-                    ),
+                    builder: (context) => const SubjectDialog(),
                   );
 
                   if (result != null) {

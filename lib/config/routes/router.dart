@@ -7,30 +7,12 @@ class AppRouter extends RootStackRouter {
   @override
   List<AutoRoute> get routes => [
         // Intro pages
-        AutoRoute(
-          page: IntroRoute.page,
-          keepHistory: false,
-          guards: [SignedInCheckGuard()],
-        ),
         CustomRoute(
-          page: ConfigureWeeklyScheduleRoute.page,
+          page: AuthenticationRoute.page,
           transitionsBuilder: TransitionsBuilders.fadeIn,
           durationInMilliseconds: 400,
           keepHistory: false,
           guards: [SignedInCheckGuard()],
-        ),
-        CustomRoute(
-          page: ConfigureHobbyRoute.page,
-          transitionsBuilder: TransitionsBuilders.fadeIn,
-          durationInMilliseconds: 400,
-          keepHistory: false,
-          guards: [SignedInCheckGuard()],
-        ),
-        CustomRoute(
-          page: SignUpSignInRoute.page,
-          transitionsBuilder: TransitionsBuilders.fadeIn,
-          durationInMilliseconds: 400,
-          keepHistory: false,
         ),
 
         // App pages

@@ -6,6 +6,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:schulplaner/features/weekly_schedule/presentation/provider/weekly_schedule_provider.dart';
 import 'package:schulplaner/shared/dialogs/custom_dialog.dart';
 import 'package:schulplaner/shared/dialogs/weekly_schedule/widgets/item_popup_button.dart';
 import 'package:schulplaner/shared/functions/build_body_part.dart';
@@ -17,29 +19,16 @@ import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/shared/widgets/custom_button.dart';
 import 'package:uuid/uuid.dart';
 
-class TeacherDialog extends StatelessWidget {
-  /// A list of already created teachers
-  final List<Teacher> teachers;
-
-  /// A function that is called, when a teacher gets created
-  final void Function(Teacher teacher) onTeacherCreated;
-
-  /// A function that is called, when a teacher gets edited
-  final void Function(Teacher teacher) onTeacherEdited;
-
-  /// A function that is called, when a teacher gets deleted
-  final void Function(Teacher teacher) onTeacherDeleted;
-
+class TeacherDialog extends ConsumerWidget {
   const TeacherDialog({
     super.key,
-    required this.teachers,
-    required this.onTeacherCreated,
-    required this.onTeacherEdited,
-    required this.onTeacherDeleted,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final weeklyScheduleData = ref.watch(weeklyScheduleProvider);
+    final teachers = weeklyScheduleData.right?.teachers ?? [];
+
     return CustomDialog.expanded(
       title: const Text("Wähle einen Lehrer aus"),
       icon: const Icon(LucideIcons.user_round),
@@ -67,7 +56,10 @@ class TeacherDialog extends StatelessWidget {
                       ),
                     );
                     if (result != null && context.mounted) {
-                      onTeacherEdited(result);
+                      ref
+                          .read(weeklyScheduleProvider.notifier)
+                          .editTeacher(teacher: result);
+
                       Navigator.of(context).pop(result);
                     }
                   },
@@ -82,7 +74,10 @@ class TeacherDialog extends StatelessWidget {
                     );
 
                     if (result == true && context.mounted) {
-                      onTeacherDeleted(currentTeacher);
+                      ref
+                          .read(weeklyScheduleProvider.notifier)
+                          .deleteTeacher(teacher: currentTeacher);
+
                       Navigator.of(context).popUntil((route) => route.isFirst);
                     }
                   },
@@ -102,7 +97,10 @@ class TeacherDialog extends StatelessWidget {
               );
 
               if (result != null && context.mounted) {
-                onTeacherCreated(result);
+                ref
+                    .read(weeklyScheduleProvider.notifier)
+                    .addTeacher(teacher: result);
+
                 Navigator.of(context).pop(result);
               }
             },

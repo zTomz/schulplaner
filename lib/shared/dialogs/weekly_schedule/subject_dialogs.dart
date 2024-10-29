@@ -6,6 +6,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:schulplaner/features/weekly_schedule/presentation/provider/weekly_schedule_provider.dart';
 import 'package:schulplaner/shared/dialogs/custom_dialog.dart';
 import 'package:schulplaner/shared/dialogs/weekly_schedule/teacher_dialogs.dart';
 import 'package:schulplaner/shared/dialogs/weekly_schedule/widgets/item_popup_button.dart';
@@ -18,50 +20,23 @@ import 'package:schulplaner/shared/widgets/custom_button.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:uuid/uuid.dart';
 
-class SubjectDialog extends StatelessWidget {
-  /// A list of already created subjects
-  final List<Subject> subjects;
-
-  /// A list of already created teachers
-  final List<Teacher> teachers;
-
-  /// A function that is called, when a subject gets created
-  final void Function(Subject subject) onSubjectCreated;
-
-  /// A function that is called, when a subject gets edited
-  final void Function(Subject subject) onSubjectEdited;
-
-  /// A function that is called, when a subject gets deleted
-  final void Function(Subject subject) onSubjectDeleted;
-
-  /// A function that is called, when a teacher gets created
-  final void Function(Teacher teacher) onTeacherCreated;
-
-  /// A function that is called, when a teacher gets edited
-  final void Function(Teacher teacher) onTeacherEdited;
-
-  /// A function that is called, when a teacher gets deleted
-  final void Function(Teacher teacher) onTeacherDeleted;
-
+class SubjectDialog extends ConsumerWidget {
   /// If the subjects are onyl selectable. This means, there is no option to edit them or to add new subjects.
   /// Default is `false`
   final bool onlySelectable;
 
   const SubjectDialog({
     super.key,
-    required this.subjects,
-    required this.teachers,
-    required this.onSubjectCreated,
-    required this.onSubjectEdited,
-    required this.onSubjectDeleted,
-    required this.onTeacherCreated,
-    required this.onTeacherEdited,
-    required this.onTeacherDeleted,
     this.onlySelectable = false,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final weeklyScheduleData = ref.watch(weeklyScheduleProvider);
+
+    final subjects = weeklyScheduleData.right?.subjects ?? [];
+    final teachers = weeklyScheduleData.right?.teachers ?? [];
+
     return CustomDialog.expanded(
       title: const Text("Wähle ein Fach aus"),
       icon: const Icon(LucideIcons.album),
@@ -84,15 +59,18 @@ class SubjectDialog extends StatelessWidget {
                       context: context,
                       builder: (context) => EditSubjectDialog(
                         subject: currentSubject,
-                        teachers: teachers,
-                        onTeacherCreated: onTeacherCreated,
-                        onTeacherEdited: onTeacherEdited,
-                        onTeacherDeleted: onTeacherDeleted,
+                        teacher: firstWhereOrNull(
+                          teachers,
+                          (t) => t.uuid == currentSubject.teacherUuid,
+                        ),
                       ),
                     );
 
                     if (result != null && context.mounted) {
-                      onSubjectEdited(result);
+                      ref
+                          .read(weeklyScheduleProvider.notifier)
+                          .editSubject(subject: result);
+
                       Navigator.of(context).pop(result);
                     }
                   },
@@ -107,7 +85,10 @@ class SubjectDialog extends StatelessWidget {
                     );
 
                     if (result == true && context.mounted) {
-                      onSubjectDeleted(currentSubject);
+                      ref
+                          .read(weeklyScheduleProvider.notifier)
+                          .deleteSubject(subject: result);
+
                       Navigator.of(context).popUntil((route) => route.isFirst);
                     }
                   },
@@ -123,16 +104,14 @@ class SubjectDialog extends StatelessWidget {
             onPressed: () async {
               final result = await showDialog<Subject>(
                 context: context,
-                builder: (context) => EditSubjectDialog(
-                  teachers: teachers,
-                  onTeacherCreated: onTeacherCreated,
-                  onTeacherEdited: onTeacherEdited,
-                  onTeacherDeleted: onTeacherDeleted,
-                ),
+                builder: (context) => const EditSubjectDialog(),
               );
 
               if (result != null && context.mounted) {
-                onSubjectCreated(result);
+                ref
+                    .read(weeklyScheduleProvider.notifier)
+                    .addSubject(subject: result);
+
                 Navigator.of(context).pop(result);
               }
             },
@@ -148,25 +127,13 @@ class EditSubjectDialog extends HookWidget {
   /// The subject to edit. If not provided, the dialog will guide the user to create one
   final Subject? subject;
 
-  /// A list of already created teachers
-  final List<Teacher> teachers;
-
-  /// A function that is called, when a teacher gets created
-  final void Function(Teacher teacher) onTeacherCreated;
-
-  /// A function that is called, when a teacher gets edited
-  final void Function(Teacher teacher) onTeacherEdited;
-
-  /// A function that is called, when a teacher gets deleted
-  final void Function(Teacher teacher) onTeacherDeleted;
+  /// Optional. A already selected teacher
+  final Teacher? teacher;
 
   const EditSubjectDialog({
     super.key,
     this.subject,
-    required this.teachers,
-    required this.onTeacherCreated,
-    required this.onTeacherEdited,
-    required this.onTeacherDeleted,
+    this.teacher,
   });
 
   @override
@@ -174,10 +141,7 @@ class EditSubjectDialog extends HookWidget {
     final subjectController = useTextEditingController(
       text: subject?.name,
     );
-    final teacher = useState<Teacher?>(firstWhereOrNull(
-      teachers,
-      (teacher) => teacher.uuid == subject?.teacherUuid,
-    ));
+    final teacher = useState<Teacher?>(this.teacher);
     final teacherError = useState<String?>(null);
     final color = useState<Color>(subject?.color ?? Colors.blue);
 
@@ -206,12 +170,7 @@ class EditSubjectDialog extends HookWidget {
                 onPressed: () async {
                   final result = await showDialog<Teacher>(
                     context: context,
-                    builder: (context) => TeacherDialog(
-                      teachers: teachers,
-                      onTeacherCreated: onTeacherCreated,
-                      onTeacherEdited: onTeacherEdited,
-                      onTeacherDeleted: onTeacherDeleted,
-                    ),
+                    builder: (context) => const TeacherDialog(),
                   );
 
                   if (result != null) {

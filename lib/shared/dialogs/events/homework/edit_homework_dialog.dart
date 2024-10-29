@@ -32,8 +32,6 @@ class EditHomeworkDialog extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final weeklyScheduleData = ref.watch(weeklyScheduleProvider);
-    final subjects = weeklyScheduleData.right?.subjects ?? [];
-    final teachers = weeklyScheduleData.right?.teachers ?? [];
 
     final nameController = useTextEditingController(
       text: homeworkEvent?.name,
@@ -80,40 +78,7 @@ class EditHomeworkDialog extends HookConsumerWidget {
                 onPressed: () async {
                   final result = await showDialog<Subject>(
                     context: context,
-                    builder: (context) => SubjectDialog(
-                      subjects: subjects,
-                      teachers: teachers,
-                      onSubjectCreated: (subject) async {
-                        await ref
-                            .read(weeklyScheduleProvider.notifier)
-                            .addSubject(subject: subject);
-                      },
-                      onSubjectEdited: (subject) async {
-                        await ref
-                            .read(weeklyScheduleProvider.notifier)
-                            .editSubject(subject: subject);
-                      },
-                      onSubjectDeleted: (subject) async {
-                        await ref
-                            .read(weeklyScheduleProvider.notifier)
-                            .deleteSubject(subject: subject);
-                      },
-                      onTeacherCreated: (teacher) async {
-                        await ref
-                            .read(weeklyScheduleProvider.notifier)
-                            .addTeacher(teacher: teacher);
-                      },
-                      onTeacherEdited: (teacher) async {
-                        await ref
-                            .read(weeklyScheduleProvider.notifier)
-                            .editTeacher(teacher: teacher);
-                      },
-                      onTeacherDeleted: (teacher) async {
-                        await ref
-                            .read(weeklyScheduleProvider.notifier)
-                            .deleteTeacher(teacher: teacher);
-                      },
-                    ),
+                    builder: (context) => const SubjectDialog(),
                   );
 
                   if (result != null) {
