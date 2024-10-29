@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
-import 'package:schulplaner/shared/dialogs/account_dialog.dart';
+import 'package:schulplaner/shared/popups/account_dialog.dart';
 import 'package:schulplaner/config/routes/router.gr.dart';
 import 'package:schulplaner/features/app_navigation/widgets/custom_floating_action_button.dart';
 import 'package:schulplaner/features/app_navigation/widgets/custom_navigation_rail.dart';

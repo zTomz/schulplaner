@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
-import 'package:schulplaner/shared/dialogs/custom_dialog.dart';
+import 'package:schulplaner/shared/popups/custom_dialog.dart';
 import 'package:schulplaner/shared/extensions/date_time_extension.dart';
 import 'package:schulplaner/shared/functions/get_value_or_null.dart';
 import 'package:schulplaner/shared/models/event.dart';

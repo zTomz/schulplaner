@@ -7,8 +7,8 @@ import 'package:schulplaner/features/hobbies/presentation/provider/hobbies_provi
 import 'package:schulplaner/shared/widgets/data_state_widgets.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/config/constants/svg_pictures.dart';
-import 'package:schulplaner/shared/dialogs/custom_dialog.dart';
-import 'package:schulplaner/shared/dialogs/hobby/edit_hobby_dialog.dart';
+import 'package:schulplaner/shared/popups/custom_dialog.dart';
+import 'package:schulplaner/shared/popups/hobby/edit_hobby_dialog.dart';
 import 'package:schulplaner/shared/models/hobby.dart';
 import 'package:schulplaner/shared/widgets/custom_app_bar.dart';
 import 'package:schulplaner/shared/widgets/hobby_list_tile.dart';

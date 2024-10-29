@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
-import 'package:schulplaner/shared/dialogs/events/edit_reminder_dialog.dart';
-import 'package:schulplaner/shared/dialogs/events/test/edit_test_dialog.dart';
+import 'package:schulplaner/shared/popups/events/edit_reminder_dialog.dart';
+import 'package:schulplaner/shared/popups/events/test/edit_test_dialog.dart';
 import 'package:schulplaner/shared/extensions/date_time_extension.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
-import 'package:schulplaner/shared/dialogs/events/homework/edit_homework_dialog.dart';
+import 'package:schulplaner/shared/popups/events/homework/edit_homework_dialog.dart';
 import 'package:schulplaner/shared/models/event.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/features/calendar/functions/get_color_for_event.dart';
+import 'package:schulplaner/shared/widgets/custom_color_indicator.dart';
 
 class EventInfoBox extends StatelessWidget {
   /// The event that should be shown in the info box
@@ -99,13 +100,8 @@ class EventInfoBox extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Container(
-              width: 4,
-              height: 20,
-              decoration: BoxDecoration(
-                color: getColorForEvent(event, subjects),
-                borderRadius: BorderRadius.circular(360),
-              ),
+            CustomColorIndicator(
+              color: getColorForEvent(event, subjects),
             ),
             const SizedBox(width: Spacing.medium),
             Expanded(

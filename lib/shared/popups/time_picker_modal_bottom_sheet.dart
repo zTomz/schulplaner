@@ -4,6 +4,7 @@ import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/shared/extensions/date_time_extension.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
+import 'package:schulplaner/shared/popups/modal_bottom_sheet.dart';
 
 class TimePickerModalBottomSheet extends HookWidget {
   final Subject? subject;
@@ -19,32 +20,10 @@ class TimePickerModalBottomSheet extends HookWidget {
   Widget build(BuildContext context) {
     final errorMessage = useState<String?>(null);
 
-    return Container(
-      height: errorMessage.value == null ? 250 : 275,
-      padding: const EdgeInsets.symmetric(
-        horizontal: Spacing.medium,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Container(
-            margin: const EdgeInsets.all(Spacing.medium),
-            width: 40,
-            height: 5,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.outlineVariant,
-              borderRadius: BorderRadius.circular(360),
-            ),
-          ),
-          if (errorMessage.value != null) ...[
-            Text(
-              errorMessage.value!,
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: Theme.of(context).colorScheme.error,
-                  ),
-            ),
-            const SizedBox(height: Spacing.small),
-          ],
+    return ModalBottomSheet(
+      errorMessage: errorMessage.value,
+      content: Column(
+        children: [
           _buildCustomButton(
             context,
             label: "Nächste Stunde",

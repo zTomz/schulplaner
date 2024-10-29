@@ -3,19 +3,20 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/features/weekly_schedule/presentation/provider/weekly_schedule_provider.dart';
-import 'package:schulplaner/shared/dialogs/custom_dialog.dart';
-import 'package:schulplaner/shared/dialogs/events/event_date_dialog.dart';
-import 'package:schulplaner/shared/dialogs/events/test/generate_test_processing_dates_with_ai_dialog.dart';
-import 'package:schulplaner/shared/dialogs/weekly_schedule/subject_dialogs.dart';
+import 'package:schulplaner/shared/popups/custom_dialog.dart';
+import 'package:schulplaner/shared/popups/events/event_date_dialog.dart';
+import 'package:schulplaner/shared/popups/events/test/generate_test_processing_dates_with_ai_dialog.dart';
+import 'package:schulplaner/shared/popups/weekly_schedule/subject_popups.dart';
 import 'package:schulplaner/shared/extensions/date_time_extension.dart';
 import 'package:schulplaner/shared/functions/first_where_or_null.dart';
 import 'package:schulplaner/shared/functions/get_value_or_null.dart';
+import 'package:schulplaner/shared/functions/show_custom_modal_bottom_sheet.dart';
 import 'package:schulplaner/shared/models/event.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/shared/widgets/custom_button.dart';
 import 'package:schulplaner/shared/widgets/custom_text_field.dart';
 import 'package:schulplaner/shared/widgets/required_field.dart';
-import 'package:schulplaner/shared/widgets/time_picker_modal_bottom_sheet.dart';
+import 'package:schulplaner/shared/popups/time_picker_modal_bottom_sheet.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:uuid/uuid.dart';
 
@@ -74,9 +75,9 @@ class EditTestDialog extends HookConsumerWidget {
               child: CustomButton.selection(
                 selection: subject.value?.name,
                 onPressed: () async {
-                  final result = await showDialog<Subject>(
+                  final result = await showCustomModalBottomSheet<Subject>(
                     context: context,
-                    builder: (context) => const SubjectDialog(),
+                    builder: (context) => const SubjectModalBottomSheet(),
                   );
 
                   if (result != null) {
@@ -98,7 +99,7 @@ class EditTestDialog extends HookConsumerWidget {
               child: CustomButton.selection(
                 selection: date.value?.formattedDate,
                 onPressed: () async {
-                  final result = await showModalBottomSheet<DateTime>(
+                  final result = await showCustomModalBottomSheet<DateTime>(
                     context: context,
                     builder: (BuildContext context) {
                       return TimePickerModalBottomSheet(

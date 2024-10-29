@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
@@ -7,18 +6,18 @@ import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/features/calendar/presentation/provider/events_provider.dart';
 import 'package:schulplaner/features/hobbies/presentation/provider/hobbies_provider.dart';
 import 'package:schulplaner/shared/widgets/generate_with_ai_button.dart';
-import 'package:schulplaner/shared/dialogs/custom_dialog.dart';
+import 'package:schulplaner/shared/popups/custom_dialog.dart';
 import 'package:schulplaner/shared/functions/build_body_part.dart';
 import 'package:schulplaner/shared/models/event.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/shared/services/ai_service.dart';
 
-class GenerateHomeworkProcessingDateWithAiDialog extends HookConsumerWidget {
+class GenerateTestProcessingDatesWithAi extends HookConsumerWidget {
   final WeeklyScheduleData weeklyScheduleData;
   final Subject subject;
   final DateTime deadline;
 
-  const GenerateHomeworkProcessingDateWithAiDialog({
+  const GenerateTestProcessingDatesWithAi({
     super.key,
     required this.weeklyScheduleData,
     required this.subject,
@@ -37,7 +36,7 @@ class GenerateHomeworkProcessingDateWithAiDialog extends HookConsumerWidget {
 
     return CustomDialog(
       icon: const Icon(LucideIcons.sparkles),
-      title: const Text("Datum und Zeitspanne generieren"),
+      title: const Text("Übungsdaten generieren"),
       loading:
           eventData.right == null || hobbiesData.right == null || loading.value,
       fatalError: eventData.isLeft() || hobbiesData.isLeft()
@@ -78,8 +77,8 @@ class GenerateHomeworkProcessingDateWithAiDialog extends HookConsumerWidget {
             errorMessage.value = null;
             loading.value = true;
 
-            final processingDate =
-                await AiService.generateHomeworkProcessingDateWithAi(
+            final processingDates =
+                await AiService.generateTestProcessingDatesWithAi(
               difficulty: difficulty.value,
               weeklyScheduleData: weeklyScheduleData,
               events: eventData.right ?? [],
@@ -90,13 +89,13 @@ class GenerateHomeworkProcessingDateWithAiDialog extends HookConsumerWidget {
 
             loading.value = false;
 
-            if (processingDate.isRight() && context.mounted) {
+            if (processingDates.isRight() && context.mounted) {
               Navigator.of(context).pop(
-                processingDate.right!,
+                processingDates.right!,
               );
               return;
             } else {
-              errorMessage.value = processingDate.left!.message;
+              errorMessage.value = processingDates.left!.message;
               return;
             }
           },

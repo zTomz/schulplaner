@@ -6,7 +6,7 @@ import 'package:schulplaner/shared/exceptions/auth_exceptions.dart';
 import 'package:schulplaner/shared/functions/close_all_dialogs.dart';
 import 'package:schulplaner/shared/services/exeption_handler_service.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
-import 'package:schulplaner/shared/dialogs/custom_dialog.dart';
+import 'package:schulplaner/shared/popups/custom_dialog.dart';
 import 'package:schulplaner/shared/services/user_service.dart';
 import 'package:schulplaner/shared/widgets/custom_button.dart';
 import 'package:schulplaner/shared/widgets/custom_text_field.dart';
