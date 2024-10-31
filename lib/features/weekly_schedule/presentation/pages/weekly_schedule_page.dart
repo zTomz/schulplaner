@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:schulplaner/features/weekly_schedule/presentation/provider/week_provider.dart';
 import 'package:schulplaner/features/weekly_schedule/presentation/provider/weekly_schedule_provider.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/shared/popups/custom_dialog.dart';
@@ -21,9 +22,9 @@ class WeeklySchedulePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final weeklyScheduleData = ref.watch(weeklyScheduleProvider);
+    final week = ref.watch(weekProvider);
 
     final selectedSchoolTimeCell = useState<SchoolTimeCell?>(null);
-    final week = useState<Week>(Week.all);
 
     return weeklyScheduleData.fold(
       (failure) => const DataErrorWidget(),
@@ -62,7 +63,7 @@ class WeeklySchedulePage extends HookConsumerWidget {
                 }
               },
               onWeekTapped: () {
-                week.value = week.value.next();
+                ref.read(weekProvider.notifier).state = week.next();
               },
               onDeleteTimeSpan: (timeSpanToDelete) async {
                 final result = await showDialog<bool>(
@@ -95,7 +96,7 @@ class WeeklySchedulePage extends HookConsumerWidget {
                 teachers: teachers,
                 subjects: subjects,
               ),
-              week: week.value,
+              week: week,
             ),
           ),
         );

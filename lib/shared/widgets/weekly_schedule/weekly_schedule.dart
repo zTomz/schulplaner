@@ -18,16 +18,16 @@ class WeeklySchedule extends StatelessWidget {
   final void Function() onWeekTapped;
 
   /// A function that is called, when the user try's to delete a time span
-  final void Function(TimeSpan timeSpan) onDeleteTimeSpan;
+  final void Function(TimeSpan timeSpan)? onDeleteTimeSpan;
 
   /// A function that is called, when the user selects a time cell in the table
-  final void Function(SchoolTimeCell schoolTimeCell) onSchoolTimeCellSelected;
+  final void Function(SchoolTimeCell schoolTimeCell)? onSchoolTimeCellSelected;
 
   /// The time cell if any is selected
   final SchoolTimeCell? selectedSchoolTimeCell;
 
   /// A function that is called when the user clicks on a lesson
-  final void Function(Lesson lesson) onLessonEdit;
+  final void Function(Lesson lesson)? onLessonEdit;
 
   /// The data of the weekly schedule
   final WeeklyScheduleData data;
@@ -49,6 +49,22 @@ class WeeklySchedule extends StatelessWidget {
     required this.week,
     this.scrollController,
   });
+
+  factory WeeklySchedule.viewOnly({
+    required WeeklyScheduleData data,
+    required Week week,
+    required void Function() onWeekTapped,
+  }) {
+    return WeeklySchedule(
+      onWeekTapped: onWeekTapped,
+      onDeleteTimeSpan: null,
+      onSchoolTimeCellSelected: null,
+      onLessonEdit: null,
+      selectedSchoolTimeCell: null,
+      data: data,
+      week: week,
+    );
+  }
 
   static const double _timeColumnWidth = 100;
 
@@ -162,14 +178,16 @@ class WeeklySchedule extends StatelessWidget {
 
       widgetsToBuild.add(
         WeeklyScheduleLessonCell(
-          onTap: (List<Lesson> _) {
-            final newCell = SchoolTimeCell(
-              weekday: weekday,
-              timeSpan: timeSpan,
-            );
+          onTap: onSchoolTimeCellSelected != null
+              ? (List<Lesson> _) {
+                  final newCell = SchoolTimeCell(
+                    weekday: weekday,
+                    timeSpan: timeSpan,
+                  );
 
-            onSchoolTimeCellSelected(newCell);
-          },
+                  onSchoolTimeCellSelected!(newCell);
+                }
+              : null,
           onLessonEdit: onLessonEdit,
           teachers: data.teachers,
           subjects: data.subjects,

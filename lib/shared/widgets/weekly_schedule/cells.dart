@@ -6,7 +6,7 @@ import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 
 class WeeklyScheduleTimeCell extends StatelessWidget {
-  final void Function(TimeSpan timeSpan) onDeleteTimeSpan;
+  final void Function(TimeSpan timeSpan)? onDeleteTimeSpan;
   final TimeSpan timeSpan;
 
   const WeeklyScheduleTimeCell({
@@ -22,7 +22,9 @@ class WeeklyScheduleTimeCell extends StatelessWidget {
       child: Material(
         type: MaterialType.transparency,
         child: InkWell(
-          onTap: () => onDeleteTimeSpan(timeSpan),
+          onTap: onDeleteTimeSpan == null
+              ? null
+              : () => onDeleteTimeSpan!(timeSpan),
           borderRadius: BorderRadius.circular(2),
           child: Padding(
             padding: const EdgeInsets.all(Spacing.small),
@@ -38,8 +40,8 @@ class WeeklyScheduleTimeCell extends StatelessWidget {
 }
 
 class WeeklyScheduleLessonCell extends StatelessWidget {
-  final void Function(List<Lesson> lessons) onTap;
-  final void Function(Lesson lesson) onLessonEdit;
+  final void Function(List<Lesson> lessons)? onTap;
+  final void Function(Lesson lesson)? onLessonEdit;
   final List<Teacher> teachers;
   final List<Subject> subjects;
   final List<Lesson> lessons;
@@ -60,9 +62,11 @@ class WeeklyScheduleLessonCell extends StatelessWidget {
     return TableCell(
       verticalAlignment: TableCellVerticalAlignment.intrinsicHeight,
       child: InkWell(
-        onTap: () {
-          onTap(lessons);
-        },
+        onTap: onTap == null
+            ? null
+            : () {
+                onTap!(lessons);
+              },
         child: Container(
           decoration: BoxDecoration(
             border: Border.all(
@@ -96,7 +100,7 @@ class SchoolCard extends StatelessWidget {
   final Lesson lesson;
   final List<Subject> subjects;
   final List<Teacher> teachers;
-  final void Function(Lesson lesson) onEdit;
+  final void Function(Lesson lesson)? onEdit;
 
   const SchoolCard({
     super.key,
@@ -124,9 +128,16 @@ class SchoolCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(Spacing.small),
         child: MaterialButton(
+          // onPressed cannot be null. When it is null, the widget doesnt get rendered
           onPressed: () {
-            onEdit(lesson);
+            if (onEdit != null) {
+              onEdit!(lesson);
+            }
           },
+
+          mouseCursor: onEdit == null
+              ? SystemMouseCursors.basic
+              : SystemMouseCursors.click,
           padding: const EdgeInsets.all(Spacing.small),
           color: subject.color,
           shape: const RoundedRectangleBorder(
