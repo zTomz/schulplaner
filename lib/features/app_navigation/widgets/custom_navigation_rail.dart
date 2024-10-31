@@ -42,7 +42,7 @@ class CustomNavigationRail extends StatelessWidget {
       curve: Curves.decelerate,
       width: extended ? _kExtendedRailWidth : _kRailWidth,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainer,
+        color: Theme.of(context).colorScheme.surfaceContainerLow,
       ),
       child: SafeArea(
         child: Column(
@@ -77,6 +77,7 @@ class CustomNavigationRail extends StatelessWidget {
                     extended
                         ? LucideIcons.between_horizontal_end
                         : LucideIcons.between_horizontal_start,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ),
@@ -168,16 +169,7 @@ class _CustomNavigaitonRailDestination extends HookWidget {
                 Tooltip(
                   message: destination.label,
                   child: Material(
-                    color: isSelected
-                        ? Theme.of(context).colorScheme.primary
-                        : isHovering.value
-                            ? Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withOpacity(0.7)
-                            : Theme.of(context)
-                                .colorScheme
-                                .surfaceContainerHigh,
+                    color: Theme.of(context).colorScheme.surfaceContainerHigh,
                     shape: const CircleBorder(),
                     child: InkWell(
                       onTap: () => onDestinationSelected(),
@@ -187,8 +179,8 @@ class _CustomNavigaitonRailDestination extends HookWidget {
                         child: IconTheme(
                           data: IconThemeData(
                             color: isSelected || isHovering.value
-                                ? Theme.of(context).colorScheme.onPrimary
-                                : Theme.of(context).colorScheme.onSurface,
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                           child: destination.icon,
                         ),
@@ -204,10 +196,7 @@ class _CustomNavigaitonRailDestination extends HookWidget {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         destination.label,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyLarge!
-                            .copyWith(
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                               color: isSelected || isHovering.value
                                   ? Theme.of(context).colorScheme.primary
                                   : Theme.of(context).colorScheme.onSurface,
