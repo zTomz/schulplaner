@@ -45,24 +45,27 @@ extension EventDataExtension on EventData {
     return (homeworkEvents, testEvents, reminderEvents, repeatingEvents);
   }
 
-  EventData get eventsForDay => where(
-        (event) =>
-            event.date.compareWithoutTime(
-              DateTime.now(),
-            ) ||
-            _eventProcessingDateIsToday(event),
-      ).toList();
+  EventData get eventsForToday => getEventsForDay(DateTime.now());
 
-  bool _eventProcessingDateIsToday(Event event) {
+  EventData getEventsForDay(DateTime day) {
+    return where(
+      (event) =>
+          event.date.compareWithoutTime(day) ||
+          _eventProcessingDateIsAtDay(event, day),
+    ).toList(growable: false);
+  }
+
+  bool _eventProcessingDateIsAtDay(Event event, DateTime day) {
     if (event.type == EventTypes.homework) {
-      return (event as HomeworkEvent).processingDate.date.compareWithoutTime(
-            DateTime.now(),
-          );
+      return (event as HomeworkEvent)
+          .processingDate
+          .date
+          .compareWithoutTime(day);
     }
 
     if (event.type == EventTypes.test) {
       for (final practiceDate in (event as TestEvent).praticeDates) {
-        if (practiceDate.date.compareWithoutTime(DateTime.now())) {
+        if (practiceDate.date.compareWithoutTime(day)) {
           return true;
         }
       }

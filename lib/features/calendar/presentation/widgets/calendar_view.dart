@@ -5,7 +5,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/shared/extensions/date_time_extension.dart';
-import 'package:schulplaner/shared/functions/get_events_for_day.dart';
 import 'package:schulplaner/shared/models/event.dart';
 import 'package:schulplaner/shared/models/time.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
@@ -14,7 +13,7 @@ import 'package:schulplaner/features/calendar/functions/get_color_for_event.dart
 class CalendarView extends HookWidget {
   final DateTime startDate;
   final DateTime selectedDate;
-  final List<Event> events;
+  final EventData events;
   final List<Subject> subjects;
   final void Function(DateTime date) onDaySelected;
 
@@ -122,7 +121,7 @@ class CalendarView extends HookWidget {
                 itemBuilder: (context, index) {
                   final day = monthDays[index];
                   final dayIsSelected = day.compareWithoutTime(selectedDate);
-                  final eventsOfDay = getEventsForDay(day, events: events);
+                  final eventsOfDay = events.getEventsForDay(day);
 
                   return MaterialButton(
                     onPressed: () {
@@ -186,13 +185,17 @@ class CalendarView extends HookWidget {
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   // If the date is not the current day, we have a processing date. Which we want to display in a lighter color.
-                                  color: eventsOfDay[i].date.compareWithoutTime(day) ?  getColorForEvent(
-                                    eventsOfDay[i],
-                                    subjects,
-                                  ) : getColorForEvent(
-                                    eventsOfDay[i],
-                                    subjects,
-                                  ).withOpacity(0.6),
+                                  color: eventsOfDay[i]
+                                          .date
+                                          .compareWithoutTime(day)
+                                      ? getColorForEvent(
+                                          eventsOfDay[i],
+                                          subjects,
+                                        )
+                                      : getColorForEvent(
+                                          eventsOfDay[i],
+                                          subjects,
+                                        ).withOpacity(0.6),
                                 ),
                               ),
                             if (eventsOfDay.length - 8 > 0)

@@ -55,6 +55,7 @@ class SubjectModalBottomSheet extends ConsumerWidget {
                   leading: CustomColorIndicator(
                     color: currentSubject.color,
                   ),
+                  minLeadingWidth: CustomColorIndicator(color: currentSubject.color).preferredSize.width,
                   tileColor: Theme.of(context).colorScheme.surfaceContainer,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.vertical(

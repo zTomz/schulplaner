@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-class CustomColorIndicator extends StatelessWidget {
+class CustomColorIndicator extends StatelessWidget
+    implements PreferredSizeWidget {
   final Color color;
 
   const CustomColorIndicator({
@@ -19,4 +20,7 @@ class CustomColorIndicator extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  Size get preferredSize => const Size(4, 20);
 }
