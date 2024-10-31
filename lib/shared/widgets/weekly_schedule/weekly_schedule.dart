@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/config/constants/svg_pictures.dart';
+import 'package:schulplaner/features/weekly_schedule/presentation/provider/selected_school_time_cell_provider.dart';
+import 'package:schulplaner/features/weekly_schedule/presentation/provider/week_provider.dart';
+import 'package:schulplaner/features/weekly_schedule/presentation/provider/weekly_schedule_provider.dart';
 import 'package:schulplaner/shared/models/time.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
+import 'package:schulplaner/shared/popups/custom_dialog.dart';
+import 'package:schulplaner/shared/popups/weekly_schedule/edit_lesson_dialog.dart';
 
 import 'cells.dart';
 import 'days_header.dart';
@@ -13,7 +19,69 @@ export 'cells.dart';
 export 'days_header.dart';
 export 'models.dart';
 
-class WeeklySchedule extends StatelessWidget {
+class WeeklySchedule extends ConsumerWidget {
+  const WeeklySchedule({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final rawWeeklyScheduleData = ref.watch(weeklyScheduleProvider);
+    final selectedSchoolTimeCell = ref.watch(selectedSchoolTimeCellProvider);
+    final week = ref.watch(weekProvider);
+
+    final WeeklyScheduleData weeklyScheduleData = rawWeeklyScheduleData.fold(
+      (failure) => WeeklyScheduleData.empty(),
+      (data) => data,
+    );
+
+    return _WeeklySchedule(
+      onLessonEdit: (lesson) async {
+        final result = await showDialog<Lesson>(
+          context: context,
+          builder: (context) => EditLessonDialog(
+            lesson: lesson,
+            schoolTimeCell: selectedSchoolTimeCell,
+          ),
+        );
+
+        if (result != null) {
+          await ref.read(weeklyScheduleProvider.notifier).editLesson(
+                lesson: result,
+              );
+        }
+      },
+      onWeekTapped: () {
+        ref.watch(weekProvider.notifier).state = week.next;
+      },
+      onDeleteTimeSpan: (timeSpanToDelete) async {
+        final result = await showDialog<bool>(
+          context: context,
+          builder: (context) => CustomDialog.confirmation(
+            title: "Schulzeit löschen",
+            description:
+                "Soll die Schulzeit ${timeSpanToDelete.from.format(context)} - ${timeSpanToDelete.to.format(context)} wirklich gelöscht werden?",
+          ),
+        );
+
+        // If true, delete the time span
+        if (result == true) {
+          await ref
+              .read(weeklyScheduleProvider.notifier)
+              .deleteTimeSpan(timeSpan: timeSpanToDelete);
+        }
+      },
+      onSchoolTimeCellSelected: (schoolTimeCell) {
+        // Select the cell. If the cell is already selected, unselect it
+        ref.read(selectedSchoolTimeCellProvider.notifier).state =
+            schoolTimeCell == selectedSchoolTimeCell ? null : schoolTimeCell;
+      },
+      selectedSchoolTimeCell: selectedSchoolTimeCell,
+      data: weeklyScheduleData,
+      week: week,
+    );
+  }
+}
+
+class _WeeklySchedule extends StatelessWidget {
   /// Called when the week (A, B or All) is tapped.
   final void Function() onWeekTapped;
 
@@ -35,11 +103,7 @@ class WeeklySchedule extends StatelessWidget {
   /// The current week
   final Week week;
 
-  /// Optional a scroll controller, to controll the table scroll
-  final ScrollController? scrollController;
-
-  const WeeklySchedule({
-    super.key,
+  const _WeeklySchedule({
     required this.onWeekTapped,
     required this.onDeleteTimeSpan,
     required this.onSchoolTimeCellSelected,
@@ -47,7 +111,6 @@ class WeeklySchedule extends StatelessWidget {
     required this.onLessonEdit,
     required this.data,
     required this.week,
-    this.scrollController,
   });
 
   static const double _timeColumnWidth = 100;
@@ -85,16 +148,15 @@ class WeeklySchedule extends StatelessWidget {
       children: [
         WeeklyScheduleDaysHeader(
           onWeekTapped: () => onWeekTapped(),
-          timeColumnWidth: WeeklySchedule._timeColumnWidth,
+          timeColumnWidth: _WeeklySchedule._timeColumnWidth,
           week: week,
         ),
         Expanded(
           child: SingleChildScrollView(
-            controller: scrollController,
             scrollDirection: Axis.vertical,
             child: Table(
               columnWidths: const {
-                0: FixedColumnWidth(WeeklySchedule._timeColumnWidth),
+                0: FixedColumnWidth(_WeeklySchedule._timeColumnWidth),
               },
               border: TableBorder.all(
                 color: Theme.of(context).colorScheme.surfaceContainer,

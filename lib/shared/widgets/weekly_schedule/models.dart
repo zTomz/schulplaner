@@ -83,7 +83,7 @@ enum Week {
   });
 
   /// Returns the next week
-  Week next() {
+  Week get next {
     switch (this) {
       case Week.a:
         return Week.b;

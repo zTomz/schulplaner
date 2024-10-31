@@ -14,6 +14,7 @@ import 'package:schulplaner/shared/widgets/custom/custom_app_bar.dart';
 import 'package:schulplaner/shared/widgets/info_side_panel/info_side_panel.dart';
 // import 'package:schulplaner/features/weekly_schedule/presentation/provider/weekly_schedule_provider.dart';
 import 'package:schulplaner/shared/widgets/floating_action_buttons/event_floating_action_button.dart';
+import 'package:schulplaner/shared/widgets/weekly_schedule/weekly_schedule.dart';
 
 @RoutePage()
 class OverviewPage extends ConsumerWidget {
@@ -57,8 +58,9 @@ class OverviewPage extends ConsumerWidget {
                 subjects: subjects,
               ),
             ),
+            const SizedBox(width: Spacing.medium),
             const Expanded(
-              child: SizedBox.shrink(),
+              child: WeeklySchedule(),
             ),
           ],
         ),
