@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:schulplaner/features/calendar/presentation/provider/events_provider.dart';
+import 'package:schulplaner/features/weekly_schedule/presentation/provider/weekly_schedule_provider.dart';
 import 'package:schulplaner/shared/popups/events/edit_reminder_dialog.dart';
 import 'package:schulplaner/shared/popups/events/test/edit_test_dialog.dart';
 import 'package:schulplaner/shared/extensions/date_time_extension.dart';
@@ -8,43 +11,29 @@ import 'package:schulplaner/shared/popups/events/homework/edit_homework_dialog.d
 import 'package:schulplaner/shared/models/event.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/features/calendar/functions/get_color_for_event.dart';
-import 'package:schulplaner/shared/widgets/custom_color_indicator.dart';
+import 'package:schulplaner/shared/widgets/custom/custom_color_indicator.dart';
 
-class EventInfoBox extends StatelessWidget {
+class EventInfoBox extends ConsumerWidget {
   /// The event that should be shown in the info box
   final Event event;
 
   /// The selected day
   final DateTime day;
 
-  /// All events. Used when the user changes the state of the provided event. To update the database
-  final List<Event> events;
-
-  /// A list of all subjects
-  final List<Subject> subjects;
-
-  /// This function is called, when a event is edited
-  final void Function(Event event) onEventEdited;
-
-  /// This function is called, when a event is deleted
-  final void Function(Event event) onEventDeleted;
-
-  /// This function is called, when a homework is toggled
-  final void Function(HomeworkEvent event, bool newState) onHomeworkToggled;
-
   const EventInfoBox({
     super.key,
     required this.event,
     required this.day,
-    required this.events,
-    required this.subjects,
-    required this.onEventEdited,
-    required this.onEventDeleted,
-    required this.onHomeworkToggled,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final weeklyScheduleData = ref.watch(weeklyScheduleProvider);
+    final List<Subject> subjects = weeklyScheduleData.fold(
+      (failure) => [],
+      (data) => data.subjects,
+    );
+
     return Padding(
       padding: const EdgeInsets.only(bottom: Spacing.small),
       child: MaterialButton(
@@ -55,12 +44,18 @@ class EventInfoBox extends StatelessWidget {
                 context: context,
                 builder: (context) => EditHomeworkDialog(
                   homeworkEvent: event as HomeworkEvent,
-                  onHomeworkDeleted: () => onEventDeleted(event),
+                  onHomeworkDeleted: () async =>
+                      await ref.read(eventsProvider.notifier).deleteEvent(
+                            event: event,
+                          ),
+                  // TODO: Add undo feature with SnackBar,
                 ),
               );
 
               if (result != null) {
-                onEventEdited(result);
+                await ref.read(eventsProvider.notifier).editEvent(
+                      event: result,
+                    );
               }
               break;
             case EventTypes.test:
@@ -68,12 +63,17 @@ class EventInfoBox extends StatelessWidget {
                 context: context,
                 builder: (context) => EditTestDialog(
                   testEvent: event as TestEvent,
-                  onTestDeleted: () => onEventDeleted(event),
+                  onTestDeleted: () async =>
+                      await ref.read(eventsProvider.notifier).deleteEvent(
+                            event: event,
+                          ),
                 ),
               );
 
               if (result != null) {
-                onEventEdited(result);
+                await ref.read(eventsProvider.notifier).editEvent(
+                      event: result,
+                    );
               }
               break;
             case EventTypes.reminder:
@@ -81,12 +81,17 @@ class EventInfoBox extends StatelessWidget {
                 context: context,
                 builder: (context) => EditReminderDialog(
                   reminderEvent: event as ReminderEvent,
-                  onReminderDeleted: () => onEventDeleted(event),
+                  onReminderDeleted: () async =>
+                      await ref.read(eventsProvider.notifier).deleteEvent(
+                            event: event,
+                          ),
                 ),
               );
 
               if (result != null) {
-                onEventEdited(result);
+                await ref.read(eventsProvider.notifier).editEvent(
+                      event: result,
+                    );
               }
               break;
             // TODO: Implement editing other events here
@@ -164,7 +169,11 @@ class EventInfoBox extends StatelessWidget {
                 onChanged: (value) async {
                   // Update the homework [isDone] status
                   if (value != null) {
-                    onHomeworkToggled(event as HomeworkEvent, value);
+                    await ref.read(eventsProvider.notifier).editEvent(
+                          event: (event as HomeworkEvent).copyWith(
+                            isDone: value,
+                          ),
+                        );
                   }
                 },
               ),

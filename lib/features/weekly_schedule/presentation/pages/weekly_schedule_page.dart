@@ -9,7 +9,7 @@ import 'package:schulplaner/shared/popups/custom_dialog.dart';
 import 'package:schulplaner/shared/popups/weekly_schedule/edit_lesson_dialog.dart';
 import 'package:schulplaner/shared/models/time.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
-import 'package:schulplaner/shared/widgets/custom_app_bar.dart';
+import 'package:schulplaner/shared/widgets/custom/custom_app_bar.dart';
 import 'package:schulplaner/shared/widgets/data_state_widgets.dart';
 import 'package:schulplaner/shared/widgets/floating_action_buttons/weekly_schedule_floating_action_button.dart';
 import 'package:schulplaner/shared/widgets/weekly_schedule/weekly_schedule.dart';

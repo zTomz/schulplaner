@@ -7,11 +7,10 @@ import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/features/calendar/presentation/provider/events_provider.dart';
 import 'package:schulplaner/features/weekly_schedule/presentation/provider/weekly_schedule_provider.dart';
 import 'package:schulplaner/shared/functions/get_events_for_day.dart';
-import 'package:schulplaner/shared/widgets/custom_app_bar.dart';
+import 'package:schulplaner/shared/widgets/custom/custom_app_bar.dart';
 import 'package:schulplaner/shared/widgets/data_state_widgets.dart';
 import 'package:schulplaner/features/calendar/presentation/widgets/calendar_view.dart';
-import 'package:schulplaner/features/calendar/presentation/widgets/event_info_box.dart';
-import 'package:schulplaner/features/calendar/presentation/widgets/no_events_info.dart';
+import 'package:schulplaner/shared/widgets/events_side_panel.dart';
 import 'package:schulplaner/shared/widgets/floating_action_buttons/event_floating_action_button.dart';
 
 @RoutePage()
@@ -49,7 +48,7 @@ class CalendarPage extends HookConsumerWidget {
               child: Row(
                 children: [
                   SizedBox(
-                    width: MediaQuery.sizeOf(context).width * 0.4,
+                    width: MediaQuery.sizeOf(context).width * 0.45,
                     child: CalendarView(
                       startDate: DateTime.now(),
                       selectedDate: selectedDate.value,
@@ -62,55 +61,10 @@ class CalendarPage extends HookConsumerWidget {
                   ),
                   const SizedBox(width: Spacing.medium),
                   Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(Spacing.medium),
-                      clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(
-                        color:
-                            Theme.of(context).colorScheme.surfaceContainerLow,
-                        borderRadius: const BorderRadius.all(Radii.medium),
-                      ),
-                      child: eventsForDay.isEmpty
-                          ? NoEventsInfo(selectedDate: selectedDate.value)
-                          : ListView.builder(
-                              itemCount: eventsForDay.length,
-                              itemBuilder: (context, index) {
-                                final event = eventsForDay[index];
-
-                                return EventInfoBox(
-                                  event: event,
-                                  day: selectedDate.value,
-                                  events: events,
-                                  subjects: weeklyScheduleData.subjects,
-                                  onEventEdited: (event) async {
-                                    await ref
-                                        .read(eventsProvider.notifier)
-                                        .editEvent(
-                                          event: event,
-                                        );
-                                  },
-                                  onEventDeleted: (event) async {
-                                    await ref
-                                        .read(eventsProvider.notifier)
-                                        .deleteEvent(
-                                          event: event,
-                                        );
-
-                                    // TODO: Add undo feature with SnackBar
-                                  },
-                                  onHomeworkToggled: (event, newState) async {
-                                    await ref
-                                        .read(eventsProvider.notifier)
-                                        .editEvent(
-                                          event: event.copyWith(
-                                            isDone: newState,
-                                          ),
-                                        );
-                                  },
-                                );
-                              },
-                            ),
-                    ),
+                    child: EventsSidePanel(
+                      events: eventsForDay,
+                      day: selectedDate.value,
+                    )
                   ),
                 ],
               ),

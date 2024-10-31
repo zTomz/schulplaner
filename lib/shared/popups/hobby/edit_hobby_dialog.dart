@@ -8,8 +8,8 @@ import 'package:schulplaner/shared/functions/get_value_or_null.dart';
 import 'package:schulplaner/shared/models/hobby.dart';
 import 'package:schulplaner/shared/models/time.dart';
 import 'package:schulplaner/shared/widgets/color_choose_list_tile.dart';
-import 'package:schulplaner/shared/widgets/custom_button.dart';
-import 'package:schulplaner/shared/widgets/custom_text_field.dart';
+import 'package:schulplaner/shared/widgets/custom/custom_button.dart';
+import 'package:schulplaner/shared/widgets/custom/custom_text_field.dart';
 import 'package:schulplaner/shared/widgets/required_field.dart';
 import 'package:uuid/uuid.dart';
 

@@ -61,6 +61,7 @@ class ModalBottomSheet extends StatelessWidget {
             const SizedBox(height: Spacing.small),
           ],
           Material(
+            color: Theme.of(context).colorScheme.surfaceContainerLow,
             child: content,
           ),
           const SizedBox(height: Spacing.large),

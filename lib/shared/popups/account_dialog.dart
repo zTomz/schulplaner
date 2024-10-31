@@ -8,8 +8,8 @@ import 'package:schulplaner/shared/services/exeption_handler_service.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/shared/popups/custom_dialog.dart';
 import 'package:schulplaner/shared/services/user_service.dart';
-import 'package:schulplaner/shared/widgets/custom_button.dart';
-import 'package:schulplaner/shared/widgets/custom_text_field.dart';
+import 'package:schulplaner/shared/widgets/custom/custom_button.dart';
+import 'package:schulplaner/shared/widgets/custom/custom_text_field.dart';
 
 /// Shows the [AccountDialog].
 class AccountDialog extends HookWidget {

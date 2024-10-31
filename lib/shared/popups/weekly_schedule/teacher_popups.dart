@@ -13,11 +13,11 @@ import 'package:schulplaner/shared/popups/weekly_schedule/widgets/item_popup_but
 import 'package:schulplaner/shared/functions/build_body_part.dart';
 import 'package:schulplaner/shared/functions/get_value_or_null.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
-import 'package:schulplaner/shared/widgets/custom_text_field.dart';
+import 'package:schulplaner/shared/widgets/custom/custom_text_field.dart';
 import 'package:schulplaner/shared/popups/modal_bottom_sheet.dart';
 import 'package:schulplaner/shared/widgets/weekly_schedule/models.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
-import 'package:schulplaner/shared/widgets/custom_button.dart';
+import 'package:schulplaner/shared/widgets/custom/custom_button.dart';
 import 'package:uuid/uuid.dart';
 
 class TeacherModalBottomSheet extends HookConsumerWidget {

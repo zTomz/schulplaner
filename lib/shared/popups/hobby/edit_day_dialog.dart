@@ -6,7 +6,7 @@ import 'package:schulplaner/shared/popups/custom_dialog.dart';
 import 'package:schulplaner/shared/popups/edit_time_span_dialog.dart';
 import 'package:schulplaner/shared/functions/build_body_part.dart';
 import 'package:schulplaner/shared/models/time.dart';
-import 'package:schulplaner/shared/widgets/custom_button.dart';
+import 'package:schulplaner/shared/widgets/custom/custom_button.dart';
 import 'package:schulplaner/shared/widgets/required_field.dart';
 
 class EditDayDialog extends HookWidget {

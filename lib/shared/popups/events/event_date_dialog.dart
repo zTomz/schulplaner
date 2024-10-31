@@ -7,7 +7,7 @@ import 'package:schulplaner/shared/extensions/date_time_extension.dart';
 import 'package:schulplaner/shared/extensions/time_of_day_extension.dart';
 import 'package:schulplaner/shared/models/event.dart';
 import 'package:schulplaner/shared/models/time.dart';
-import 'package:schulplaner/shared/widgets/custom_button.dart';
+import 'package:schulplaner/shared/widgets/custom/custom_button.dart';
 import 'package:schulplaner/shared/widgets/selection_row.dart';
 import 'package:schulplaner/shared/widgets/time_span_picker.dart';
 

@@ -9,7 +9,7 @@ import 'package:schulplaner/config/constants/svg_pictures.dart';
 import 'package:schulplaner/shared/popups/custom_dialog.dart';
 import 'package:schulplaner/shared/popups/hobby/edit_hobby_dialog.dart';
 import 'package:schulplaner/shared/models/hobby.dart';
-import 'package:schulplaner/shared/widgets/custom_app_bar.dart';
+import 'package:schulplaner/shared/widgets/custom/custom_app_bar.dart';
 import 'package:schulplaner/shared/widgets/floating_action_buttons/hobby_floating_action_button.dart';
 import 'package:schulplaner/shared/widgets/hobby_list_tile.dart';
 

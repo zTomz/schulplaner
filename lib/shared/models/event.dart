@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:schulplaner/config/constants/logger.dart';
+import 'package:schulplaner/shared/extensions/date_time_extension.dart';
 
 import 'package:schulplaner/shared/functions/first_where_or_null.dart';
 import 'package:schulplaner/shared/models/time.dart';
@@ -42,6 +43,32 @@ extension EventDataExtension on EventData {
     }
 
     return (homeworkEvents, testEvents, reminderEvents, repeatingEvents);
+  }
+
+  EventData get eventsForDay => where(
+        (event) =>
+            event.date.compareWithoutTime(
+              DateTime.now(),
+            ) ||
+            _eventProcessingDateIsToday(event),
+      ).toList();
+
+  bool _eventProcessingDateIsToday(Event event) {
+    if (event.type == EventTypes.homework) {
+      return (event as HomeworkEvent).processingDate.date.compareWithoutTime(
+            DateTime.now(),
+          );
+    }
+
+    if (event.type == EventTypes.test) {
+      for (final practiceDate in (event as TestEvent).praticeDates) {
+        if (practiceDate.date.compareWithoutTime(DateTime.now())) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
   /// Get a formatted json. This is used when generating something with AI.
@@ -315,14 +342,14 @@ class ReminderEvent extends Event {
   }
 
   Map<String, dynamic> getCompleteMap() => {
-    'name': name,
-    'date': date,
-    'type': 'reminder',
-    'description': description,
-    'place': place,
-    'color': color.value,
-    'uuid': uuid,
-  };
+        'name': name,
+        'date': date,
+        'type': 'reminder',
+        'description': description,
+        'place': place,
+        'color': color.value,
+        'uuid': uuid,
+      };
 }
 
 class RepeatingEvent extends Event {
@@ -365,14 +392,14 @@ class RepeatingEvent extends Event {
   }
 
   Map<String, dynamic> getCompleteMap() => {
-    'name': name,
-    'date': date,
-    'type': 'repeating',
-    'description': description,
-    'repeatingEventType': repeatingEventType.toMap(),
-    'color': color.value,
-    'uuid': uuid,
-  };
+        'name': name,
+        'date': date,
+        'type': 'repeating',
+        'description': description,
+        'repeatingEventType': repeatingEventType.toMap(),
+        'color': color.value,
+        'uuid': uuid,
+      };
 }
 
 /// A date with a duration.
