@@ -10,6 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/config/routes/router.dart';
 import 'package:schulplaner/config/theme/app_theme.dart';
 import 'package:schulplaner/firebase_options.dart';
+import 'package:schulplaner/shared/functions/load_licenses.dart';
 import 'package:schulplaner/shared/provider/custom_provider_observer.dart';
 
 Future<void> main() async {
@@ -38,6 +39,8 @@ Future<void> main() async {
   //     // TODO: Handle error Error getting token.
   //   });
   // }
+
+  loadLicenses();
 
   runApp(
     ProviderScope(
