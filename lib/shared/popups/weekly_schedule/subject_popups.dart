@@ -36,7 +36,10 @@ class SubjectModalBottomSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final weeklyScheduleData = ref.watch(weeklyScheduleProvider);
 
-    final subjects = weeklyScheduleData.right?.subjects ?? [];
+    final subjects = (weeklyScheduleData.right?.subjects ?? [])
+      ..sort(
+        (a, b) => a.name.compareTo(b.name),
+      );
 
     return ModalBottomSheet(
       title: const Text("Fach"),
@@ -56,7 +59,10 @@ class SubjectModalBottomSheet extends ConsumerWidget {
                   leading: CustomColorIndicator(
                     color: currentSubject.color,
                   ),
-                  minLeadingWidth: CustomColorIndicator(color: currentSubject.color).preferredSize.width,
+                  minLeadingWidth:
+                      CustomColorIndicator(color: currentSubject.color)
+                          .preferredSize
+                          .width,
                   tileColor: Theme.of(context).colorScheme.surfaceContainer,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.vertical(
@@ -218,7 +224,7 @@ class EditSubjectDialog extends HookConsumerWidget {
 
             Navigator.of(context).pop(
               Subject(
-                name: subjectController.text,
+                name: subjectController.text.trim(),
                 teacherUuid: teacher.value?.uuid,
                 color: color.value,
                 uuid: subject?.uuid ?? const Uuid().v4(),

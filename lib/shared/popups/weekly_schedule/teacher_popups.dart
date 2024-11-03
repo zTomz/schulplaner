@@ -37,6 +37,9 @@ class TeacherModalBottomSheet extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final weeklyScheduleData = ref.watch(weeklyScheduleProvider);
     final teachers = (weeklyScheduleData.right?.teachers ?? [])
+      ..sort(
+        (a, b) => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()),
+      )
       ..sort((a, b) => a.favorite == b.favorite
           ? 0
           : a.favorite
@@ -55,7 +58,7 @@ class TeacherModalBottomSheet extends HookConsumerWidget {
             itemCount: teachers.length,
             itemBuilder: (context, index) {
               final currentTeacher = teachers[index];
-          
+
               return Padding(
                 padding: const EdgeInsets.only(bottom: Spacing.extraSmall),
                 child: ListTile(
@@ -87,7 +90,7 @@ class TeacherModalBottomSheet extends HookConsumerWidget {
                         selectedTeacher.value = null;
                         return;
                       }
-          
+
                       Navigator.of(context).pop(teacher);
                     },
                   ),
@@ -112,7 +115,7 @@ class TeacherModalBottomSheet extends HookConsumerWidget {
                         ref
                             .read(weeklyScheduleProvider.notifier)
                             .editTeacher(teacher: result);
-          
+
                         Navigator.of(context).pop(result);
                       }
                     },
@@ -125,12 +128,12 @@ class TeacherModalBottomSheet extends HookConsumerWidget {
                               "Sind Sie sicher, dass Sie diesen Leherer löschen möchten? Wenn Sie dies tun, werden automatisch alle Schulstunden und Fächer, die mit diesen Lehrer belegt sind, mit gelöscht.",
                         ),
                       );
-          
+
                       if (result == true && context.mounted) {
                         ref
                             .read(weeklyScheduleProvider.notifier)
                             .deleteTeacher(teacher: currentTeacher);
-          
+
                         Navigator.of(context).pop();
                       }
                     },
@@ -143,7 +146,7 @@ class TeacherModalBottomSheet extends HookConsumerWidget {
                       selectedTeacher.value = null;
                       return;
                     }
-          
+
                     Navigator.of(context).pop(currentTeacher);
                   },
                 ),
@@ -278,7 +281,7 @@ class EditTeacherDialog extends HookWidget {
             Navigator.of(context).pop(
               Teacher(
                 firstName: firstNameController.text.getStringOrNull(),
-                lastName: lastNameController.text,
+                lastName: lastNameController.text.trim(),
                 email: emailController.text.getStringOrNull(),
                 gender: gender.value,
                 favorite: favorite.value,
