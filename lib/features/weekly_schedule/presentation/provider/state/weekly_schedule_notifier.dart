@@ -62,6 +62,30 @@ class WeeklyScheduleNotifier
     await _syncStateWithDatabase();
   }
 
+  Future<void> editTimeSpan({
+    required TimeSpan oldTimeSpan,
+    required TimeSpan newTimeSpan,
+  }) async {
+    // If an error exists, we return
+    if (state.isLeft()) {
+      return;
+    }
+
+    // Edit a time span in the set of time spans
+    state = Right(state.right!.copyWith(
+      // Update the old time span to the new time span
+      timeSpans: state.right!.timeSpans
+          .map((timeSpan) => timeSpan == oldTimeSpan ? newTimeSpan : timeSpan)
+          .toSet(),
+          // Update all lesson with that time span to the new time span
+      lessons: state.right!.lessons
+          .map((lesson) => lesson.timeSpan == oldTimeSpan
+              ? lesson.copyWith(timeSpan: newTimeSpan)
+              : lesson)
+          .toList(),
+    ));
+  }
+
   Future<void> deleteTimeSpan({
     required TimeSpan timeSpan,
   }) async {
@@ -75,6 +99,12 @@ class WeeklyScheduleNotifier
       timeSpans: state.right!.timeSpans
           .where((element) => element != timeSpan)
           .toSet(),
+      // Delete all lessons in that time span
+      lessons: state.right!.lessons
+          .where(
+            (element) => element.timeSpan != timeSpan,
+          )
+          .toList(),
     ));
 
     await _syncStateWithDatabase();

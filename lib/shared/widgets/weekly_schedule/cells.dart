@@ -4,15 +4,21 @@ import 'package:schulplaner/config/constants/logger.dart';
 import 'package:schulplaner/shared/models/time.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
+import 'package:schulplaner/shared/popups/edit_time_span_dialog.dart';
 
 class WeeklyScheduleTimeCell extends StatelessWidget {
-  final void Function(TimeSpan timeSpan) onDeleteTimeSpan;
   final TimeSpan timeSpan;
+
+  final void Function(TimeSpan oldTimeSpan, TimeSpan newTimeSpan)
+      onEditTimeSpan;
+
+  final void Function(TimeSpan timeSpan) onDeleteTimeSpan;
 
   const WeeklyScheduleTimeCell({
     super.key,
-    required this.onDeleteTimeSpan,
     required this.timeSpan,
+    required this.onEditTimeSpan,
+    required this.onDeleteTimeSpan,
   });
 
   @override
@@ -22,7 +28,22 @@ class WeeklyScheduleTimeCell extends StatelessWidget {
       child: Material(
         type: MaterialType.transparency,
         child: InkWell(
-          onTap: () => onDeleteTimeSpan(timeSpan),
+          onTap: () async {
+            final result = await showDialog(
+              context: context,
+              builder: (context) => EditTimeSpanDialog(
+                timeSpan: timeSpan,
+                onDelete: () {
+                  onDeleteTimeSpan(timeSpan);
+                  Navigator.of(context).pop();
+                },
+              ),
+            );
+
+            if (result != null) {
+              onEditTimeSpan(timeSpan, result);
+            }
+          },
           borderRadius: BorderRadius.circular(2),
           child: Padding(
             padding: const EdgeInsets.all(Spacing.small),

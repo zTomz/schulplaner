@@ -8,7 +8,6 @@ import 'package:schulplaner/features/weekly_schedule/presentation/provider/weekl
 import 'package:schulplaner/shared/models/time.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
-import 'package:schulplaner/shared/popups/custom_dialog.dart';
 import 'package:schulplaner/shared/popups/weekly_schedule/edit_lesson_dialog.dart';
 
 import 'cells.dart';
@@ -20,12 +19,18 @@ export 'days_header.dart';
 export 'models.dart';
 
 class WeeklySchedule extends ConsumerWidget {
-  const WeeklySchedule({super.key});
+  final bool _fieldsAreSelecteble;
+
+  const WeeklySchedule({super.key}) : _fieldsAreSelecteble = true;
+
+  const WeeklySchedule.unselectable({super.key}) : _fieldsAreSelecteble = false;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final rawWeeklyScheduleData = ref.watch(weeklyScheduleProvider);
-    final selectedSchoolTimeCell = ref.watch(selectedSchoolTimeCellProvider);
+    final selectedSchoolTimeCell = _fieldsAreSelecteble == false
+        ? null
+        : ref.watch(selectedSchoolTimeCellProvider);
     final week = ref.watch(weekProvider);
 
     final WeeklyScheduleData weeklyScheduleData = rawWeeklyScheduleData.fold(
@@ -52,22 +57,15 @@ class WeeklySchedule extends ConsumerWidget {
       onWeekTapped: () {
         ref.watch(weekProvider.notifier).state = week.next;
       },
+      onEditTimeSpan: (editedTimeSpan, newValue) async {
+        await ref
+            .read(weeklyScheduleProvider.notifier)
+            .editTimeSpan(oldTimeSpan: editedTimeSpan, newTimeSpan: newValue);
+      },
       onDeleteTimeSpan: (timeSpanToDelete) async {
-        final result = await showDialog<bool>(
-          context: context,
-          builder: (context) => CustomDialog.confirmation(
-            title: "Schulzeit löschen",
-            description:
-                "Soll die Schulzeit ${timeSpanToDelete.from.format(context)} - ${timeSpanToDelete.to.format(context)} wirklich gelöscht werden?",
-          ),
-        );
-
-        // If true, delete the time span
-        if (result == true) {
-          await ref
-              .read(weeklyScheduleProvider.notifier)
-              .deleteTimeSpan(timeSpan: timeSpanToDelete);
-        }
+        await ref
+            .read(weeklyScheduleProvider.notifier)
+            .deleteTimeSpan(timeSpan: timeSpanToDelete);
       },
       onSchoolTimeCellSelected: (schoolTimeCell) {
         // Select the cell. If the cell is already selected, unselect it
@@ -85,8 +83,12 @@ class _WeeklySchedule extends StatelessWidget {
   /// Called when the week (A, B or All) is tapped.
   final void Function() onWeekTapped;
 
+  /// A function that is called, when the user try's to edit a time span
+  final void Function(TimeSpan oldTimeSpan, TimeSpan newTimeSpan)
+      onEditTimeSpan;
+
   /// A function that is called, when the user try's to delete a time span
-  final void Function(TimeSpan timeSpan) onDeleteTimeSpan;
+  final void Function(TimeSpan timeSpanToDelete) onDeleteTimeSpan;
 
   /// A function that is called, when the user selects a time cell in the table
   final void Function(SchoolTimeCell schoolTimeCell) onSchoolTimeCellSelected;
@@ -105,6 +107,7 @@ class _WeeklySchedule extends StatelessWidget {
 
   const _WeeklySchedule({
     required this.onWeekTapped,
+    required this.onEditTimeSpan,
     required this.onDeleteTimeSpan,
     required this.onSchoolTimeCellSelected,
     required this.selectedSchoolTimeCell,
@@ -204,6 +207,7 @@ class _WeeklySchedule extends StatelessWidget {
     List<Widget> widgetsToBuild = [
       WeeklyScheduleTimeCell(
         timeSpan: timeSpan,
+        onEditTimeSpan: onEditTimeSpan,
         onDeleteTimeSpan: onDeleteTimeSpan,
       ),
     ];

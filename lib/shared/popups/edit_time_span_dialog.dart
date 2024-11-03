@@ -10,11 +10,17 @@ import 'package:schulplaner/config/constants/numbers.dart';
 /// A dialog, which askes the user to enter a new time span. When the user has entered the time span, it will be returned
 /// in the .pop() method
 class EditTimeSpanDialog extends HookWidget {
+  /// Optional. A preset time span
   final TimeSpan? timeSpan;
+
+  /// Optional. When the user wants to delete the time span. Make sure, that when
+  /// onDelete is not null, that the time span is not null as well
+  final void Function()? onDelete;
 
   const EditTimeSpanDialog({
     super.key,
     this.timeSpan,
+    this.onDelete,
   });
 
   @override
@@ -24,11 +30,12 @@ class EditTimeSpanDialog extends HookWidget {
 
     final error = useState<String?>(null);
 
-    return CustomDialog(
-      icon: const Icon(LucideIcons.timer),
+    return _buildDialog(
+      context,
       title: Text(
         timeSpan == null ? "Neue Zeitspanne" : "Zeitspanne bearbeiten",
       ),
+      icon: const Icon(LucideIcons.timer),
       content: TimeSpanPicker(
         onChanged: (fromValue, toValue) {
           from.value = fromValue;
@@ -67,7 +74,51 @@ class EditTimeSpanDialog extends HookWidget {
           child: Text(timeSpan == null ? "Hinzufügen" : "Bearbeiten"),
         ),
       ],
-      error: error.value != null ? Text(error.value!) : null,
+      onDelete: onDelete == null || timeSpan == null
+          ? null
+          : IconButton(
+              icon: const Icon(LucideIcons.trash_2),
+              tooltip: "Zeitspanne löschen",
+              color: Theme.of(context).colorScheme.error,
+              onPressed: () {
+                onDelete!();
+              },
+            ),
+      error: error.value,
+    );
+  }
+
+  /// Build an expanded dialog, if onDelet widget is not null. If it is null, build
+  /// a normal custom dialog
+  Widget _buildDialog(
+    BuildContext context, {
+    required Widget title,
+    required Widget icon,
+    required Widget content,
+    required List<Widget> actions,
+    required Widget? onDelete,
+    required String? error,
+  }) {
+    if (onDelete != null) {
+      return CustomDialog.expanded(
+        icon: icon,
+        title: title,
+        content: content,
+        actions: [
+          onDelete,
+          const Spacer(),
+          ...actions,
+        ],
+        error: error != null ? Text(error) : null,
+      );
+    }
+
+    return CustomDialog(
+      icon: icon,
+      title: title,
+      content: content,
+      actions: actions,
+      error: error != null ? Text(error) : null,
     );
   }
 }

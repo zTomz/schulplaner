@@ -60,7 +60,7 @@ class OverviewPage extends ConsumerWidget {
             ),
             const SizedBox(width: Spacing.medium),
             const Expanded(
-              child: WeeklySchedule(),
+              child: WeeklySchedule.unselectable(),
             ),
           ],
         ),

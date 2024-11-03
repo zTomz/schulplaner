@@ -214,6 +214,24 @@ class Lesson extends Equatable {
     );
   }
 
+  Lesson copyWith({
+    TimeSpan? timeSpan,
+    Weekday? weekday,
+    Week? week,
+    String? subjectUuid,
+    String? room,
+    String? uuid,
+  }) {
+    return Lesson(
+      timeSpan: timeSpan ?? this.timeSpan,
+      weekday: weekday ?? this.weekday,
+      week: week ?? this.week,
+      subjectUuid: subjectUuid ?? this.subjectUuid,
+      room: room ?? this.room,
+      uuid: uuid ?? this.uuid,
+    );
+  }
+
   Subject? getSubject(List<Subject> subjects) {
     return firstWhereOrNull(
       subjects,
