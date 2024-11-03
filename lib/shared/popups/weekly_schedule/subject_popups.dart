@@ -38,7 +38,7 @@ class SubjectModalBottomSheet extends ConsumerWidget {
 
     final subjects = (weeklyScheduleData.right?.subjects ?? [])
       ..sort(
-        (a, b) => a.name.compareTo(b.name),
+        (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
       );
 
     return ModalBottomSheet(

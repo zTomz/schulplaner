@@ -136,7 +136,7 @@ class EditReminderDialog extends HookWidget {
 
             Navigator.of(context).pop(
               ReminderEvent(
-                name: nameController.text,
+                name: nameController.text.trim(),
                 description: descriptionController.text.getStringOrNull(),
                 place: locationController.text.getStringOrNull(),
                 date: date.value!,

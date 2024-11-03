@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:schulplaner/config/constants/logger.dart';
@@ -411,14 +412,14 @@ class RepeatingEvent extends Event {
 /// - When does the event happen
 /// - What other events are happening between the current day and when the event is due
 /// - How difficult is the event to do
-class ProcessingDate {
+class ProcessingDate extends Equatable {
   /// The date of the event
   final DateTime date;
 
   /// How long the event lasts
   final TimeSpan timeSpan;
 
-  ProcessingDate({
+  const ProcessingDate({
     required this.date,
     required this.timeSpan,
   });
@@ -434,7 +435,7 @@ class ProcessingDate {
   }
 
   String get formattedDate =>
-      "${date.hour.toString().padLeft(2, "0")}:${date.minute.toString().padLeft(2, "0")} Uhr, ${date.day}.${date.month}.${date.year}";
+      "${timeSpan.from.hour.toString().padLeft(2, "0")}:${timeSpan.from.minute.toString().padLeft(2, "0")} Uhr, ${date.day}.${date.month}.${date.year}";
 
   Map<String, dynamic> toMap() {
     return {
@@ -456,6 +457,9 @@ class ProcessingDate {
         'date': date,
         'timeSpan': timeSpan.toMap(),
       };
+
+  @override
+  List<Object?> get props => [date, timeSpan];
 }
 
 /// The type of repeating event. E. g. daily, weekly, monthly, yearly

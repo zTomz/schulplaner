@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/shared/widgets/custom/custom_color_indicator.dart';
 import 'package:schulplaner/shared/widgets/info_side_panel/info_box_position.dart';

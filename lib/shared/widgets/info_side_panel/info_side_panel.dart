@@ -66,24 +66,26 @@ class InfoSidePanel extends StatelessWidget {
               title: const Text("Unterricht"),
             ),
             const SizedBox(height: Spacing.small),
-            ListView.builder(
-              itemCount: lessons.length,
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                final lesson = lessons[index];
-
-                return LessonInfoBox(
-                  lesson: lesson,
-                  subjects: subjects,
-                  position: lessons.length == 1
-                      ? InfoBoxPosition.isSingleItem
-                      : index == 0
-                          ? InfoBoxPosition.top
-                          : index == lessons.length - 1
-                              ? InfoBoxPosition.bottom
-                              : InfoBoxPosition.middle,
-                );
-              },
+            Expanded(
+              child: ListView.builder(
+                itemCount: lessons.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  final lesson = lessons[index];
+              
+                  return LessonInfoBox(
+                    lesson: lesson,
+                    subjects: subjects,
+                    position: lessons.length == 1
+                        ? InfoBoxPosition.isSingleItem
+                        : index == 0
+                            ? InfoBoxPosition.top
+                            : index == lessons.length - 1
+                                ? InfoBoxPosition.bottom
+                                : InfoBoxPosition.middle,
+                  );
+                },
+              ),
             ),
           ],
         ),

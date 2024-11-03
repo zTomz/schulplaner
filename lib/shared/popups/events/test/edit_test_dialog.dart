@@ -125,10 +125,11 @@ class EditTestDialog extends HookConsumerWidget {
                     errorText: "Mindestens ein Übungsdatum ist erforderlich.",
                     value: processingDates.value,
                     child: CustomButton.selection(
-                      selection: processingDates.value
-                          ?.map(
-                              (processingDate) => processingDate.formattedDate)
-                          .join(", "),
+                      selection: processingDates.value == null
+                          ? null
+                          : processingDates.value!
+                              .map((e) => e.formattedDate)
+                              .join(", "),
                       onPressed: () async {
                         final result = await showDialog<List<ProcessingDate>>(
                           context: context,
@@ -138,7 +139,7 @@ class EditTestDialog extends HookConsumerWidget {
                         );
 
                         if (result != null) {
-                          processingDates.value = result;
+                          processingDates.value = [...result];
                         }
                       },
                       child: const Text("Übungsdaten"),
@@ -223,7 +224,7 @@ class EditTestDialog extends HookConsumerWidget {
 
             Navigator.of(context).pop(
               TestEvent(
-                name: nameController.text,
+                name: nameController.text.trim(),
                 description: descriptionController.text.getStringOrNull(),
                 subjectUuid: subject.value!.uuid,
                 date: date.value!,

@@ -7,6 +7,7 @@ import 'package:schulplaner/shared/extensions/date_time_extension.dart';
 import 'package:schulplaner/shared/extensions/time_of_day_extension.dart';
 import 'package:schulplaner/shared/models/event.dart';
 import 'package:schulplaner/shared/models/time.dart';
+import 'package:schulplaner/shared/popups/edit_time_span_dialog.dart';
 import 'package:schulplaner/shared/widgets/custom/custom_button.dart';
 import 'package:schulplaner/shared/widgets/selection_row.dart';
 import 'package:schulplaner/shared/widgets/time_span_picker.dart';
@@ -144,18 +145,47 @@ class MultipleProssesingDatesDialog extends HookWidget {
             itemBuilder: (BuildContext context, int index) {
               final currentProcessingDate = processingDates.value[index];
 
-              return ListTile(
-                title: Text(currentProcessingDate.date.formattedDate),
-                subtitle: Text(
-                  currentProcessingDate.timeSpan.toFormattedString(),
-                ),
-                trailing: IconButton(
-                  onPressed: () {
-                    processingDates.value = processingDates.value
-                        .where((date) => date != currentProcessingDate)
-                        .toList();
+              return Padding(
+                padding: const EdgeInsets.only(bottom: Spacing.small),
+                child: ListTile(
+                  title: Text(currentProcessingDate.date.formattedDate),
+                  subtitle: Text(
+                    currentProcessingDate.timeSpan.toFormattedString(),
+                  ),
+                  tileColor: Theme.of(context).colorScheme.surfaceContainer,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: index == 0 ? Radii.small : Radii.extraSmall,
+                      bottom: index == processingDates.value.length - 1
+                          ? Radii.small
+                          : Radii.extraSmall,
+                    ),
+                  ),
+                  trailing: IconButton(
+                    onPressed: () {
+                      processingDates.value = processingDates.value
+                          .where((date) => date != currentProcessingDate)
+                          .toList();
+                    },
+                    tooltip: "Löschen",
+                    icon: const Icon(LucideIcons.trash_2),
+                  ),
+                  onTap: () async {
+                    final result = await showDialog<TimeSpan>(
+                      context: context,
+                      builder: (context) => EditTimeSpanDialog(
+                        timeSpan: currentProcessingDate.timeSpan,
+                      ),
+                    );
+
+                    if (result != null) {
+                      processingDates.value = processingDates.value
+                          .map((date) => date == currentProcessingDate
+                              ? date.copyWith(timeSpan: result)
+                              : date)
+                          .toList();
+                    }
                   },
-                  icon: const Icon(LucideIcons.trash_2),
                 ),
               );
             },
@@ -171,9 +201,12 @@ class MultipleProssesingDatesDialog extends HookWidget {
                       context: context,
                       builder: (context) => const ProcessingDateDialog(),
                     );
-                
+
                     if (result != null) {
-                      processingDates.value = [...processingDates.value, result];
+                      processingDates.value = [
+                        ...processingDates.value,
+                        result
+                      ];
                     }
                   },
                   child: const Text("Übungsdatum erstellen"),
