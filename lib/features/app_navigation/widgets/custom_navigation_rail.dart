@@ -32,7 +32,7 @@ class CustomNavigationRail extends StatelessWidget {
     required this.onExtendedChanged,
   });
 
-  static const _kRailWidth = 80.0;
+  static const _kRailWidth = 70.0;
   static const _kExtendedRailWidth = 270.0;
 
   @override
@@ -141,13 +141,14 @@ class _CustomNavigaitonRailDestination extends HookWidget {
     final isHovering = useState<bool>(false);
 
     return Padding(
-      padding: EdgeInsets.symmetric(
-        vertical: Spacing.small,
-        horizontal: isExpanded ? Spacing.medium : 0,
+      padding: EdgeInsets.only(
+        top: Spacing.small,
+        bottom: Spacing.small,
+        left: isExpanded ? Spacing.medium : Spacing.small,
       ),
       child: Container(
-        width: isExpanded ? double.infinity : 40,
-        height: 40,
+        width: isExpanded ? double.infinity : 50,
+        height: 50,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(360),
         ),
@@ -161,51 +162,55 @@ class _CustomNavigaitonRailDestination extends HookWidget {
           },
           child: InkWell(
             onTap: isExpanded ? () => onDestinationSelected() : null,
-            child: Row(
-              mainAxisAlignment: isExpanded
-                  ? MainAxisAlignment.start
-                  : MainAxisAlignment.center,
-              children: [
-                Tooltip(
-                  message: destination.label,
-                  child: Material(
-                    color: Theme.of(context).colorScheme.surfaceContainerHigh,
-                    shape: const CircleBorder(),
-                    child: InkWell(
-                      onTap: () => onDestinationSelected(),
-                      borderRadius: BorderRadius.circular(360),
-                      child: Padding(
-                        padding: const EdgeInsets.all(Spacing.small),
-                        child: IconTheme(
-                          data: IconThemeData(
-                            color: isSelected || isHovering.value
-                                ? Theme.of(context).colorScheme.primary
-                                : Theme.of(context).colorScheme.onSurfaceVariant,
+            child: OverflowBox( // To ignore the overflow errors
+              child: Row(
+                mainAxisAlignment: isExpanded
+                    ? MainAxisAlignment.start
+                    : MainAxisAlignment.center,
+                children: [
+                  Tooltip(
+                    message: destination.label,
+                    child: Material(
+                      color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                      shape: const CircleBorder(),
+                      child: InkWell(
+                        onTap: () => onDestinationSelected(),
+                        borderRadius: BorderRadius.circular(360),
+                        child: Padding(
+                          padding: const EdgeInsets.all(13),
+                          child: IconTheme(
+                            data: IconThemeData(
+                              color: isSelected || isHovering.value
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant,
+                            ),
+                            child: destination.icon,
                           ),
-                          child: destination.icon,
                         ),
                       ),
                     ),
                   ),
-                ),
-                if (isExpanded) ...[
-                  const SizedBox(width: Spacing.small),
-                  Expanded(
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        destination.label,
-                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                              color: isSelected || isHovering.value
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Theme.of(context).colorScheme.onSurface,
-                            ),
+                  if (isExpanded) ...[
+                    const SizedBox(width: Spacing.small),
+                    Expanded(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          destination.label,
+                          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                color: isSelected || isHovering.value
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Theme.of(context).colorScheme.onSurface,
+                              ),
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
         ),

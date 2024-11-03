@@ -53,7 +53,6 @@ class EventInfoBox extends ConsumerWidget {
                       await ref.read(eventsProvider.notifier).deleteEvent(
                             event: event,
                           ),
-                  // TODO: Add undo feature with SnackBar,
                 ),
               );
 
@@ -99,7 +98,6 @@ class EventInfoBox extends ConsumerWidget {
                     );
               }
               break;
-            // TODO: Implement editing other events here
             default:
               break;
           }
@@ -259,4 +257,3 @@ class _SpecialInfoBox extends StatelessWidget {
     );
   }
 }
-
