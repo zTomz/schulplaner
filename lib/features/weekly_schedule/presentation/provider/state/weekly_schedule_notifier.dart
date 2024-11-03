@@ -80,6 +80,26 @@ class WeeklyScheduleNotifier
     await _syncStateWithDatabase();
   }
 
+  Future<void> editSchoolLesson({
+    required SchoolLesson schoolLesson,
+  }) async {
+    // If an error exists, we return
+    if (state.isLeft()) {
+      return;
+    }
+
+    // Edit an existing school lesson
+    state = Right(state.right!.copyWith(
+      schoolLessons: state.right!.schoolLessons
+          .map(
+            (e) => e.lesson == schoolLesson.lesson ? schoolLesson : e,
+          )
+          .toSet(),
+    ));
+
+    await _syncStateWithDatabase();
+  }
+
   Future<void> addLesson({
     required Lesson lesson,
   }) async {

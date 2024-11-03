@@ -25,8 +25,9 @@ final weeklyScheduleFutureProvider = FutureProvider<WeeklyScheduleData>(
 WeeklyScheduleData _convertWeeklyScheduleSnapshotToData({
   required QuerySnapshot<Map<String, dynamic>> data,
 }) {
-  List<Lesson> lessons = [];
   Set<TimeSpan> timeSpans = {};
+  Set<SchoolLesson> schoolLessons = {};
+  List<Lesson> lessons = [];
   List<Teacher> teachers = [];
   List<Subject> subjects = [];
 
@@ -41,6 +42,28 @@ WeeklyScheduleData _convertWeeklyScheduleSnapshotToData({
       timeSpans.add(TimeSpan.fromMap(
         dataDocData["timeSpans"][i] as Map<String, dynamic>,
       ));
+    }
+
+    // Load the school lessons
+    for (int i = 0;
+        i < ((dataDocData["schoolLessons"] as List<dynamic>?)?.length ?? 0);
+        i++) {
+      schoolLessons.add(SchoolLesson.fromMap(
+        dataDocData["schoolLessons"][i] as Map<String, dynamic>,
+      ));
+    }
+
+    // Make sure, that school lesson 1 - 10 exists
+    for (int i = 1; i <= 10; i++) {
+      if (!schoolLessons.map((e) => e.lesson) .contains(i)) {
+        schoolLessons.add(
+          // If the school lesson does not exist, we add it and set the time span to null
+          SchoolLesson(
+            lesson: i,
+            timeSpan: null,
+          ),
+        );
+      }
     }
 
     // Load the lessons
@@ -67,6 +90,7 @@ WeeklyScheduleData _convertWeeklyScheduleSnapshotToData({
 
   return WeeklyScheduleData(
     timeSpans: timeSpans,
+    schoolLessons: schoolLessons,
     lessons: lessons,
     subjects: subjects,
     teachers: teachers,

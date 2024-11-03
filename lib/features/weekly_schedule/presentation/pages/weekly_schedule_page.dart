@@ -4,8 +4,10 @@ import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/features/weekly_schedule/presentation/provider/selected_school_time_cell_provider.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
+import 'package:schulplaner/features/weekly_schedule/presentation/provider/weekly_schedule_provider.dart';
 import 'package:schulplaner/shared/widgets/custom/custom_app_bar.dart';
 import 'package:schulplaner/shared/widgets/floating_action_buttons/weekly_schedule_floating_action_button.dart';
+import 'package:schulplaner/shared/widgets/timetable/timetable.dart';
 import 'package:schulplaner/shared/widgets/weekly_schedule/weekly_schedule.dart';
 
 @RoutePage()
@@ -15,6 +17,8 @@ class WeeklySchedulePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedSchoolTimeCell = ref.watch(selectedSchoolTimeCellProvider);
+
+    final weeklyScheduleData = ref.watch(weeklyScheduleProvider);
 
     return Scaffold(
       floatingActionButtonLocation: ExpandableFab.location,
@@ -26,9 +30,11 @@ class WeeklySchedulePage extends ConsumerWidget {
           "Stundenplan",
         ),
       ),
-      body: const Padding(
+      body: Padding(
         padding: EdgeInsets.all(Spacing.medium),
-        child: WeeklySchedule(),
+        child: Timetable(
+          weeklyScheduleData: weeklyScheduleData.right!,
+        ),
       ),
     );
   }

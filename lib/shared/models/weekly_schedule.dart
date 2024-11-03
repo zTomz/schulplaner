@@ -3,8 +3,8 @@
 import 'dart:ui';
 
 import 'package:equatable/equatable.dart';
-import 'package:schulplaner/shared/exceptions/weekly_schedule_exceptions.dart';
 
+import 'package:schulplaner/shared/exceptions/weekly_schedule_exceptions.dart';
 import 'package:schulplaner/shared/functions/first_where_or_null.dart';
 import 'package:schulplaner/shared/models/either.dart';
 import 'package:schulplaner/shared/models/time.dart';
@@ -13,12 +13,14 @@ import 'package:schulplaner/shared/widgets/weekly_schedule/models.dart';
 /// This class contains all data used by the weekly schedule
 class WeeklyScheduleData {
   final Set<TimeSpan> timeSpans;
+  final Set<SchoolLesson> schoolLessons;
   final List<Lesson> lessons;
   final List<Subject> subjects;
   final List<Teacher> teachers;
 
   WeeklyScheduleData({
     required this.timeSpans,
+    required this.schoolLessons,
     required this.lessons,
     required this.subjects,
     required this.teachers,
@@ -26,18 +28,21 @@ class WeeklyScheduleData {
 
   WeeklyScheduleData.empty()
       : timeSpans = <TimeSpan>{},
+        schoolLessons = <SchoolLesson>{},
         lessons = [],
         subjects = [],
         teachers = [];
 
   WeeklyScheduleData copyWith({
     Set<TimeSpan>? timeSpans,
+    Set<SchoolLesson>? schoolLessons,
     List<Lesson>? lessons,
     List<Subject>? subjects,
     List<Teacher>? teachers,
   }) {
     return WeeklyScheduleData(
       timeSpans: timeSpans ?? this.timeSpans,
+      schoolLessons: schoolLessons ?? this.schoolLessons,
       lessons: lessons ?? this.lessons,
       subjects: subjects ?? this.subjects,
       teachers: teachers ?? this.teachers,
@@ -47,6 +52,7 @@ class WeeklyScheduleData {
   Map<String, dynamic> toMap() {
     return {
       'timeSpans': timeSpans.map((x) => x.toMap()).toList(),
+      'schoolLessons': schoolLessons.map((x) => x.toMap()).toList(),
       'lessons': lessons.map((x) => x.toMap()).toList(),
       'subjects': subjects.map((x) => x.toMap()).toList(),
       'teachers': teachers.map((x) => x.toMap()).toList(),
@@ -55,13 +61,21 @@ class WeeklyScheduleData {
 
   factory WeeklyScheduleData.fromMap(Map<String, dynamic> map) {
     return WeeklyScheduleData(
-      timeSpans:
-          Set<TimeSpan>.from(map['timeSpans']?.map((x) => TimeSpan.fromMap(x))),
-      lessons: List<Lesson>.from(map['lessons']?.map((x) => Lesson.fromMap(x))),
-      subjects:
-          List<Subject>.from(map['subjects']?.map((x) => Subject.fromMap(x))),
-      teachers:
-          List<Teacher>.from(map['teachers']?.map((x) => Teacher.fromMap(x))),
+      timeSpans: Set<TimeSpan>.from(
+        map['timeSpans']?.map((x) => TimeSpan.fromMap(x)),
+      ),
+      schoolLessons: Set<SchoolLesson>.from(
+        map['schoolLessons']?.map((x) => SchoolLesson.fromMap(x)),
+      ),
+      lessons: List<Lesson>.from(
+        map['lessons']?.map((x) => Lesson.fromMap(x)),
+      ),
+      subjects: List<Subject>.from(
+        map['subjects']?.map((x) => Subject.fromMap(x)),
+      ),
+      teachers: List<Teacher>.from(
+        map['teachers']?.map((x) => Teacher.fromMap(x)),
+      ),
     );
   }
 
@@ -168,17 +182,76 @@ class WeeklyScheduleData {
   }
 }
 
+/// A school lesson can be assigned in a range slider to a lesson. For example
+/// a lesson is held from school lesson 1 to school lesson 2.
+class SchoolLesson {
+  /// The lesson, for example lesson 1, 2 or 3.
+  final int lesson;
+
+  /// From when to when the lesson is held
+  final TimeSpan? timeSpan;
+
+  /// The id of the school lesson. This is automatically the lesson. Because the
+  /// lessons are from 1 to 10 and should not be doubled.
+  final int id;
+
+  const SchoolLesson({
+    required this.lesson,
+    required this.timeSpan,
+  }) : id = lesson;
+
+  Map<String, dynamic> toMap() {
+    return {
+      'lesson': lesson,
+      'timeSpan': timeSpan?.toMap(),
+    };
+  }
+
+  factory SchoolLesson.fromMap(Map<String, dynamic> map) {
+    return SchoolLesson(
+      lesson: map['lesson']?.toInt() ?? 0,
+      timeSpan:
+          map['timeSpan'] == null ? null : TimeSpan.fromMap(map['timeSpan']),
+    );
+  }
+
+  SchoolLesson copyWith({
+    int? lesson,
+    TimeSpan? timeSpan,
+  }) {
+    return SchoolLesson(
+      lesson: lesson ?? this.lesson,
+      timeSpan: timeSpan ?? this.timeSpan,
+    );
+  }
+}
+
 /// Represents a lesson in the weekly schedule
 class Lesson extends Equatable {
+  /// From when to when the lesson is held
   final TimeSpan timeSpan;
+
+  /// A list of school lesson ids, when the lesson is held
+  final Set<int> schoolLessonIds;
+
+  /// On which day the lesson is held
   final Weekday weekday;
+
+  /// In which week the lesson is held
   final Week week;
+
+  /// The uuid of the subject assigned to the lesson
   final String subjectUuid;
+
+  /// The room, where the lesson is held
   final String room;
+
+  /// A unique identifier
   final String uuid;
 
   const Lesson({
     required this.timeSpan,
+    required this.schoolLessonIds,
     required this.weekday,
     required this.week,
     required this.subjectUuid,
@@ -195,6 +268,7 @@ class Lesson extends Equatable {
   Map<String, dynamic> toMap() {
     return {
       'timeSpan': timeSpan.toMap(),
+      'schoolLessonIds': schoolLessonIds.toList(),
       'weekday': weekday.toMap(),
       'week': week.toMap(),
       'subjectUuid': subjectUuid,
@@ -206,6 +280,7 @@ class Lesson extends Equatable {
   factory Lesson.fromMap(Map<String, dynamic> map) {
     return Lesson(
       timeSpan: TimeSpan.fromMap(map['timeSpan']),
+      schoolLessonIds: ((map['schoolLessonIds'] as List<int>?) ?? []).toSet(),
       weekday: Weekday.fromMap(map['weekday']),
       week: Week.fromMap(map['week']),
       subjectUuid: map['subjectUuid'] ?? '',
@@ -231,7 +306,7 @@ class Lesson extends Equatable {
 
     return {
       'subject': subject?.getCompleteMap(teachers),
-      'timeSpan': timeSpan.toMap(),
+      'timeSpan': timeSpan.toMap(), // TODO: Add school lessons
       'weekday': weekday.toMap(),
       'week': week.toMap(),
       'room': room,
