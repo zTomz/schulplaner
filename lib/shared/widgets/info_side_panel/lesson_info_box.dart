@@ -25,12 +25,26 @@ class LessonInfoBox extends StatelessWidget {
     final subject = lesson.getSubject(subjects);
 
     return ListTile(
-      leading: CustomColorIndicator(color: subject?.color ?? Colors.transparent),
-      minLeadingWidth: CustomColorIndicator(color: subject?.color ?? Colors.transparent).preferredSize.width,
+      leading:
+          CustomColorIndicator(color: subject?.color ?? Colors.transparent),
+      minLeadingWidth:
+          CustomColorIndicator(color: subject?.color ?? Colors.transparent)
+              .preferredSize
+              .width,
       title: Text(subject?.name ?? "Fehler"),
       subtitle: Text(lesson.timeSpan.toFormattedString()),
       tileColor: Theme.of(context).colorScheme.surfaceContainerHigh,
-      shape: position.shape,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+        top: position == InfoBoxPosition.top ||
+                position == InfoBoxPosition.isSingleItem
+            ? Radii.small
+            : Radius.zero,
+        bottom: position == InfoBoxPosition.bottom ||
+                position == InfoBoxPosition.isSingleItem
+            ? Radii.small
+            : Radius.zero,
+      )),
     );
   }
 }

@@ -125,10 +125,7 @@ class EditTestDialog extends HookConsumerWidget {
                     errorText: "Mindestens ein Übungsdatum ist erforderlich.",
                     value: processingDates.value,
                     child: CustomButton.selection(
-                      selection: processingDates.value == null
-                          ? null
-                          : processingDates.value!
-                              .map((e) => e.formattedDate)
+                      selection: processingDates.value?.map((e) => e.formattedDate)
                               .join(", "),
                       onPressed: () async {
                         final result = await showDialog<List<ProcessingDate>>(

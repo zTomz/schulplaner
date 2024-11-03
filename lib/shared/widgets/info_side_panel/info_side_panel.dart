@@ -35,7 +35,7 @@ class InfoSidePanel extends StatelessWidget {
       borderRadius: const BorderRadius.all(Radii.medium),
       child: Padding(
         padding: const EdgeInsets.all(Spacing.medium),
-        child: Column(
+        child: ListView(
           children: [
             _Subtitle(
               count: events.length,
@@ -45,6 +45,7 @@ class InfoSidePanel extends StatelessWidget {
             ListView.builder(
               itemCount: events.length,
               shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 final event = events[index];
 
@@ -66,26 +67,25 @@ class InfoSidePanel extends StatelessWidget {
               title: const Text("Unterricht"),
             ),
             const SizedBox(height: Spacing.small),
-            Expanded(
-              child: ListView.builder(
-                itemCount: lessons.length,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  final lesson = lessons[index];
-              
-                  return LessonInfoBox(
-                    lesson: lesson,
-                    subjects: subjects,
-                    position: lessons.length == 1
-                        ? InfoBoxPosition.isSingleItem
-                        : index == 0
-                            ? InfoBoxPosition.top
-                            : index == lessons.length - 1
-                                ? InfoBoxPosition.bottom
-                                : InfoBoxPosition.middle,
-                  );
-                },
-              ),
+            ListView.builder(
+              itemCount: lessons.length,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                final lesson = lessons[index];
+            
+                return LessonInfoBox(
+                  lesson: lesson,
+                  subjects: subjects,
+                  position: lessons.length == 1
+                      ? InfoBoxPosition.isSingleItem
+                      : index == 0
+                          ? InfoBoxPosition.top
+                          : index == lessons.length - 1
+                              ? InfoBoxPosition.bottom
+                              : InfoBoxPosition.middle,
+                );
+              },
             ),
           ],
         ),
