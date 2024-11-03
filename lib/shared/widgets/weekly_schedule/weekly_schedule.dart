@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:schulplaner/config/constants/svg_pictures.dart';
 import 'package:schulplaner/features/weekly_schedule/presentation/provider/selected_school_time_cell_provider.dart';
 import 'package:schulplaner/features/weekly_schedule/presentation/provider/week_provider.dart';
 import 'package:schulplaner/features/weekly_schedule/presentation/provider/weekly_schedule_provider.dart';
 import 'package:schulplaner/shared/models/time.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
+import 'package:schulplaner/shared/popups/edit_time_span_dialog.dart';
 import 'package:schulplaner/shared/popups/weekly_schedule/edit_lesson_dialog.dart';
+import 'package:schulplaner/shared/widgets/data_state_widgets.dart';
 
 import 'cells.dart';
 import 'days_header.dart';
@@ -37,6 +37,26 @@ class WeeklySchedule extends ConsumerWidget {
       (failure) => WeeklyScheduleData.empty(),
       (data) => data,
     );
+
+    if (weeklyScheduleData.timeSpans.isEmpty) {
+      return NoDataWidget(
+        addDataButton: ElevatedButton(
+          onPressed: () async {
+            final result = await showDialog<TimeSpan>(
+              context: context,
+              builder: (context) => const EditTimeSpanDialog(),
+            );
+
+            if (result != null) {
+              await ref
+                  .read(weeklyScheduleProvider.notifier)
+                  .addTimeSpan(timeSpan: result);
+            }
+          },
+          child: const Text("Zeitspanne hinzufügen"),
+        ),
+      );
+    }
 
     return _WeeklySchedule(
       onLessonEdit: (lesson) async {
@@ -120,33 +140,6 @@ class _WeeklySchedule extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (data.timeSpans.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox.square(
-              dimension: kInfoImageSize,
-              child: SvgPicture.asset(
-                Theme.of(context).brightness == Brightness.dark
-                    ? SvgPictures.no_data_dark
-                    : SvgPictures.no_data_light,
-              ),
-            ),
-            const SizedBox(height: Spacing.medium),
-            SizedBox(
-              width: kInfoTextWidth,
-              child: Text(
-                "Sie haben noch keine Zeiten hinzugefügt. Beginnen Sie indem Sie eine \"Schulzeit hizufügen\".",
-                style: Theme.of(context).textTheme.bodyLarge,
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
     return Column(
       children: [
         WeeklyScheduleDaysHeader(

@@ -80,6 +80,7 @@ class EditLessonDialog extends HookConsumerWidget {
               controller: roomController,
               labelText: "Klassenzimmer",
               validate: true,
+              keyboardType: TextInputType.text,
             ),
             const SizedBox(height: Spacing.small),
             RequiredField(

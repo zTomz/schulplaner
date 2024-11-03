@@ -36,7 +36,12 @@ class TeacherModalBottomSheet extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final weeklyScheduleData = ref.watch(weeklyScheduleProvider);
-    final teachers = weeklyScheduleData.right?.teachers ?? [];
+    final teachers = (weeklyScheduleData.right?.teachers ?? [])
+      ..sort((a, b) => a.favorite == b.favorite
+          ? 0
+          : a.favorite
+              ? -1
+              : 1);
 
     final selectedTeacher = useState<Teacher?>(this.selectedTeacher);
 
@@ -53,8 +58,21 @@ class TeacherModalBottomSheet extends HookConsumerWidget {
               return Padding(
                 padding: const EdgeInsets.only(bottom: Spacing.extraSmall),
                 child: ListTile(
-                  title: Text(
-                    "${currentTeacher.gender.salutation} ${currentTeacher.lastName}",
+                  title: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (currentTeacher.favorite) ...[
+                        const Icon(
+                          Icons.star_rounded,
+                          size: 20,
+                          color: Color(0xFFF09319),
+                        ),
+                        const SizedBox(width: Spacing.small),
+                      ],
+                      Text(
+                        "${currentTeacher.gender.salutation}${currentTeacher.lastName}",
+                      ),
+                    ],
                   ),
                   leading: Radio<Teacher?>(
                     value: currentTeacher,
@@ -231,6 +249,7 @@ class EditTeacherDialog extends HookWidget {
             CheckboxListTile(
               title: const Text("Favorit"),
               value: favorite.value,
+              tileColor: Theme.of(context).colorScheme.surfaceContainer,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radii.small),
               ),

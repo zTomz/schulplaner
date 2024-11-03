@@ -50,7 +50,7 @@ class OverviewPage extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              width: min(MediaQuery.sizeOf(context).width * 0.4, 400),
+              width: min(MediaQuery.sizeOf(context).width * 0.375, 375),
               child: InfoSidePanel(
                 day: DateTime.now(),
                 events: eventsForDay,

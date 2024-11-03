@@ -8,7 +8,6 @@ import 'package:schulplaner/shared/functions/get_value_or_null.dart';
 import 'package:schulplaner/shared/models/hobby.dart';
 import 'package:schulplaner/shared/models/time.dart';
 import 'package:schulplaner/shared/widgets/color_choose_list_tile.dart';
-import 'package:schulplaner/shared/widgets/custom/custom_button.dart';
 import 'package:schulplaner/shared/widgets/custom/custom_text_field.dart';
 import 'package:schulplaner/shared/widgets/required_field.dart';
 import 'package:uuid/uuid.dart';
@@ -60,13 +59,18 @@ class EditHobbyDialog extends HookWidget {
               onColorChanged: (newColor) {
                 color.value = newColor;
               },
+              borderRadius: const BorderRadius.vertical(
+                top: Radii.small,
+                bottom: Radii.extraSmall,
+              ),
             ),
             const SizedBox(height: Spacing.small),
             CheckboxListTile(
               title: const Text("Beweglich"),
+              tileColor: Theme.of(context).colorScheme.surfaceContainer,
               value: moveable.value,
               shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radii.small),
+                borderRadius: BorderRadius.all(Radii.extraSmall),
               ),
               onChanged: (value) {
                 moveable.value = value ?? false;
@@ -78,25 +82,24 @@ class EditHobbyDialog extends HookWidget {
               value: days.value,
               child: ListTile(
                 title: const Text("Tage"),
-                contentPadding: const EdgeInsets.only(
-                  left: 16 /* The default left padding */,
-                ),
-                trailing: SizedBox(
-                  width: 200,
-                  child: CustomButton(
-                    onPressed: () async {
-                      final result = await showDialog<List<TimeInDay>>(
-                        context: context,
-                        builder: (context) => const EditDayDialog(),
-                      );
-
-                      if (result != null) {
-                        days.value = [...days.value, ...result];
-                      }
-                    },
-                    child: const Text("Tag(e) hinzufügen"),
+                tileColor: Theme.of(context).colorScheme.surfaceContainer,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(
+                    top: Radii.extraSmall,
+                    bottom: Radii.small,
                   ),
                 ),
+                trailing: const Icon(LucideIcons.plus),
+                onTap: () async {
+                  final result = await showDialog<List<TimeInDay>>(
+                    context: context,
+                    builder: (context) => const EditDayDialog(),
+                  );
+
+                  if (result != null) {
+                    days.value = [...days.value, ...result];
+                  }
+                },
               ),
             ),
             const SizedBox(height: Spacing.small),

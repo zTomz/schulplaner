@@ -6,19 +6,23 @@ class ColorChooseListTile extends StatelessWidget {
   final Color color;
   final void Function(Color newColor) onColorChanged;
 
+  final BorderRadiusGeometry? borderRadius;
+
   const ColorChooseListTile({
     super.key,
     required this.color,
     required this.onColorChanged,
+    this.borderRadius,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       title: const Text("Farbe"),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radii.small),
+      shape: RoundedRectangleBorder(
+        borderRadius: borderRadius ?? const BorderRadius.all(Radii.small),
       ),
+      tileColor: Theme.of(context).colorScheme.surfaceContainer,
       onTap: () async {
         final newColor = await _chooseColor(
           context,
@@ -27,12 +31,15 @@ class ColorChooseListTile extends StatelessWidget {
 
         onColorChanged(newColor);
       },
-      trailing: Material(
-        color: color,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+      trailing: Padding(
+        padding: const EdgeInsets.only(right: 5),
+        child: Material(
+          color: color,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: const SizedBox.square(dimension: 30),
         ),
-        child: const SizedBox.square(dimension: 30),
       ),
     );
   }

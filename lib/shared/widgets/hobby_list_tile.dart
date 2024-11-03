@@ -98,7 +98,7 @@ class HobbyListTile extends StatelessWidget {
                     Tooltip(
                       message: "Hobby bearbeiten",
                       child: Icon(
-                        LucideIcons.pencil,
+                        Icons.edit_outlined,
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),

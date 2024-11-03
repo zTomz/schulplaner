@@ -20,12 +20,13 @@ enum Gender {
   female,
   divers;
 
+  /// The salutation with a space
   String get salutation {
     switch (this) {
       case Gender.male:
-        return "Herr";
+        return "Herr ";
       case Gender.female:
-        return "Frau";
+        return "Frau ";
       case Gender.divers:
         return "";
     }
