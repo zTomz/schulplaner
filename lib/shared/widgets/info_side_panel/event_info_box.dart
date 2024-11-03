@@ -148,7 +148,7 @@ class EventInfoBox extends ConsumerWidget {
                   if (event.description != null) ...[
                     const SizedBox(height: Spacing.extraSmall),
                     Text(
-                      event.description!,
+                      event.description!.length > 65 ? "${event.description!.substring(0, 65)}..." : event.description!,
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
