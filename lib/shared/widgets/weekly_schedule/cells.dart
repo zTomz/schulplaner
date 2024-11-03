@@ -5,6 +5,7 @@ import 'package:schulplaner/shared/models/time.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/shared/popups/edit_time_span_dialog.dart';
+import 'package:schulplaner/shared/widgets/weekly_schedule/models.dart';
 
 class WeeklyScheduleTimeCell extends StatelessWidget {
   final TimeSpan timeSpan;
@@ -185,7 +186,7 @@ class SchoolCard extends StatelessWidget {
                               const Icon(LucideIcons.map_pin_house),
                               const SizedBox(width: Spacing.small),
                               Text(
-                                lesson.room,
+                                "${lesson.room}${lesson.week != Week.all ? ", " : ""}",
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium!
@@ -193,6 +194,16 @@ class SchoolCard extends StatelessWidget {
                                       color: foregroundColor,
                                     ),
                               ),
+                              if (lesson.week != Week.all)
+                                Text(
+                                  "${lesson.week.name}-Woche",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                        color: foregroundColor,
+                                      ),
+                                ),
                             ],
                           ),
                           if (teacher != null)
@@ -204,7 +215,7 @@ class SchoolCard extends StatelessWidget {
                                 // Doesn't use the lesson.subject.teacher.salutation because, with
                                 // the current solution, the line could be wrapped.
                                 Text(
-                                  "${teacher.gender.salutation} ",
+                                  teacher.gender.salutation,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium!

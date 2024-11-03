@@ -361,7 +361,7 @@ class Teacher {
       'Teacher(firstName: $firstName, lastName: $lastName, gender: $gender, email: $email, favorite: $favorite, uuid: $uuid)';
 
   /// Get the salutation of the teacher. E. g. "Herr Schulze"
-  String get salutation => "${gender.salutation} $lastName";
+  String get salutation => "${gender.salutation}$lastName";
 
   Map<String, dynamic> toMap() {
     return {

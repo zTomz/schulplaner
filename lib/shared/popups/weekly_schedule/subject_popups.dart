@@ -44,6 +44,7 @@ class SubjectModalBottomSheet extends ConsumerWidget {
         children: [
           ListView.builder(
             shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: subjects.length,
             itemBuilder: (context, index) {
               final currentSubject = subjects[index];
