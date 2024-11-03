@@ -16,6 +16,7 @@ class ItemPopupButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<_WeeklyScheduleDialogGesture>(
+      tooltip: "Optionen",
       initialValue: _WeeklyScheduleDialogGesture.none,
       onSelected: (_WeeklyScheduleDialogGesture gesture) async {
         switch (gesture) {

@@ -6,7 +6,6 @@ import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/features/calendar/presentation/provider/events_provider.dart';
-import 'package:schulplaner/features/weekly_schedule/presentation/provider/week_provider.dart';
 import 'package:schulplaner/features/weekly_schedule/presentation/provider/weekly_schedule_provider.dart';
 import 'package:schulplaner/shared/extensions/list_extensions.dart';
 import 'package:schulplaner/shared/models/event.dart';
@@ -23,18 +22,20 @@ class OverviewPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final rawWeeklyScheduleData = ref.watch(weeklyScheduleProvider);
-    final week = ref.watch(weekProvider);
+    final weeklyScheduleData = ref.watch(weeklyScheduleProvider);
     final eventsData = ref.watch(eventsProvider);
 
     final EventData eventsForDay = eventsData.fold(
       (failure) => [],
       (data) => data.eventsForToday,
     );
-
-    final WeeklyScheduleData weeklyScheduleData = rawWeeklyScheduleData.fold(
-      (failure) => WeeklyScheduleData.empty(),
-      (data) => data,
+    final List<Lesson> lessons = weeklyScheduleData.fold(
+      (failure) => [],
+      (data) => data.lessons,
+    );
+    final List<Subject> subjects = weeklyScheduleData.fold(
+      (failure) => [],
+      (data) => data.subjects,
     );
 
     return Scaffold(
@@ -53,21 +54,13 @@ class OverviewPage extends ConsumerWidget {
               child: InfoSidePanel(
                 day: DateTime.now(),
                 events: eventsForDay,
-                lessons:
-                    weeklyScheduleData.lessons.getLessonsForDay(DateTime.now()),
-                subjects: weeklyScheduleData.subjects,
+                lessons: lessons.getLessonsForDay(DateTime.now()),
+                subjects: subjects,
               ),
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: Spacing.medium),
-                child: WeeklySchedule.viewOnly(
-                  data: weeklyScheduleData,
-                  week: week,
-                  onWeekTapped: () =>
-                      ref.read(weekProvider.notifier).state = week.next(),
-                ),
-              ),
+            const SizedBox(width: Spacing.medium),
+            const Expanded(
+              child: WeeklySchedule(),
             ),
           ],
         ),

@@ -5,10 +5,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 // import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/config/routes/router.dart';
 import 'package:schulplaner/config/theme/app_theme.dart';
 import 'package:schulplaner/firebase_options.dart';
+import 'package:schulplaner/shared/functions/load_licenses.dart';
 import 'package:schulplaner/shared/provider/custom_provider_observer.dart';
 
 Future<void> main() async {
@@ -38,6 +40,8 @@ Future<void> main() async {
   //   });
   // }
 
+  loadLicenses();
+
   runApp(
     ProviderScope(
       observers: [
@@ -57,6 +61,16 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: "Schulplaner",
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('de'), // Deutsch
+        Locale('en'), // English
+        Locale('fr'), // Französisch
+      ],
       routerConfig: _appRouter.config(
         reevaluateListenable: ReevaluateListenable.stream(
           FirebaseAuth.instance.authStateChanges(),

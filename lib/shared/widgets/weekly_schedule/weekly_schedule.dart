@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/config/constants/svg_pictures.dart';
+import 'package:schulplaner/features/weekly_schedule/presentation/provider/selected_school_time_cell_provider.dart';
+import 'package:schulplaner/features/weekly_schedule/presentation/provider/week_provider.dart';
+import 'package:schulplaner/features/weekly_schedule/presentation/provider/weekly_schedule_provider.dart';
 import 'package:schulplaner/shared/models/time.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
+import 'package:schulplaner/shared/popups/custom_dialog.dart';
+import 'package:schulplaner/shared/popups/weekly_schedule/edit_lesson_dialog.dart';
 
 import 'cells.dart';
 import 'days_header.dart';
@@ -13,21 +19,83 @@ export 'cells.dart';
 export 'days_header.dart';
 export 'models.dart';
 
-class WeeklySchedule extends StatelessWidget {
+class WeeklySchedule extends ConsumerWidget {
+  const WeeklySchedule({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final rawWeeklyScheduleData = ref.watch(weeklyScheduleProvider);
+    final selectedSchoolTimeCell = ref.watch(selectedSchoolTimeCellProvider);
+    final week = ref.watch(weekProvider);
+
+    final WeeklyScheduleData weeklyScheduleData = rawWeeklyScheduleData.fold(
+      (failure) => WeeklyScheduleData.empty(),
+      (data) => data,
+    );
+
+    return _WeeklySchedule(
+      onLessonEdit: (lesson) async {
+        final result = await showDialog<Lesson>(
+          context: context,
+          builder: (context) => EditLessonDialog(
+            lesson: lesson,
+            schoolTimeCell: selectedSchoolTimeCell,
+          ),
+        );
+
+        if (result != null) {
+          await ref.read(weeklyScheduleProvider.notifier).editLesson(
+                lesson: result,
+              );
+        }
+      },
+      onWeekTapped: () {
+        ref.watch(weekProvider.notifier).state = week.next;
+      },
+      onDeleteTimeSpan: (timeSpanToDelete) async {
+        final result = await showDialog<bool>(
+          context: context,
+          builder: (context) => CustomDialog.confirmation(
+            title: "Schulzeit löschen",
+            description:
+                "Soll die Schulzeit ${timeSpanToDelete.from.format(context)} - ${timeSpanToDelete.to.format(context)} wirklich gelöscht werden?",
+          ),
+        );
+
+        // If true, delete the time span
+        if (result == true) {
+          await ref
+              .read(weeklyScheduleProvider.notifier)
+              .deleteTimeSpan(timeSpan: timeSpanToDelete);
+        }
+      },
+      onSchoolTimeCellSelected: (schoolTimeCell) {
+        // Select the cell. If the cell is already selected, unselect it
+        ref.read(selectedSchoolTimeCellProvider.notifier).state =
+            schoolTimeCell == selectedSchoolTimeCell ? null : schoolTimeCell;
+      },
+      selectedSchoolTimeCell: selectedSchoolTimeCell,
+      data: weeklyScheduleData,
+      week: week,
+    );
+  }
+}
+
+class _WeeklySchedule extends StatelessWidget {
   /// Called when the week (A, B or All) is tapped.
   final void Function() onWeekTapped;
 
   /// A function that is called, when the user try's to delete a time span
-  final void Function(TimeSpan timeSpan)? onDeleteTimeSpan;
+  final void Function(TimeSpan timeSpan) onDeleteTimeSpan;
 
   /// A function that is called, when the user selects a time cell in the table
-  final void Function(SchoolTimeCell schoolTimeCell)? onSchoolTimeCellSelected;
+  final void Function(SchoolTimeCell schoolTimeCell) onSchoolTimeCellSelected;
 
   /// The time cell if any is selected
   final SchoolTimeCell? selectedSchoolTimeCell;
 
   /// A function that is called when the user clicks on a lesson
-  final void Function(Lesson lesson)? onLessonEdit;
+  final void Function(Lesson lesson) onLessonEdit;
 
   /// The data of the weekly schedule
   final WeeklyScheduleData data;
@@ -35,11 +103,7 @@ class WeeklySchedule extends StatelessWidget {
   /// The current week
   final Week week;
 
-  /// Optional a scroll controller, to controll the table scroll
-  final ScrollController? scrollController;
-
-  const WeeklySchedule({
-    super.key,
+  const _WeeklySchedule({
     required this.onWeekTapped,
     required this.onDeleteTimeSpan,
     required this.onSchoolTimeCellSelected,
@@ -47,24 +111,7 @@ class WeeklySchedule extends StatelessWidget {
     required this.onLessonEdit,
     required this.data,
     required this.week,
-    this.scrollController,
   });
-
-  factory WeeklySchedule.viewOnly({
-    required WeeklyScheduleData data,
-    required Week week,
-    required void Function() onWeekTapped,
-  }) {
-    return WeeklySchedule(
-      onWeekTapped: onWeekTapped,
-      onDeleteTimeSpan: null,
-      onSchoolTimeCellSelected: null,
-      onLessonEdit: null,
-      selectedSchoolTimeCell: null,
-      data: data,
-      week: week,
-    );
-  }
 
   static const double _timeColumnWidth = 100;
 
@@ -101,16 +148,15 @@ class WeeklySchedule extends StatelessWidget {
       children: [
         WeeklyScheduleDaysHeader(
           onWeekTapped: () => onWeekTapped(),
-          timeColumnWidth: WeeklySchedule._timeColumnWidth,
+          timeColumnWidth: _WeeklySchedule._timeColumnWidth,
           week: week,
         ),
         Expanded(
           child: SingleChildScrollView(
-            controller: scrollController,
             scrollDirection: Axis.vertical,
             child: Table(
               columnWidths: const {
-                0: FixedColumnWidth(WeeklySchedule._timeColumnWidth),
+                0: FixedColumnWidth(_WeeklySchedule._timeColumnWidth),
               },
               border: TableBorder.all(
                 color: Theme.of(context).colorScheme.surfaceContainer,
@@ -178,16 +224,14 @@ class WeeklySchedule extends StatelessWidget {
 
       widgetsToBuild.add(
         WeeklyScheduleLessonCell(
-          onTap: onSchoolTimeCellSelected != null
-              ? (List<Lesson> _) {
-                  final newCell = SchoolTimeCell(
-                    weekday: weekday,
-                    timeSpan: timeSpan,
-                  );
+          onTap: (List<Lesson> _) {
+            final newCell = SchoolTimeCell(
+              weekday: weekday,
+              timeSpan: timeSpan,
+            );
 
-                  onSchoolTimeCellSelected!(newCell);
-                }
-              : null,
+            onSchoolTimeCellSelected(newCell);
+          },
           onLessonEdit: onLessonEdit,
           teachers: data.teachers,
           subjects: data.subjects,

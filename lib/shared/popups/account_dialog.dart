@@ -135,6 +135,14 @@ class AccountDialog extends HookWidget {
           ],
         ),
         actions: [
+          IconButton(
+            onPressed: () {
+              showLicensePage(context: context);
+            },
+            tooltip: "Lizenzen",
+            icon: const Icon(LucideIcons.copyright),
+          ),
+          const Spacer(),
           Tooltip(
             message: "Schließen",
             child: ElevatedButton(
