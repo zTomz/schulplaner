@@ -100,10 +100,16 @@ class WeeklyScheduleData {
     final currentWeekday = Weekday.fromDateTime(DateTime.now());
 
     // Get all lesson for the provided subject
-    List<Lesson> sortedLessons = List<Lesson>.from(lessons);
-    sortedLessons.removeWhere(
-      (lesson) => lesson.subjectUuid != subject.uuid,
-    );
+    List<Lesson> sortedLessons = [];
+
+    for (var lesson in lessons) {
+      // Make sure, that only lessons of the provided subject are considered & that only one lesson
+      // per weekday is added
+      if (lesson.subjectUuid == subject.uuid &&
+          sortedLessons.where((l) => l.weekday == lesson.weekday).isEmpty) {
+        sortedLessons.add(lesson);
+      }
+    }
 
     // If the lessons do not have at least one lesson of the provided subject we return
     if (sortedLessons.isEmpty) {
@@ -119,8 +125,10 @@ class WeeklyScheduleData {
 
     // Move the days before the current weekday and the current weekday itself at the end
     final lessonsBeforeCurrentWeekday = sortedLessons
-        .where((lesson) =>
-            lesson.weekday.weekdayAsInt <= currentWeekday.weekdayAsInt)
+        .where(
+          (lesson) =>
+              lesson.weekday.weekdayAsInt <= currentWeekday.weekdayAsInt,
+        )
         .toList();
     sortedLessons.addAll(lessonsBeforeCurrentWeekday);
     sortedLessons.removeRange(0, lessonsBeforeCurrentWeekday.length);
