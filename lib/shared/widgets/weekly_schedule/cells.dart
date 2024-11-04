@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/config/constants/logger.dart';
+import 'package:schulplaner/shared/functions/show_custom_popups.dart';
 import 'package:schulplaner/shared/models/time.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
@@ -30,7 +31,7 @@ class WeeklyScheduleTimeCell extends StatelessWidget {
         type: MaterialType.transparency,
         child: InkWell(
           onTap: () async {
-            final result = await showDialog(
+            final result = await showCustomDialog(
               context: context,
               builder: (context) => EditTimeSpanDialog(
                 timeSpan: timeSpan,

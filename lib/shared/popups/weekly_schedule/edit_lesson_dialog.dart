@@ -7,7 +7,7 @@ import 'package:schulplaner/shared/popups/custom_dialog.dart';
 import 'package:schulplaner/shared/popups/weekly_schedule/subject_popups.dart';
 import 'package:schulplaner/shared/functions/build_body_part.dart';
 import 'package:schulplaner/shared/functions/first_where_or_null.dart';
-import 'package:schulplaner/shared/functions/show_custom_modal_bottom_sheet.dart';
+import 'package:schulplaner/shared/functions/show_custom_popups.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/shared/widgets/custom/custom_text_field.dart';
 import 'package:schulplaner/shared/widgets/required_field.dart';
@@ -108,7 +108,7 @@ class EditLessonDialog extends HookConsumerWidget {
         if (lesson != null) ...[
           ElevatedButton.icon(
             onPressed: () async {
-              final result = await showDialog<bool>(
+              final result = await showCustomDialog<bool>(
                 context: context,
                 builder: (context) => CustomDialog.confirmation(
                   title: "Schulstunde löschen",

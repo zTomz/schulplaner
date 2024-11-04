@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/features/calendar/presentation/provider/events_provider.dart';
+import 'package:schulplaner/shared/functions/show_custom_popups.dart';
 import 'package:schulplaner/shared/popups/events/homework/edit_homework_dialog.dart';
 import 'package:schulplaner/shared/popups/events/edit_reminder_dialog.dart';
 import 'package:schulplaner/shared/popups/events/test/edit_test_dialog.dart';
@@ -32,7 +33,7 @@ class EventFloatingActionButton extends HookConsumerWidget {
               onPressed: () async {
                 expandebleFabKey.currentState?.toggle();
 
-                final result = await showDialog<HomeworkEvent>(
+                final result = await showCustomDialog<HomeworkEvent>(
                   context: context,
                   builder: (context) => const EditHomeworkDialog(),
                 );
@@ -47,7 +48,7 @@ class EventFloatingActionButton extends HookConsumerWidget {
               icon: const Icon(LucideIcons.briefcase_business),
               onPressed: () async {
                 expandebleFabKey.currentState?.toggle();
-                final result = await showDialog<TestEvent>(
+                final result = await showCustomDialog<TestEvent>(
                   context: context,
                   builder: (context) => const EditTestDialog(),
                 );
@@ -63,7 +64,7 @@ class EventFloatingActionButton extends HookConsumerWidget {
               onPressed: () async {
                 expandebleFabKey.currentState?.toggle();
 
-                final result = await showDialog<ReminderEvent>(
+                final result = await showCustomDialog<ReminderEvent>(
                   context: context,
                   builder: (context) => const EditReminderDialog(),
                 );

@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/features/weekly_schedule/presentation/provider/weekly_schedule_provider.dart';
 import 'package:schulplaner/shared/popups/events/event_date_dialog.dart';
 import 'package:schulplaner/shared/popups/events/homework/generate_homework_processig_date_with_ai_dialog.dart';
-import 'package:schulplaner/shared/functions/show_custom_modal_bottom_sheet.dart';
+import 'package:schulplaner/shared/functions/show_custom_popups.dart';
 import 'package:schulplaner/shared/popups/time_picker_modal_bottom_sheet.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/shared/popups/custom_dialog.dart';
@@ -130,7 +130,7 @@ class EditHomeworkDialog extends HookConsumerWidget {
                     child: CustomButton.selection(
                       selection: processingDate.value?.formattedDate,
                       onPressed: () async {
-                        final result = await showDialog(
+                        final result = await showCustomDialog(
                           context: context,
                           builder: (context) => ProcessingDateDialog(
                             processingDate: processingDate.value,
@@ -151,7 +151,7 @@ class EditHomeworkDialog extends HookConsumerWidget {
                           date.value != null &&
                           weeklyScheduleData.isRight()
                       ? () async {
-                          final result = await showDialog(
+                          final result = await showCustomDialog(
                             context: context,
                             builder: (context) =>
                                 GenerateHomeworkProcessingDateWithAiDialog(
@@ -186,7 +186,7 @@ class EditHomeworkDialog extends HookConsumerWidget {
         if (homeworkEvent != null && onHomeworkDeleted != null) ...[
           ElevatedButton.icon(
             onPressed: () async {
-              final result = await showDialog<bool>(
+              final result = await showCustomDialog<bool>(
                 context: context,
                 builder: (context) => CustomDialog.confirmation(
                   title: "Hausaufgabe löschen",

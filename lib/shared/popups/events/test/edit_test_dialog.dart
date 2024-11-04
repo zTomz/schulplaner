@@ -10,7 +10,7 @@ import 'package:schulplaner/shared/popups/weekly_schedule/subject_popups.dart';
 import 'package:schulplaner/shared/extensions/date_time_extension.dart';
 import 'package:schulplaner/shared/functions/first_where_or_null.dart';
 import 'package:schulplaner/shared/functions/get_value_or_null.dart';
-import 'package:schulplaner/shared/functions/show_custom_modal_bottom_sheet.dart';
+import 'package:schulplaner/shared/functions/show_custom_popups.dart';
 import 'package:schulplaner/shared/models/event.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/shared/widgets/custom/custom_button.dart';
@@ -125,10 +125,12 @@ class EditTestDialog extends HookConsumerWidget {
                     errorText: "Mindestens ein Übungsdatum ist erforderlich.",
                     value: processingDates.value,
                     child: CustomButton.selection(
-                      selection: processingDates.value?.map((e) => e.formattedDate)
-                              .join(", "),
+                      selection: processingDates.value
+                          ?.map((e) => e.formattedDate)
+                          .join(", "),
                       onPressed: () async {
-                        final result = await showDialog<List<ProcessingDate>>(
+                        final result =
+                            await showCustomDialog<List<ProcessingDate>>(
                           context: context,
                           builder: (context) => MultipleProssesingDatesDialog(
                             processingDates: processingDates.value,
@@ -149,7 +151,8 @@ class EditTestDialog extends HookConsumerWidget {
                           date.value != null &&
                           weeklyScheduleData.isRight()
                       ? () async {
-                          final result = await showDialog<List<ProcessingDate>>(
+                          final result =
+                              await showCustomDialog<List<ProcessingDate>>(
                             context: context,
                             builder: (context) =>
                                 GenerateTestProcessingDatesWithAi(
@@ -184,7 +187,7 @@ class EditTestDialog extends HookConsumerWidget {
         if (testEvent != null && onTestDeleted != null) ...[
           ElevatedButton.icon(
             onPressed: () async {
-              final result = await showDialog<bool>(
+              final result = await showCustomDialog<bool>(
                 context: context,
                 builder: (context) => CustomDialog.confirmation(
                   title: "Arbeit löschen",

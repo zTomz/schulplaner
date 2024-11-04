@@ -3,6 +3,7 @@ import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/features/calendar/presentation/provider/events_provider.dart';
 import 'package:schulplaner/features/weekly_schedule/presentation/provider/weekly_schedule_provider.dart';
+import 'package:schulplaner/shared/functions/show_custom_popups.dart';
 import 'package:schulplaner/shared/popups/events/edit_reminder_dialog.dart';
 import 'package:schulplaner/shared/popups/events/test/edit_test_dialog.dart';
 import 'package:schulplaner/shared/extensions/date_time_extension.dart';
@@ -45,7 +46,7 @@ class EventInfoBox extends ConsumerWidget {
         onPressed: () async {
           switch (event.type) {
             case EventTypes.homework:
-              final result = await showDialog<HomeworkEvent>(
+              final result = await showCustomDialog<HomeworkEvent>(
                 context: context,
                 builder: (context) => EditHomeworkDialog(
                   homeworkEvent: event as HomeworkEvent,
@@ -63,7 +64,7 @@ class EventInfoBox extends ConsumerWidget {
               }
               break;
             case EventTypes.test:
-              final result = await showDialog<TestEvent>(
+              final result = await showCustomDialog<TestEvent>(
                 context: context,
                 builder: (context) => EditTestDialog(
                   testEvent: event as TestEvent,
@@ -81,7 +82,7 @@ class EventInfoBox extends ConsumerWidget {
               }
               break;
             case EventTypes.reminder:
-              final result = await showDialog<ReminderEvent>(
+              final result = await showCustomDialog<ReminderEvent>(
                 context: context,
                 builder: (context) => EditReminderDialog(
                   reminderEvent: event as ReminderEvent,
@@ -148,7 +149,9 @@ class EventInfoBox extends ConsumerWidget {
                   if (event.description != null) ...[
                     const SizedBox(height: Spacing.extraSmall),
                     Text(
-                      event.description!.length > 65 ? "${event.description!.substring(0, 65)}..." : event.description!,
+                      event.description!.length > 65
+                          ? "${event.description!.substring(0, 65)}..."
+                          : event.description!,
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],

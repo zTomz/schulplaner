@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/features/weekly_schedule/presentation/provider/weekly_schedule_provider.dart';
+import 'package:schulplaner/shared/functions/show_custom_popups.dart';
 import 'package:schulplaner/shared/models/time.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/shared/popups/edit_time_span_dialog.dart';
@@ -27,7 +28,6 @@ class WeeklyScheduleFloatingActionButton extends HookConsumerWidget {
 
     return CustomFloatingActionButton(
       expandebleFabKey: expandebleFabKey,
-      
       children: [
         CustomFabOption(
           title: const Text("Schulzeit hinzufügen"),
@@ -35,7 +35,7 @@ class WeeklyScheduleFloatingActionButton extends HookConsumerWidget {
           onPressed: () async {
             expandebleFabKey.currentState?.toggle();
 
-            final result = await showDialog<TimeSpan>(
+            final result = await showCustomDialog<TimeSpan>(
               context: context,
               builder: (context) => const EditTimeSpanDialog(),
             );
@@ -55,7 +55,7 @@ class WeeklyScheduleFloatingActionButton extends HookConsumerWidget {
               : () async {
                   expandebleFabKey.currentState?.toggle();
 
-                  final result = await showDialog<Lesson>(
+                  final result = await showCustomDialog<Lesson>(
                     context: context,
                     builder: (context) => EditLessonDialog(
                       schoolTimeCell: selectedSchoolTimeCell,

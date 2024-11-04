@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
+import 'package:schulplaner/shared/functions/show_custom_popups.dart';
 
 class ColorChooseListTile extends StatelessWidget {
   final Color color;
@@ -48,7 +49,7 @@ class ColorChooseListTile extends StatelessWidget {
     // Create a seperate variable, so the input variable is not changed
     Color pickerColor = color;
 
-    final choosenColor = await showDialog<Color>(
+    final choosenColor = await showCustomDialog<Color>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Wähle eine Farbe'),

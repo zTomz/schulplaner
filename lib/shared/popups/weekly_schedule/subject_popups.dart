@@ -12,7 +12,7 @@ import 'package:schulplaner/shared/popups/custom_dialog.dart';
 import 'package:schulplaner/shared/popups/weekly_schedule/teacher_popups.dart';
 import 'package:schulplaner/shared/popups/weekly_schedule/widgets/item_popup_button.dart';
 import 'package:schulplaner/shared/functions/first_where_or_null.dart';
-import 'package:schulplaner/shared/functions/show_custom_modal_bottom_sheet.dart';
+import 'package:schulplaner/shared/functions/show_custom_popups.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/shared/widgets/color_choose_list_tile.dart';
 import 'package:schulplaner/shared/widgets/custom/custom_color_indicator.dart';
@@ -74,7 +74,7 @@ class SubjectModalBottomSheet extends ConsumerWidget {
                   ),
                   trailing: ItemPopupButton(
                     onEdit: () async {
-                      final result = await showDialog<Subject>(
+                      final result = await showCustomDialog<Subject>(
                         context: context,
                         builder: (context) => EditSubjectDialog(
                           subject: currentSubject,
@@ -90,7 +90,7 @@ class SubjectModalBottomSheet extends ConsumerWidget {
                       }
                     },
                     onDelete: () async {
-                      final result = await showDialog(
+                      final result = await showCustomDialog(
                         context: context,
                         builder: (context) => CustomDialog.confirmation(
                           title: "Fach löschen",
@@ -119,7 +119,7 @@ class SubjectModalBottomSheet extends ConsumerWidget {
           const SizedBox(height: Spacing.medium),
           CustomButton(
             onPressed: () async {
-              final result = await showDialog<Subject>(
+              final result = await showCustomDialog<Subject>(
                 context: context,
                 builder: (context) => const EditSubjectDialog(),
               );

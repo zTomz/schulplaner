@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:schulplaner/shared/functions/show_custom_popups.dart';
 import 'package:schulplaner/shared/popups/custom_dialog.dart';
 import 'package:schulplaner/shared/extensions/date_time_extension.dart';
 import 'package:schulplaner/shared/functions/get_value_or_null.dart';
@@ -99,7 +100,7 @@ class EditReminderDialog extends HookWidget {
         if (reminderEvent != null && onReminderDeleted != null) ...[
           ElevatedButton.icon(
             onPressed: () async {
-              final result = await showDialog<bool>(
+              final result = await showCustomDialog<bool>(
                 context: context,
                 builder: (context) => CustomDialog.confirmation(
                   title: "Erinnerung löschen",

@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/features/weekly_schedule/presentation/provider/selected_school_time_cell_provider.dart';
 import 'package:schulplaner/features/weekly_schedule/presentation/provider/week_provider.dart';
 import 'package:schulplaner/features/weekly_schedule/presentation/provider/weekly_schedule_provider.dart';
+import 'package:schulplaner/shared/functions/show_custom_popups.dart';
 import 'package:schulplaner/shared/models/time.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
@@ -42,7 +43,7 @@ class WeeklySchedule extends ConsumerWidget {
       return NoDataWidget(
         addDataButton: ElevatedButton(
           onPressed: () async {
-            final result = await showDialog<TimeSpan>(
+            final result = await showCustomDialog<TimeSpan>(
               context: context,
               builder: (context) => const EditTimeSpanDialog(),
             );
@@ -60,7 +61,7 @@ class WeeklySchedule extends ConsumerWidget {
 
     return _WeeklySchedule(
       onLessonEdit: (lesson) async {
-        final result = await showDialog<Lesson>(
+        final result = await showCustomDialog<Lesson>(
           context: context,
           builder: (context) => EditLessonDialog(
             lesson: lesson,

@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/features/hobbies/presentation/provider/hobbies_provider.dart';
+import 'package:schulplaner/shared/functions/show_custom_popups.dart';
 import 'package:schulplaner/shared/widgets/data_state_widgets.dart';
 import 'package:schulplaner/shared/popups/custom_dialog.dart';
 import 'package:schulplaner/shared/popups/hobby/edit_hobby_dialog.dart';
@@ -32,7 +33,7 @@ class HobbiesPage extends ConsumerWidget {
             return NoDataWidget(
               addDataButton: ElevatedButton(
                 onPressed: () async {
-                  final result = await showDialog<Hobby>(
+                  final result = await showCustomDialog<Hobby>(
                     context: context,
                     builder: (context) {
                       return const EditHobbyDialog();
@@ -58,7 +59,7 @@ class HobbiesPage extends ConsumerWidget {
               return HobbyListTile(
                 hobby: currentHobby,
                 onEdit: () async {
-                  final result = await showDialog<Hobby>(
+                  final result = await showCustomDialog<Hobby>(
                     context: context,
                     builder: (context) {
                       return EditHobbyDialog(
@@ -72,7 +73,7 @@ class HobbiesPage extends ConsumerWidget {
                   }
                 },
                 onDelete: () async {
-                  final result = await showDialog<bool>(
+                  final result = await showCustomDialog<bool>(
                     context: context,
                     builder: (context) => CustomDialog.confirmation(
                       description:

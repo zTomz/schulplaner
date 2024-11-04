@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
+import 'package:schulplaner/shared/functions/show_custom_popups.dart';
 import 'package:schulplaner/shared/popups/custom_dialog.dart';
 import 'package:schulplaner/shared/popups/edit_time_span_dialog.dart';
 import 'package:schulplaner/shared/functions/build_body_part.dart';
@@ -73,7 +74,7 @@ class EditDayDialog extends HookWidget {
               child: CustomButton.selection(
                 selection: timeSpan.value?.toFormattedString(),
                 onPressed: () async {
-                  final result = await showDialog<TimeSpan>(
+                  final result = await showCustomDialog<TimeSpan>(
                     context: context,
                     builder: (context) => EditTimeSpanDialog(
                       timeSpan: timeSpan.value,

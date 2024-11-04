@@ -8,6 +8,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/features/weekly_schedule/presentation/provider/weekly_schedule_provider.dart';
+import 'package:schulplaner/shared/functions/show_custom_popups.dart';
 import 'package:schulplaner/shared/popups/custom_dialog.dart';
 import 'package:schulplaner/shared/popups/weekly_schedule/widgets/item_popup_button.dart';
 import 'package:schulplaner/shared/functions/build_body_part.dart';
@@ -105,7 +106,7 @@ class TeacherModalBottomSheet extends HookConsumerWidget {
                   ),
                   trailing: ItemPopupButton(
                     onEdit: () async {
-                      final result = await showDialog<Teacher>(
+                      final result = await showCustomDialog<Teacher>(
                         context: context,
                         builder: (context) => EditTeacherDialog(
                           teacher: currentTeacher,
@@ -120,7 +121,7 @@ class TeacherModalBottomSheet extends HookConsumerWidget {
                       }
                     },
                     onDelete: () async {
-                      final result = await showDialog(
+                      final result = await showCustomDialog(
                         context: context,
                         builder: (context) => CustomDialog.confirmation(
                           title: "Lehrer löschen",
@@ -156,7 +157,7 @@ class TeacherModalBottomSheet extends HookConsumerWidget {
           const SizedBox(height: Spacing.medium),
           CustomButton(
             onPressed: () async {
-              final result = await showDialog<Teacher>(
+              final result = await showCustomDialog<Teacher>(
                 context: context,
                 builder: (context) => const EditTeacherDialog(),
               );

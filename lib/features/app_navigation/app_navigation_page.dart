@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
+import 'package:schulplaner/shared/functions/show_custom_popups.dart';
 import 'package:schulplaner/shared/popups/account_dialog.dart';
 import 'package:schulplaner/config/routes/router.gr.dart';
 import 'package:schulplaner/features/app_navigation/widgets/custom_navigation_rail.dart';
@@ -37,7 +38,7 @@ class AppNavigationPage extends HookWidget {
                 selectedIndex: tabsRouter.activeIndex,
                 onDestinationSelected: tabsRouter.setActiveIndex,
                 onProfilePressed: () {
-                  showDialog(
+                  showCustomDialog(
                     context: context,
                     builder: (context) => const AccountDialog(),
                   );

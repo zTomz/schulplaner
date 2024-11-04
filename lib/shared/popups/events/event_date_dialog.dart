@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
+import 'package:schulplaner/shared/functions/show_custom_popups.dart';
 import 'package:schulplaner/shared/popups/custom_dialog.dart';
 import 'package:schulplaner/shared/extensions/date_time_extension.dart';
 import 'package:schulplaner/shared/extensions/time_of_day_extension.dart';
@@ -171,7 +172,7 @@ class MultipleProssesingDatesDialog extends HookWidget {
                     icon: const Icon(LucideIcons.trash_2),
                   ),
                   onTap: () async {
-                    final result = await showDialog<TimeSpan>(
+                    final result = await showCustomDialog<TimeSpan>(
                       context: context,
                       builder: (context) => EditTimeSpanDialog(
                         timeSpan: currentProcessingDate.timeSpan,
@@ -197,7 +198,7 @@ class MultipleProssesingDatesDialog extends HookWidget {
                 flex: 2,
                 child: CustomButton(
                   onPressed: () async {
-                    final result = await showDialog<ProcessingDate>(
+                    final result = await showCustomDialog<ProcessingDate>(
                       context: context,
                       builder: (context) => const ProcessingDateDialog(),
                     );

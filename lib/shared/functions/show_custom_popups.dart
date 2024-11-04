@@ -12,3 +12,15 @@ Future<T?> showCustomModalBottomSheet<T>({
       context: context,
       builder: builder,
     );
+
+/// A helper function, which has some pre configurations for the [showDialog]
+/// function.
+Future<T?> showCustomDialog<T>({
+  required BuildContext context,
+  required Widget Function(BuildContext) builder,
+}) =>
+    showDialog(
+      context: context,
+      builder: builder,
+      barrierDismissible: false,
+    );

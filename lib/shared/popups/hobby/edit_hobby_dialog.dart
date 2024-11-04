@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
+import 'package:schulplaner/shared/functions/show_custom_popups.dart';
 import 'package:schulplaner/shared/popups/custom_dialog.dart';
 import 'package:schulplaner/shared/popups/hobby/edit_day_dialog.dart';
 import 'package:schulplaner/shared/functions/get_value_or_null.dart';
@@ -91,7 +92,7 @@ class EditHobbyDialog extends HookWidget {
                 ),
                 trailing: const Icon(LucideIcons.plus),
                 onTap: () async {
-                  final result = await showDialog<List<TimeInDay>>(
+                  final result = await showCustomDialog<List<TimeInDay>>(
                     context: context,
                     builder: (context) => const EditDayDialog(),
                   );
@@ -117,7 +118,7 @@ class EditHobbyDialog extends HookWidget {
                       final day = days.value[index];
 
                       // Edit the day
-                      final result = await showDialog<TimeInDay>(
+                      final result = await showCustomDialog<TimeInDay>(
                         context: context,
                         builder: (context) => EditDayDialog(
                           timeInDay: day,
