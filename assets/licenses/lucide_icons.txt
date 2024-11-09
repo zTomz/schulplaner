@@ -1,0 +1,9 @@
+Lucide-Lizenz
+
+ISC-Lizenz
+
+Das Copyright (c) für Teile von Lucide liegt bei Cole Bemis 2013-2022 als Teil von Feather (MIT). Alle anderen Copyrights (c) für Lucide liegen bei Lucide Contributors 2022.
+
+Hiermit wird die Genehmigung erteilt, diese Software für beliebige Zwecke entgeltlich oder unentgeltlich zu verwenden, zu kopieren, zu ändern und/oder zu verteilen, vorausgesetzt, dass der oben genannte Copyright-Vermerk und dieser Genehmigungsvermerk in allen Kopien erscheinen.
+
+DIE SOFTWARE WIRD „WIE BESEHEN“ BEREITGESTELLT UND DER AUTOR LEHNT JEGLICHE GARANTIEN IN BEZUG AUF DIESE SOFTWARE AB, EINSCHLIESSLICH ALLER STILLSCHWEIGENDEN GARANTIEN DER MARKTGÄNGIGKEIT UND EIGNUNG. IN KEINEM FALL IST DER AUTOR VERANTWORTLICH FÜR JEGLICHE SPEZIELLE, DIREKTE, INDIREKTE ODER FOLGESCHÄDEN ODER JEGLICHE SCHÄDEN JEGLICHER ART, DIE AUS NUTZUNGSAUSFALL, DATENVERLUST ODER ENTGANGENEN GEWINNEN ENTSTEHEN, SEIEN DIES DURCH VERTRAGSVERLETZUNG, FAHRLÄSSIGKEIT ODER ANDERE UNERLAUBTE HANDLUNGEN, DIE AUS ODER IM ZUSAMMENHANG MIT DER VERWENDUNG ODER LEISTUNG DIESER SOFTWARE ENTSTEHEN.
