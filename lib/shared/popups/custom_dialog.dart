@@ -194,8 +194,8 @@ class CustomDialog extends StatelessWidget {
                     Navigator.of(context).pop();
                   },
                   style: IconButton.styleFrom(
-                    backgroundColor: Colors.grey.shade300,
-                    foregroundColor: Colors.grey.shade600,
+                    backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    foregroundColor: Theme.of(context).colorScheme.onSurface,
                   ),
                   constraints: const BoxConstraints(),
                   iconSize: 16,
