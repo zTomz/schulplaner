@@ -123,14 +123,12 @@ class CustomDialog extends StatelessWidget {
                                 ),
                                 const SizedBox(height: Spacing.large),
                                 DefaultTextStyle(
-                                  style:
-                                      Theme.of(context).textTheme.displaySmall!,
+                                  style: Theme.of(context).textTheme.bodyLarge!,
                                   textAlign: TextAlign.center,
                                   child: title,
                                 ),
                               ] else
                                 Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     IconTheme(
                                       data:
@@ -139,12 +137,14 @@ class CustomDialog extends StatelessWidget {
                                               ),
                                       child: icon,
                                     ),
-                                    const SizedBox(width: Spacing.large),
+                                    const SizedBox(width: Spacing.medium),
                                     Expanded(
                                       child: DefaultTextStyle(
                                         style: Theme.of(context)
                                             .textTheme
-                                            .displaySmall!,
+                                            .headlineSmall!
+                                            .copyWith(
+                                                fontWeight: FontWeight.w900),
                                         child: title,
                                       ),
                                     ),
@@ -166,7 +166,10 @@ class CustomDialog extends StatelessWidget {
                               ],
                               const SizedBox(height: Spacing.medium),
                               DefaultTextStyle(
-                                style: Theme.of(context).textTheme.bodyLarge!,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall!
+                                    .copyWith(fontWeight: FontWeight.w900),
                                 textAlign: TextAlign.center,
                                 child: content,
                               ),
@@ -194,7 +197,8 @@ class CustomDialog extends StatelessWidget {
                     Navigator.of(context).pop();
                   },
                   style: IconButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    backgroundColor:
+                        Theme.of(context).colorScheme.surfaceContainerHighest,
                     foregroundColor: Theme.of(context).colorScheme.onSurface,
                   ),
                   constraints: const BoxConstraints(),
