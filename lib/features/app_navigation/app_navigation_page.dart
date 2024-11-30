@@ -32,6 +32,7 @@ class AppNavigationPage extends HookWidget {
         final tabsRouter = AutoTabsRouter.of(context);
 
         return Scaffold(
+          resizeToAvoidBottomInset: false,
           body: Row(
             children: [
               CustomNavigationRail(

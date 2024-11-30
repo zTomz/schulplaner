@@ -58,9 +58,10 @@ class EditHomeworkDialog extends HookConsumerWidget {
         "Hausaufgaben ${homeworkEvent == null ? "hinzufügen" : "bearbeiten"}",
       ),
       icon: const Icon(LucideIcons.book_open_text),
-      fatalError: weeklyScheduleData.isLeft()
-          ? Text(weeklyScheduleData.left.toString()) // TODO: Better errors
-          : null,
+      fatalError: weeklyScheduleData.fold(
+        (error) => Text(error.toString()),
+        (_) => null,
+      ),
       content: Form(
         key: formKey,
         child: Column(
