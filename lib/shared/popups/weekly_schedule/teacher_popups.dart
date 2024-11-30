@@ -126,7 +126,7 @@ class TeacherModalBottomSheet extends HookConsumerWidget {
                         builder: (context) => CustomDialog.confirmation(
                           title: "Lehrer löschen",
                           description:
-                              "Sind Sie sicher, dass Sie diesen Leherer löschen möchten? Wenn Sie dies tun, werden automatisch alle Schulstunden und Fächer, die mit diesen Lehrer belegt sind, mit gelöscht.",
+                              "Sind Sie sicher, dass Sie diesen Lehrer löschen möchten? Wenn Sie dies tun, werden automatisch alle Schulstunden und Fächer, die mit diesen Lehrer belegt sind, mit gelöscht.",
                         ),
                       );
 
@@ -208,7 +208,7 @@ class EditTeacherDialog extends HookWidget {
     final formKey = useMemoized(() => GlobalKey<FormState>());
 
     return CustomDialog.expanded(
-      title: Text("${teacher == null ? "Erstelle" : "Bearbeite"} einen Lehrer"),
+      title: Text("Lehrer ${teacher == null ? "erstellen" : "bearbeiten"}"),
       icon: const Icon(LucideIcons.user_round),
       content: Form(
         key: formKey,

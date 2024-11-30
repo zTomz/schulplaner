@@ -51,7 +51,7 @@ class EditLessonDialog extends HookConsumerWidget {
     return CustomDialog.expanded(
       icon: const Icon(LucideIcons.circle_plus),
       title: Text(
-        lesson == null ? "Neue Schulstunde" : "Schulstunde bearbeiten",
+        lesson == null ? "Schulstunde erstellen" : "Schulstunde bearbeiten",
       ),
       content: Form(
         key: formKey,
