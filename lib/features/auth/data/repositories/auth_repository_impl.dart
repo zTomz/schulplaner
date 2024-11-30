@@ -12,7 +12,7 @@ class AuthRepositoryImpl extends AuthRepository {
   });
 
   @override
-  Future<Either<AuthExeption, UserCredential>> signUpWithEmailPassword({
+  Future<Either<AuthException, UserCredential>> signUpWithEmailPassword({
     required String email,
     required String password,
     required String displayName,
@@ -25,7 +25,7 @@ class AuthRepositoryImpl extends AuthRepository {
   }
 
   @override
-  Future<Either<AuthExeption, UserCredential>> signInWithEmailPassword({
+  Future<Either<AuthException, UserCredential>> signInWithEmailPassword({
     required String email,
     required String password,
   }) async {

@@ -5,9 +5,9 @@ import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/shared/exceptions/auth_exceptions.dart';
 import 'package:schulplaner/shared/functions/close_all_dialogs.dart';
 import 'package:schulplaner/shared/functions/show_custom_popups.dart';
-import 'package:schulplaner/shared/services/exeption_handler_service.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/shared/popups/custom_dialog.dart';
+import 'package:schulplaner/shared/services/exception_handler_service.dart';
 import 'package:schulplaner/shared/services/user_service.dart';
 import 'package:schulplaner/shared/widgets/custom/custom_button.dart';
 import 'package:schulplaner/shared/widgets/custom/custom_text_field.dart';
@@ -114,7 +114,7 @@ class AccountDialog extends HookWidget {
                 }
               } catch (error) {
                 if (context.mounted) {
-                  ExeptionHandlerService.handleExeption(context, error);
+                  ExceptionHandlerService.handleException(context, error);
                 }
               }
             },
@@ -171,7 +171,7 @@ class ChangePasswordDialog extends HookWidget {
               }
             } catch (error) {
               if (context.mounted) {
-                ExeptionHandlerService.handleExeption(context, error);
+                ExceptionHandlerService.handleException(context, error);
               }
             }
           },
@@ -187,14 +187,14 @@ class AccountSettingsDialog extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final requiresRecentLoginExeptionThrown = useState(false);
+    final requiresRecentLoginExceptionThrown = useState(false);
 
     return CustomDialog(
       icon: const Icon(LucideIcons.user_cog),
       title: const Text("Konto Einstellungen"),
-      error: requiresRecentLoginExeptionThrown.value
+      error: requiresRecentLoginExceptionThrown.value
           ? const Text(
-              "Sie müssen sich erneut Anmelden, da die von Ihnen ausgefürhte Aktion einen neuen Login benötigt.")
+              "Sie müssen sich erneut Anmelden, da die von Ihnen ausgeführte Aktion einen neuen Login benötigt.")
           : null,
       content: Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -230,7 +230,7 @@ class AccountSettingsDialog extends HookWidget {
                   if (error is FirebaseAuthException &&
                       FirebaseAuthExceptionCode.fromErrorCode(error.code) ==
                           FirebaseAuthExceptionCode.requiresRecentLogin) {
-                    requiresRecentLoginExeptionThrown.value = true;
+                    requiresRecentLoginExceptionThrown.value = true;
                     return;
                   }
 
@@ -238,7 +238,7 @@ class AccountSettingsDialog extends HookWidget {
                     await closeAllDialogs(context);
                   }
                   if (context.mounted) {
-                    ExeptionHandlerService.handleExeption(
+                    ExceptionHandlerService.handleException(
                       context,
                       error,
                     );

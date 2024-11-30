@@ -12,12 +12,12 @@ abstract class UserService {
     // Show an error if no user is logged in.
     if (FirebaseAuth.instance.currentUser == null) {
       logger.e("The user need to be signed in to update his stats.");
-      throw UnauthenticatedExeption();
+      throw UnauthenticatedException();
     }
 
     // If the name is not null, we will update it
     if (name != null) {
-      // This function doesnt throw errors, but if it will fail because of some reason. It will
+      // This function doesn't throw errors, but if it will fail because of some reason. It will
       // show an error
       try {
         await FirebaseAuth.instance.currentUser!.updateDisplayName(
@@ -61,7 +61,7 @@ abstract class UserService {
     // Show an error if no user is logged in.
     if (FirebaseAuth.instance.currentUser == null) {
       logger.e("The user need to be signed in to update his password.");
-      throw UnauthenticatedExeption();
+      throw UnauthenticatedException();
     }
 
     try {
@@ -87,7 +87,7 @@ abstract class UserService {
   // }) async {
   //   if (FirebaseAuth.instance.currentUser == null) {
   //     logger.e("The user need to be signed in to update his FCM token.");
-  //     throw UnauthenticatedExeption();
+  //     throw UnauthenticatedException();
   //   }
 
   //   final doc = await FirebaseFirestore.instance
@@ -112,7 +112,7 @@ abstract class UserService {
   static Future<void> deleteAccount() async {
     if (FirebaseAuth.instance.currentUser == null) {
       logger.e("The user need to be signed in to delete his account.");
-      throw UnauthenticatedExeption();
+      throw UnauthenticatedException();
     }
 
     // Delete the account

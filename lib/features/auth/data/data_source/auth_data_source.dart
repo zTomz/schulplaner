@@ -6,7 +6,7 @@ import 'package:schulplaner/shared/models/weekly_schedule.dart';
 
 abstract class AuthDataSource {
   /// Create a new user with the provided email and password
-  Future<Either<AuthExeption, UserCredential>> signUpWithEmailPassword({
+  Future<Either<AuthException, UserCredential>> signUpWithEmailPassword({
     required String email,
     required String password,
     required String displayName,
@@ -15,7 +15,7 @@ abstract class AuthDataSource {
   });
 
   /// Sign the user in with the provided email and password
-  Future<Either<AuthExeption, UserCredential>> signInWithEmailPassword({
+  Future<Either<AuthException, UserCredential>> signInWithEmailPassword({
     required String email,
     required String password,
   });

@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:schulplaner/shared/exceptions/auth_exceptions.dart';
 import 'package:schulplaner/shared/services/snack_bar_service.dart';
 
-abstract class ExeptionHandlerService {
+abstract class ExceptionHandlerService {
   /// Handle all `Exception`'s. Will use specific functions, if the error is implemented
-  static void handleExeption(BuildContext context, Object exception) {
-    if (exception is UnauthenticatedExeption) {
+  static void handleException(BuildContext context, Object exception) {
+    if (exception is UnauthenticatedException) {
       handleAuthException(context, exception);
       return;
     }
@@ -22,15 +22,15 @@ abstract class ExeptionHandlerService {
   /// Handle `FirebaseAuthException`'s
   static void handleFirebaseAuthException(
     BuildContext context,
-    FirebaseAuthException exeption,
+    FirebaseAuthException exception,
   ) {
-    final firebaseAuthExeption =
-        FirebaseAuthExceptionCode.fromErrorCode(exeption.code);
+    final firebaseAuthException =
+        FirebaseAuthExceptionCode.fromErrorCode(exception.code);
 
-    if (firebaseAuthExeption != null) {
+    if (firebaseAuthException != null) {
       SnackBarService.show(
         context: context,
-        content: Text(firebaseAuthExeption.message),
+        content: Text(firebaseAuthException.message),
         type: CustomSnackbarType.error,
       );
     } else {
@@ -45,7 +45,7 @@ abstract class ExeptionHandlerService {
   /// Handle an `AuthException`
   static void handleAuthException(
     BuildContext context,
-    UnauthenticatedExeption exception,
+    UnauthenticatedException exception,
   ) {
     SnackBarService.show(
       context: context,

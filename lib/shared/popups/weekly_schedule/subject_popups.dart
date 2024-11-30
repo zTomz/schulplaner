@@ -23,7 +23,7 @@ import 'package:schulplaner/shared/popups/modal_bottom_sheet.dart';
 import 'package:uuid/uuid.dart';
 
 class SubjectModalBottomSheet extends ConsumerWidget {
-  /// If the subjects are onyl selectable. This means, there is no option to edit them or to add new subjects.
+  /// If the subjects are only selectable. This means, there is no option to edit them or to add new subjects.
   /// Default is `false`
   final bool onlySelectable;
 
@@ -167,7 +167,7 @@ class EditSubjectDialog extends HookConsumerWidget {
     final formKey = useMemoized(() => GlobalKey<FormState>());
 
     return CustomDialog.expanded(
-      title: Text("${subject == null ? "Erstelle" : "Bearbeite"} ein Fach"),
+      title: Text("Fach ${subject == null ? "erstellen" : "bearbeiten"}"),
       icon: const Icon(LucideIcons.user_round),
       content: Form(
         key: formKey,

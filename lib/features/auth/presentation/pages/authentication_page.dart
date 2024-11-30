@@ -87,7 +87,7 @@ class AuthenticationPage extends HookConsumerWidget {
                             displayName: usernameController.text,
                           );
                     } else {
-                      // If the users signes in, we do not want to override the current weekly schedule and hobby data
+                      // If the users signed in, we do not want to override the current weekly schedule and hobby data
                       result = await ref
                           .read(authProvider.notifier)
                           .signInWithEmailPassword(
@@ -104,7 +104,7 @@ class AuthenticationPage extends HookConsumerWidget {
                     } else if (result.hasError && context.mounted) {
                       SnackBarService.show(
                         context: context,
-                        content: Text(result.exeption!.message),
+                        content: Text(result.exception!.message),
                         type: CustomSnackbarType.error,
                       );
                     } else {

@@ -12,7 +12,7 @@ class EventsRepositoryImpl implements EventsRepository {
   });
 
   @override
-  Future<Either<UnauthenticatedExeption, void>> uploadEvents({
+  Future<Either<UnauthenticatedException, void>> uploadEvents({
     required List<Event> events,
   }) async {
     return dataSource.uploadEvents(events: events);

@@ -4,8 +4,8 @@ import 'package:schulplaner/shared/models/weekly_schedule.dart';
 
 abstract class WeeklyScheduleRepository {
   /// Upload the weekly schedule data. Checks if the user is authenticated, if not
-  /// returns an [UnauthenticatedExeption].
-  Future<Either<UnauthenticatedExeption, void>> uploadWeeklyScheduleData({
+  /// returns an [UnauthenticatedException].
+  Future<Either<UnauthenticatedException, void>> uploadWeeklyScheduleData({
     required WeeklyScheduleData weeklyScheduleData,
   });
 }

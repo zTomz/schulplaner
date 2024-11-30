@@ -34,7 +34,7 @@ class EventsNotifier extends StateNotifier<Either<Exception, EventData>> {
         (failure) => state = Left(failure),
         (_) {},
       );
-    } on UnauthenticatedExeption catch (e) {
+    } on UnauthenticatedException catch (e) {
       state = Left(e);
     } catch (e) {
       logger.e("Got un unexpected exception while syncing events: $e");

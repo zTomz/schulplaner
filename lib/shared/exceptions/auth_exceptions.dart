@@ -1,22 +1,22 @@
-class UnauthenticatedExeption implements Exception {
+class UnauthenticatedException implements Exception {
   final String message;
 
-  UnauthenticatedExeption()
+  UnauthenticatedException()
       : message = "Sie müssen angemeldet sein, um diese Aktion auszuführen.";
 }
 
-class AuthExeption implements Exception {
-  AuthExeption(
+class AuthException implements Exception {
+  AuthException(
     this.message,
   );
 
   final String message;
 
-  AuthExeption.fromErrorCode(String errorCode)
+  AuthException.fromErrorCode(String errorCode)
       : message = FirebaseAuthExceptionCode.fromErrorCode(errorCode)?.message ??
-            AuthExeption.unknown().message;
+            AuthException.unknown().message;
 
-  AuthExeption.unknown() : message = "Ein unbekannter Fehler ist aufgetreten.";
+  AuthException.unknown() : message = "Ein unbekannter Fehler ist aufgetreten.";
 }
 
 enum FirebaseAuthExceptionCode {
@@ -60,7 +60,7 @@ enum FirebaseAuthExceptionCode {
       case FirebaseAuthExceptionCode.wrongPassword:
         return "Das angegebene Passwort ist ungültig.";
       case FirebaseAuthExceptionCode.requiresRecentLogin:
-        return "Sie müssen sich erneut Anmelden, da die von Ihnen ausgefürhte Aktion einen neuen Login benötigt.";
+        return "Sie müssen sich erneut Anmelden, da die von Ihnen ausgeführte Aktion einen neuen Login benötigt.";
     }
   }
 }

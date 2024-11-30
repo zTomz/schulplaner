@@ -34,7 +34,7 @@ abstract class DatabaseService {
   }) async {
     if (FirebaseAuth.instance.currentUser == null) {
       logger.e("The user need to be signed in to upload his weekly schedule.");
-      throw UnauthenticatedExeption();
+      throw UnauthenticatedException();
     }
 
     // Upload the data to Firestore
@@ -49,7 +49,7 @@ abstract class DatabaseService {
   }) async {
     if (FirebaseAuth.instance.currentUser == null) {
       logger.e("The user need to be signed in to upload his hobbies.");
-      throw UnauthenticatedExeption();
+      throw UnauthenticatedException();
     }
 
     await DatabaseService.hobbiesCollection.doc("data").set(
@@ -65,7 +65,7 @@ abstract class DatabaseService {
   }) async {
     if (FirebaseAuth.instance.currentUser == null) {
       logger.e("The user need to be signed in to upload his events.");
-      throw UnauthenticatedExeption();
+      throw UnauthenticatedException();
     }
 
     eventsCollection.doc('data').set(

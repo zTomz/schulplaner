@@ -4,14 +4,14 @@ import 'package:schulplaner/shared/exceptions/auth_exceptions.dart';
 
 abstract class AuthRepository {
   /// Create a new user with the provided email and password
-  Future<Either<AuthExeption, UserCredential>> signUpWithEmailPassword({
+  Future<Either<AuthException, UserCredential>> signUpWithEmailPassword({
     required String email,
     required String password,
     required String displayName,
   });
 
   /// Sign the user in with the provided email and password
-  Future<Either<AuthExeption, UserCredential>> signInWithEmailPassword({
+  Future<Either<AuthException, UserCredential>> signInWithEmailPassword({
     required String email,
     required String password,
   });

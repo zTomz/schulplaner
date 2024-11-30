@@ -1,0 +1,30 @@
+{
+    "cSpell.ignoreWords": [
+        "lucide",
+        "schulplaner",
+        "uuid",
+        "firestore",
+        "flutterfire",
+        "vertexai",
+        "fixnum",
+        "colorpicker",
+        "riverpod",
+        "petitparser",
+        "linux",
+        "pubspec",
+        "sprintf",
+        "HINSTANCE",
+        "COINIT",
+        "APARTMENTTHREADED",
+
+    ],
+    "cSpell.language": "en,de-de",
+    "cSpell.customDictionaries": {
+        "custom-dictionary-workspace": {
+            "name": "custom-dictionary-workspace",
+            "path": "${workspaceFolder:schulplaner}/.cspell/custom-dictionary-workspace.txt",
+            "addWords": true,
+            "scope": "workspace"
+        }
+    }
+}

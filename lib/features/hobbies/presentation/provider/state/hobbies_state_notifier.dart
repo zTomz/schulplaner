@@ -13,7 +13,7 @@ class HobbiesStateNotifier
     required Either<Exception, HobbiesData> initialData,
   }) : super(initialData);
 
-  /// Syncs the current state with the database. If the state has an exeption
+  /// Syncs the current state with the database. If the state has an exception
   /// it will return and will not sync the data
   Future<void> _syncStateWithDatabase() async {
     if (state.isLeft()) {
@@ -71,7 +71,7 @@ class HobbiesStateNotifier
 
     // Remove the hobby from the state
     state = Right(
-        state.right!.where((element) => element.uuid != hobby.uuid).toList());
+        state.right!.where((element) => element.uuid != hobby.uuid).toList(),);
 
     await _syncStateWithDatabase();
   }

@@ -8,12 +8,12 @@ import 'package:schulplaner/shared/services/database_service.dart';
 
 class WeeklyScheduleRemoteDataSource implements WeeklyScheduleDataSource {
   @override
-  Future<Either<UnauthenticatedExeption, void>> uploadWeeklyScheduleData({
+  Future<Either<UnauthenticatedException, void>> uploadWeeklyScheduleData({
     required WeeklyScheduleData weeklyScheduleData,
   }) async {
     if (FirebaseAuth.instance.currentUser == null) {
       logger.e("The user need to be signed in to upload his weekly schedule.");
-      return Left(UnauthenticatedExeption());
+      return Left(UnauthenticatedException());
     }
 
     // Upload the data to Firestore
@@ -24,7 +24,7 @@ class WeeklyScheduleRemoteDataSource implements WeeklyScheduleDataSource {
       return const Right(null);
     } catch (e) {
       logger.e(e);
-      return Left(UnauthenticatedExeption());
+      return Left(UnauthenticatedException());
     }
   }
 }

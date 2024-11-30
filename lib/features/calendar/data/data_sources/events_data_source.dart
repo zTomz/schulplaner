@@ -4,7 +4,7 @@ import 'package:schulplaner/shared/models/event.dart';
 
 abstract class EventsDataSource {
   /// Uploads events to the database
-  Future<Either<UnauthenticatedExeption, void>> uploadEvents({
+  Future<Either<UnauthenticatedException, void>> uploadEvents({
     required List<Event> events,
   });
 }

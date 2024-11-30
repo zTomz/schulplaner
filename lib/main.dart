@@ -68,7 +68,7 @@ class MainApp extends StatelessWidget {
       ],
       supportedLocales: const [
         Locale('de'), // Deutsch
-        Locale('en'), // English
+        Locale('en'), // Englisch
         Locale('fr'), // Französisch
       ],
       routerConfig: _appRouter.config(

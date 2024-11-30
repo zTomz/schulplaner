@@ -12,7 +12,8 @@ class HobbiesRepositoryImpl implements HobbiesRepository {
   });
 
   @override
-  Future<Either<UnauthenticatedExeption, void>> uploadHobbies({
+
+  Future<Either<UnauthenticatedException, void>> uploadHobbies({
     required List<Hobby> hobbies,
   }) async {
     return dataSource.uploadHobbies(hobbies: hobbies);

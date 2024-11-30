@@ -3,21 +3,21 @@ import 'package:schulplaner/shared/exceptions/auth_exceptions.dart';
 
 class AuthStateWrapper extends Equatable {
   final AuthState state;
-  final AuthExeption? exeption;
+  final AuthException? exception;
 
-  const AuthStateWrapper._(this.state, this.exeption);
+  const AuthStateWrapper._(this.state, this.exception);
 
   const AuthStateWrapper.initial() : this._(AuthState.initial, null);
   const AuthStateWrapper.loading() : this._(AuthState.loading, null);
   const AuthStateWrapper.success() : this._(AuthState.success, null);
-  const AuthStateWrapper.error(AuthExeption exeption)
+  const AuthStateWrapper.error(AuthException exception)
       : this._(
           AuthState.error,
-          exeption,
+          exception,
         );
 
   @override
-  List<Object?> get props => [state, exeption];
+  List<Object?> get props => [state, exception];
 
   bool get isSuccess => state == AuthState.success;
 

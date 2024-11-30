@@ -9,7 +9,7 @@ import 'package:schulplaner/shared/services/auth_service.dart';
 
 class AuthRemoteDataSource implements AuthDataSource {
   @override
-  Future<Either<AuthExeption, UserCredential>> signUpWithEmailPassword({
+  Future<Either<AuthException, UserCredential>> signUpWithEmailPassword({
     required String email,
     required String password,
     required String displayName,
@@ -32,19 +32,19 @@ class AuthRemoteDataSource implements AuthDataSource {
         error: e,
       );
 
-      return Left(AuthExeption.fromErrorCode(e.code));
+      return Left(AuthException.fromErrorCode(e.code));
     } catch (e) {
       logger.e(
         "Unknown error occurred, while creating the account.",
         error: e,
       );
 
-      return Left(AuthExeption.unknown());
+      return Left(AuthException.unknown());
     }
   }
 
   @override
-  Future<Either<AuthExeption, UserCredential>> signInWithEmailPassword({
+  Future<Either<AuthException, UserCredential>> signInWithEmailPassword({
     required String email,
     required String password,
   }) async {
@@ -62,14 +62,14 @@ class AuthRemoteDataSource implements AuthDataSource {
         error: e,
       );
 
-      return Left(AuthExeption.fromErrorCode(e.code));
+      return Left(AuthException.fromErrorCode(e.code));
     } catch (e) {
       logger.e(
         "Unknown error occurred, while signing in.",
         error: e,
       );
 
-      return Left(AuthExeption.unknown());
+      return Left(AuthException.unknown());
     }
   }
 }

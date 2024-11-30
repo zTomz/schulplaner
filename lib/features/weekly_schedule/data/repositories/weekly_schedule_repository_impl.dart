@@ -12,7 +12,7 @@ class WeeklyScheduleRepositoryImpl implements WeeklyScheduleRepository {
   });
 
   @override
-  Future<Either<UnauthenticatedExeption, void>> uploadWeeklyScheduleData({
+  Future<Either<UnauthenticatedException, void>> uploadWeeklyScheduleData({
     required WeeklyScheduleData weeklyScheduleData,
   }) async {
     return dataSource.uploadWeeklyScheduleData(

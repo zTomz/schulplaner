@@ -8,12 +8,12 @@ import 'package:schulplaner/shared/services/database_service.dart';
 
 class EventsRemoteDataSource implements EventsDataSource {
   @override
-  Future<Either<UnauthenticatedExeption, void>> uploadEvents({
+  Future<Either<UnauthenticatedException, void>> uploadEvents({
     required List<Event> events,
   }) async {
     if (FirebaseAuth.instance.currentUser == null) {
       logger.e("The user need to be signed in to upload his events.");
-      return Left(UnauthenticatedExeption());
+      return Left(UnauthenticatedException());
     }
 
     await DatabaseService.uploadEvents(events: events);

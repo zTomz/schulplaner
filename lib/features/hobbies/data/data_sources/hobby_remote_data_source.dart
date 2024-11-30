@@ -8,12 +8,12 @@ import 'package:schulplaner/shared/services/database_service.dart';
 
 class HobbiesRemoteDataSource implements HobbiesDataSource {
   @override
-  Future<Either<UnauthenticatedExeption, void>> uploadHobbies({
+  Future<Either<UnauthenticatedException, void>> uploadHobbies({
     required List<Hobby> hobbies,
   }) async {
     if (FirebaseAuth.instance.currentUser == null) {
       logger.e("The user need to be signed in to upload his hobbies.");
-      return Left(UnauthenticatedExeption());
+      return Left(UnauthenticatedException());
     }
 
     // Upload the data to Firestore
