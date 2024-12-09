@@ -14,6 +14,7 @@ import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/features/calendar/functions/get_color_for_event.dart';
 import 'package:schulplaner/shared/widgets/custom/custom_color_indicator.dart';
 import 'package:schulplaner/shared/widgets/info_side_panel/info_box_position.dart';
+import 'package:schulplaner/shared/widgets/info_side_panel/special_info_box.dart';
 
 class EventInfoBox extends ConsumerWidget {
   /// The event that should be shown in the info box
@@ -129,7 +130,7 @@ class EventInfoBox extends ConsumerWidget {
                   ),
                   // If we have a processing date, show the time span nicely formatted
                   if (processingDateForDay != null)
-                    _SpecialInfoBox(
+                    SpecialInfoBox(
                       icon: const Icon(LucideIcons.clock),
                       text: Text(
                         processingDateForDay!.timeSpan.toFormattedString(),
@@ -140,7 +141,7 @@ class EventInfoBox extends ConsumerWidget {
                   // if a place is set
                   if (event.type == EventTypes.reminder &&
                       (event as ReminderEvent).place != null)
-                    _SpecialInfoBox(
+                    SpecialInfoBox(
                       icon: const Icon(LucideIcons.map_pin),
                       text: Text((event as ReminderEvent).place!),
                     ),
@@ -218,45 +219,5 @@ class EventInfoBox extends ConsumerWidget {
             EventTypes.unimplemented:
         return "";
     }
-  }
-}
-
-/// A small box, to display special information about an event. For example
-/// its place
-class _SpecialInfoBox extends StatelessWidget {
-  /// A icon that is displayed before the text
-  final Widget icon;
-
-  /// A widget, containing the text
-  final Widget text;
-
-  const _SpecialInfoBox({
-    required this.icon,
-    required this.text,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 20,
-      child: Row(
-        children: [
-          IconTheme(
-            data: IconThemeData(
-              color: Theme.of(context).colorScheme.outline,
-              size: 12,
-            ),
-            child: icon,
-          ),
-          const SizedBox(width: Spacing.small),
-          DefaultTextStyle(
-            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                  color: Theme.of(context).colorScheme.outline,
-                ),
-            child: text,
-          ),
-        ],
-      ),
-    );
   }
 }

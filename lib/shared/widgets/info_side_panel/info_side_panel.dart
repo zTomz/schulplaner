@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/shared/models/event.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
@@ -6,12 +7,18 @@ import 'package:schulplaner/shared/widgets/info_side_panel/event_info_box.dart';
 import 'package:schulplaner/shared/widgets/info_side_panel/info_box_position.dart';
 import 'package:schulplaner/shared/widgets/info_side_panel/lesson_info_box.dart';
 
-class InfoSidePanel extends StatelessWidget {
+class InfoSidePanel extends HookWidget {
   /// The day for which the events should be displayed
   final DateTime day;
 
   /// A list of events used to display the events for the provided [day]
   final List<Event> events;
+
+  /// The day for the next day. If this is not null a tab bar with the next day will be displayed
+  final DateTime? nextDay;
+
+  /// The events for the next day. This must be not null if next day is not null
+  final List<Event>? nextDayEvents;
 
   /// A list of lessons used to display the lessons for the provided [day]
   final List<Lesson> lessons;
@@ -23,73 +30,112 @@ class InfoSidePanel extends StatelessWidget {
     super.key,
     required this.day,
     required this.events,
+    this.nextDay,
+    this.nextDayEvents,
     required this.lessons,
     required this.subjects,
-  });
+  }) : assert(
+          nextDay == null || nextDayEvents != null,
+          "If the next day is not null the next day events must not be null",
+        );
 
   @override
   Widget build(BuildContext context) {
+    final tabController = useTabController(initialLength: 2);
+
     return Material(
       clipBehavior: Clip.hardEdge,
       color: Theme.of(context).colorScheme.surfaceContainer,
       borderRadius: const BorderRadius.all(Radii.medium),
       child: Padding(
         padding: const EdgeInsets.all(Spacing.medium),
-        child: ListView(
+        child: Column(
           children: [
-            _Subtitle(
-              count: events.length,
-              title: const Text("Ereignisse"),
-            ),
-            const SizedBox(height: Spacing.small),
-            ListView.builder(
-              itemCount: events.length,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                final event = events[index];
-
-                return EventInfoBox(
-                  event: event,
-                  day: day,
-                  position: events.length == 1
-                      ? InfoBoxPosition.isSingleItem
-                      : index == 0
-                          ? InfoBoxPosition.top
-                          : index == events.length - 1
-                              ? InfoBoxPosition.bottom
-                              : InfoBoxPosition.middle,
-                );
-              },
-            ),
-            _Subtitle(
-              count: lessons.length,
-              title: const Text("Unterricht"),
-            ),
-            const SizedBox(height: Spacing.small),
-            ListView.builder(
-              itemCount: lessons.length,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                final lesson = lessons[index];
-            
-                return LessonInfoBox(
-                  lesson: lesson,
-                  subjects: subjects,
-                  position: lessons.length == 1
-                      ? InfoBoxPosition.isSingleItem
-                      : index == 0
-                          ? InfoBoxPosition.top
-                          : index == lessons.length - 1
-                              ? InfoBoxPosition.bottom
-                              : InfoBoxPosition.middle,
-                );
-              },
+            if (nextDay != null && nextDayEvents != null) ...[
+              TabBar(
+                controller: tabController,
+                splashBorderRadius: const BorderRadius.vertical(
+                  top: Radii.small,
+                ),
+                
+                tabs: const [
+                  Tab(text: "Heute"),
+                  Tab(text: "Morgen"),
+                ],
+              ),
+              const SizedBox(height: Spacing.small),
+            ],
+            Expanded(
+              child: nextDay != null && nextDayEvents != null
+                  ? TabBarView(
+                      controller: tabController,
+                      children: [
+                        _buildTabContent(day, events),
+                        _buildTabContent(nextDay!, nextDayEvents!),
+                      ],
+                    )
+                  : _buildTabContent(day, events),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildTabContent(DateTime day, List<Event> events) {
+    return ListView(
+      children: [
+        _Subtitle(
+          count: events.length,
+          title: const Text("Ereignisse"),
+        ),
+        const SizedBox(height: Spacing.small),
+        ListView.builder(
+          itemCount: events.length,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) {
+            final event = events[index];
+    
+            return EventInfoBox(
+              event: event,
+              day: day,
+              position: events.length == 1
+                  ? InfoBoxPosition.isSingleItem
+                  : index == 0
+                      ? InfoBoxPosition.top
+                      : index == events.length - 1
+                          ? InfoBoxPosition.bottom
+                          : InfoBoxPosition.middle,
+            );
+          },
+        ),
+        _Subtitle(
+          count: lessons.length,
+          title: const Text("Unterricht"),
+        ),
+        const SizedBox(height: Spacing.small),
+        ListView.builder(
+          itemCount: lessons.length,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) {
+            final lesson = lessons[index];
+    
+            return LessonInfoBox(
+              lesson: lesson,
+              subjects: subjects,
+              position: lessons.length == 1
+                  ? InfoBoxPosition.isSingleItem
+                  : index == 0
+                      ? InfoBoxPosition.top
+                      : index == lessons.length - 1
+                          ? InfoBoxPosition.bottom
+                          : InfoBoxPosition.middle,
+            );
+          },
+        ),
+      ],
     );
   }
 }

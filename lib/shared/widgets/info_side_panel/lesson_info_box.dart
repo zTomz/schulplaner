@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/shared/models/weekly_schedule.dart';
 import 'package:schulplaner/shared/widgets/custom/custom_color_indicator.dart';
 import 'package:schulplaner/shared/widgets/info_side_panel/info_box_position.dart';
+import 'package:schulplaner/shared/widgets/info_side_panel/special_info_box.dart';
 
 class LessonInfoBox extends StatelessWidget {
   final Lesson lesson;
@@ -24,27 +26,44 @@ class LessonInfoBox extends StatelessWidget {
   Widget build(BuildContext context) {
     final subject = lesson.getSubject(subjects);
 
-    return ListTile(
-      leading:
+    return Container(
+      padding: const EdgeInsets.all(Spacing.medium),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.vertical(
+          top: position == InfoBoxPosition.top ||
+                  position == InfoBoxPosition.isSingleItem
+              ? Radii.small
+              : Radius.zero,
+          bottom: position == InfoBoxPosition.bottom ||
+                  position == InfoBoxPosition.isSingleItem
+              ? Radii.small
+              : Radius.zero,
+        ),
+      ),
+      child: Row(
+        children: [
           CustomColorIndicator(color: subject?.color ?? Colors.transparent),
-      minLeadingWidth:
-          CustomColorIndicator(color: subject?.color ?? Colors.transparent)
-              .preferredSize
-              .width,
-      title: Text(subject?.name ?? "Fehler"),
-      subtitle: Text(lesson.timeSpan.toFormattedString()),
-      tileColor: Theme.of(context).colorScheme.surfaceContainerHigh,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-        top: position == InfoBoxPosition.top ||
-                position == InfoBoxPosition.isSingleItem
-            ? Radii.small
-            : Radius.zero,
-        bottom: position == InfoBoxPosition.bottom ||
-                position == InfoBoxPosition.isSingleItem
-            ? Radii.small
-            : Radius.zero,
-      )),
+          const SizedBox(width: Spacing.medium),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  subject?.name ?? "Fehler",
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                SpecialInfoBox(
+                  icon: const Icon(LucideIcons.clock),
+                  text: Text(
+                    lesson.timeSpan.toFormattedString(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

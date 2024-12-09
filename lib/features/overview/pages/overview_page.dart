@@ -29,6 +29,10 @@ class OverviewPage extends ConsumerWidget {
       (failure) => [],
       (data) => data.eventsForToday,
     );
+    final EventData eventsForTomorrow = eventsData.fold(
+      (failure) => [],
+      (data) => data.eventsForTomorrow,
+    );
     final List<Lesson> lessons = weeklyScheduleData.fold(
       (failure) => [],
       (data) => data.lessons,
@@ -55,7 +59,9 @@ class OverviewPage extends ConsumerWidget {
               child: InfoSidePanel(
                 day: DateTime.now(),
                 events: eventsForDay,
-                lessons: lessons.getLessonsForDay(DateTime.now()),
+                nextDay: DateTime.now().add(const Duration(days: 1)),
+                nextDayEvents: eventsForTomorrow,
+                lessons: lessons.getLessonsForDay(DateTime.now().add(const Duration(days: 1))),
                 subjects: subjects,
               ),
             ),

@@ -48,6 +48,10 @@ extension EventDataExtension on EventData {
 
   EventData get eventsForToday => getEventsForDay(DateTime.now());
 
+  EventData get eventsForTomorrow => getEventsForDay(DateTime.now().add(
+        const Duration(days: 1),
+      ));
+
   EventData getEventsForDay(DateTime day) {
     return where(
       (event) =>
