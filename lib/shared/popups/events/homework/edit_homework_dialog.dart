@@ -4,7 +4,7 @@ import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/features/weekly_schedule/presentation/provider/weekly_schedule_provider.dart';
 import 'package:schulplaner/shared/popups/events/event_date_dialog.dart';
-import 'package:schulplaner/shared/popups/events/homework/generate_homework_processig_date_with_ai_dialog.dart';
+import 'package:schulplaner/shared/popups/events/homework/generate_homework_processing_date_with_ai_dialog.dart';
 import 'package:schulplaner/shared/functions/show_custom_popups.dart';
 import 'package:schulplaner/shared/popups/time_picker_modal_bottom_sheet.dart';
 import 'package:schulplaner/config/constants/numbers.dart';

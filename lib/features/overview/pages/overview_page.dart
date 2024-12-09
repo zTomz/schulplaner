@@ -39,6 +39,7 @@ class OverviewPage extends ConsumerWidget {
     );
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       floatingActionButtonLocation: ExpandableFab.location,
       floatingActionButton: const EventFloatingActionButton(),
       appBar: const CustomAppBar(

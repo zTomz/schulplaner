@@ -20,6 +20,7 @@ class HobbiesPage extends ConsumerWidget {
     final hobbiesData = ref.watch(hobbiesProvider);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       floatingActionButton: const HobbyFloatingActionButton(),
       appBar: const CustomAppBar(
         title: Text(

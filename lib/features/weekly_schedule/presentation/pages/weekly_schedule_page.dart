@@ -17,6 +17,7 @@ class WeeklySchedulePage extends ConsumerWidget {
     final selectedSchoolTimeCell = ref.watch(selectedSchoolTimeCellProvider);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       floatingActionButtonLocation: ExpandableFab.location,
       floatingActionButton: WeeklyScheduleFloatingActionButton(
         selectedSchoolTimeCell: selectedSchoolTimeCell,

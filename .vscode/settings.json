@@ -16,7 +16,7 @@
         "HINSTANCE",
         "COINIT",
         "APARTMENTTHREADED",
-
+        "unselectable",
     ],
     "cSpell.language": "en,de-de",
     "cSpell.customDictionaries": {
