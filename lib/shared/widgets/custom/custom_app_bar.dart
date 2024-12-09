@@ -2,18 +2,22 @@ import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget title;
+
+  /// If a leading should be implied. Default to `false`
+  final bool implyLeading;
   final List<Widget>? actions;
 
   const CustomAppBar({
     super.key,
     required this.title,
+    this.implyLeading = false,
     this.actions,
   });
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      automaticallyImplyLeading: false,
+      automaticallyImplyLeading: implyLeading,
       backgroundColor: Colors.transparent,
       scrolledUnderElevation: 0,
       elevation: 0,
