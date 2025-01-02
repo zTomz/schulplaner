@@ -11,11 +11,11 @@ class InfoSidePanel extends HookWidget {
   /// The day for which the events should be displayed
   final DateTime day;
 
-  /// A list of events used to display the events for the provided [day]
-  final List<Event> events;
-
   /// The day for the next day. If this is not null a tab bar with the next day will be displayed
   final DateTime? nextDay;
+
+  /// A list of events used to display the events for the provided [day]
+  final List<Event> events;
 
   /// The events for the next day. This must be not null if next day is not null
   final List<Event>? nextDayEvents;
@@ -23,20 +23,24 @@ class InfoSidePanel extends HookWidget {
   /// A list of lessons used to display the lessons for the provided [day]
   final List<Lesson> lessons;
 
+  /// A list of lessons used to display the lessons for the next day
+  final List<Lesson>? nextDayLessons;
+
   /// A list of subjects, used to display the subjects for the provided [lessons]
   final List<Subject> subjects;
 
   const InfoSidePanel({
     super.key,
     required this.day,
-    required this.events,
     this.nextDay,
+    required this.events,
     this.nextDayEvents,
     required this.lessons,
+    this.nextDayLessons,
     required this.subjects,
   }) : assert(
-          nextDay == null || nextDayEvents != null,
-          "If the next day is not null the next day events must not be null",
+          nextDay == null || nextDayEvents != null && nextDayLessons != null,
+          "If the next day is not null the next day events and lessons must not be null",
         );
 
   @override
@@ -57,7 +61,6 @@ class InfoSidePanel extends HookWidget {
                 splashBorderRadius: const BorderRadius.vertical(
                   top: Radii.small,
                 ),
-                
                 tabs: const [
                   Tab(text: "Heute"),
                   Tab(text: "Morgen"),
@@ -70,11 +73,11 @@ class InfoSidePanel extends HookWidget {
                   ? TabBarView(
                       controller: tabController,
                       children: [
-                        _buildTabContent(day, events),
-                        _buildTabContent(nextDay!, nextDayEvents!),
+                        _buildTabContent(day, events, lessons),
+                        _buildTabContent(nextDay!, nextDayEvents!, nextDayLessons!),
                       ],
                     )
-                  : _buildTabContent(day, events),
+                  : _buildTabContent(day, events, lessons),
             ),
           ],
         ),
@@ -82,7 +85,7 @@ class InfoSidePanel extends HookWidget {
     );
   }
 
-  Widget _buildTabContent(DateTime day, List<Event> events) {
+  Widget _buildTabContent(DateTime day, List<Event> events, List<Lesson> lessons) {
     return ListView(
       children: [
         _Subtitle(
@@ -96,7 +99,7 @@ class InfoSidePanel extends HookWidget {
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
             final event = events[index];
-    
+
             return EventInfoBox(
               event: event,
               day: day,
@@ -121,7 +124,7 @@ class InfoSidePanel extends HookWidget {
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
             final lesson = lessons[index];
-    
+
             return LessonInfoBox(
               lesson: lesson,
               subjects: subjects,

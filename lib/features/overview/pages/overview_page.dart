@@ -6,6 +6,7 @@ import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:schulplaner/config/constants/numbers.dart';
 import 'package:schulplaner/features/calendar/presentation/provider/events_provider.dart';
+import 'package:schulplaner/features/weekly_schedule/presentation/provider/week_provider.dart';
 import 'package:schulplaner/features/weekly_schedule/presentation/provider/weekly_schedule_provider.dart';
 import 'package:schulplaner/shared/extensions/list_extensions.dart';
 import 'package:schulplaner/shared/models/event.dart';
@@ -24,6 +25,7 @@ class OverviewPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final weeklyScheduleData = ref.watch(weeklyScheduleProvider);
     final eventsData = ref.watch(eventsProvider);
+    final week = ref.watch(weekProvider);
 
     final EventData eventsForDay = eventsData.fold(
       (failure) => [],
@@ -61,7 +63,14 @@ class OverviewPage extends ConsumerWidget {
                 events: eventsForDay,
                 nextDay: DateTime.now().add(const Duration(days: 1)),
                 nextDayEvents: eventsForTomorrow,
-                lessons: lessons.getLessonsForDay(DateTime.now().add(const Duration(days: 1))),
+                lessons: lessons.getLessonsForDay(
+                  DateTime.now(),
+                  week: week,
+                ),
+                nextDayLessons: lessons.getLessonsForDay(
+                  DateTime.now().add(const Duration(days: 1)),
+                  week: week,
+                ),
                 subjects: subjects,
               ),
             ),
