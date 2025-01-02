@@ -38,6 +38,13 @@ abstract class AppTheme {
         foregroundColor: const Color(0xff1b1b1b), // On surface
       ),
     ),
+    segmentedButtonTheme: SegmentedButtonThemeData(
+      style: ButtonStyle(
+        iconColor: WidgetStatePropertyAll(
+          lightScheme().surface,
+        ),
+      ),
+    ),
   );
 
   static final ThemeData darkTheme = ThemeData(
@@ -72,6 +79,13 @@ abstract class AppTheme {
     iconButtonTheme: IconButtonThemeData(
       style: IconButton.styleFrom(
         foregroundColor: Colors.white,
+      ),
+    ),
+    segmentedButtonTheme: SegmentedButtonThemeData(
+      style: ButtonStyle(
+        iconColor: WidgetStatePropertyAll(
+          darkScheme().surface,
+        ),
       ),
     ),
   );
